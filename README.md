@@ -1,2 +1,2 @@
 # stock-control-saas
-aplicação web para controle de estoque
+Aplicação web para controle de estoque
