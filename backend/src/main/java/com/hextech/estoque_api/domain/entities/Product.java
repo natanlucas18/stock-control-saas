@@ -16,6 +16,14 @@ public class Product {
     private Integer quantity;
     private UnitMeasure unitMeasure;
 
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
+
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
+
     public Product() {
     }
 
@@ -65,6 +73,22 @@ public class Product {
 
     public void setUnitMeasure(UnitMeasure unitMeasure) {
         this.unitMeasure = unitMeasure;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @Override
