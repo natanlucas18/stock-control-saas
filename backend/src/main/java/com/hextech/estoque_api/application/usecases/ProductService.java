@@ -1,6 +1,7 @@
 package com.hextech.estoque_api.application.usecases;
 
-import com.hextech.estoque_api.application.dtos.ProductDTO;
+import com.hextech.estoque_api.application.dtos.ProductRequestDTO;
+import com.hextech.estoque_api.application.dtos.ProductResponseDTO;
 import com.hextech.estoque_api.domain.entities.Product;
 import com.hextech.estoque_api.domain.entities.UnitMeasure;
 import com.hextech.estoque_api.domain.repositories.ProductRepository;
@@ -15,13 +16,13 @@ public class ProductService {
     private ProductRepository repository;
 
     @Transactional
-    public ProductDTO insert(ProductDTO dto) {
+    public ProductResponseDTO insert(ProductRequestDTO requestDTO) {
         Product entity = new Product();
-        entity.setName(dto.getName());
-        entity.setPrice(dto.getPrice());
+        entity.setName(requestDTO.getName());
+        entity.setPrice(requestDTO.getPrice());
         entity.setQuantity(0);
-        entity.setUnitMeasure(UnitMeasure.valueOf(dto.getUnitMeasure()));
+        entity.setUnitMeasure(UnitMeasure.valueOf(requestDTO.getUnitMeasure()));
         entity = repository.save(entity);
-        return new ProductDTO(entity);
+        return new ProductResponseDTO(entity);
     }
 }

@@ -1,6 +1,7 @@
 package com.hextech.estoque_api.interfaces.controllers.docs;
 
-import com.hextech.estoque_api.application.dtos.ProductDTO;
+import com.hextech.estoque_api.application.dtos.ProductRequestDTO;
+import com.hextech.estoque_api.application.dtos.ProductResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,11 +16,11 @@ public interface ProductControllerDocs {
 
     @Operation(summary = "Adiciona um novo produto")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = ProductResponseDTO.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
             @ApiResponse(responseCode = "422", description = "Unprocessable Entity", content = @Content)
     })
-    ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto);
+    ResponseEntity<ProductResponseDTO> insert(@RequestBody ProductRequestDTO dto);
 }
