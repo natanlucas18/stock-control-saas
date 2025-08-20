@@ -13,6 +13,8 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
+    @Column(unique = true, nullable = false, length = 14)
     private String cnpj;
     private boolean enabled;
 
