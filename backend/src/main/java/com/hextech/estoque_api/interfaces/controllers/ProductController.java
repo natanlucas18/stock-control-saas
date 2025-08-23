@@ -15,7 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/products", produces = "application/json")
+@RequestMapping(value = "/api/products", produces = "application/json")
 public class ProductController implements ProductControllerDocs {
 
     @Autowired

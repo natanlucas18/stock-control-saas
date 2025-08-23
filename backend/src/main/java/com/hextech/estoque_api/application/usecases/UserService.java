@@ -16,7 +16,8 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = repository.findByEmail(username);
-        if (user.isEmpty()) throw new UsernameNotFoundException("Usuário " + username + "não existe.");
+        if (user.isEmpty() || !user.get().isEnabled())
+            throw new UsernameNotFoundException("Usuário " + username + "não encontrado ou desabilitado.");
         else return user.get();
     }
 }

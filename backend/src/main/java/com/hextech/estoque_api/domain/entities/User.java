@@ -26,7 +26,7 @@ public class User implements UserDetails {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn (name = "user_id"),
             inverseJoinColumns = @JoinColumn (name = "role_id")
@@ -108,6 +108,10 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public List<String> getRoleNames() {
+        return roles.stream().map(Role::getAuthority).toList();
     }
 
     @Override
