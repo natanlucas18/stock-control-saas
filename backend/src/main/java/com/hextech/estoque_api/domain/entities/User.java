@@ -1,12 +1,16 @@
 package com.hextech.estoque_api.domain.entities;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +25,13 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn (name = "user_id"),
+            inverseJoinColumns = @JoinColumn (name = "role_id")
+    )
+    private List<Role> roles;
 
     public User() {
     }
@@ -79,6 +90,28 @@ public class User {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    public List<String> getRoleNames() {
+        return roles.stream().map(Role::getAuthority).toList();
     }
 
     @Override
