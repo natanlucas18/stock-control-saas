@@ -1,0 +1,38 @@
+package com.hextech.estoque_api.interfaces.handlers;
+
+import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
+import com.hextech.estoque_api.infrastructure.security.exceptions.InvalidJwtAuthenticationException;
+import com.hextech.estoque_api.interfaces.dtos.CustomError;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.time.Instant;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(InvalidJwtAuthenticationException.class)
+    public ResponseEntity<CustomError> handleInvalidJwt(InvalidJwtAuthenticationException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        CustomError error = new CustomError(Instant.now(), status.value(), ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<CustomError> handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        CustomError error = new CustomError(Instant.now(), status.value(), "Usuário ou senha inválido!", request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<CustomError> handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        CustomError error = new CustomError(Instant.now(), status.value(), ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+}
