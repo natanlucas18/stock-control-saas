@@ -32,4 +32,11 @@ public class StockLocationController implements StockLocationControllerDocs {
 
         return ResponseEntity.created(uri).body(responseDTO);
     }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<StockLocationDTO> insert(@PathVariable Long id, @RequestBody StockLocationDTO requestDTO) {
+        StockLocationDTO responseDTO = service.update(id, requestDTO);
+
+        return ResponseEntity.ok(responseDTO);
+    }
 }

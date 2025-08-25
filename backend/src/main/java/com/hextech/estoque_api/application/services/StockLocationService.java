@@ -1,6 +1,7 @@
 package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.dtos.StockLocationDTO;
+import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.application.security.AuthContext;
 import com.hextech.estoque_api.domain.entities.Client;
 import com.hextech.estoque_api.domain.entities.StockLocation;
@@ -36,6 +37,14 @@ public class StockLocationService {
 
         entity = repository.save(entity);
 
+        return new StockLocationDTO(entity);
+    }
+
+    public StockLocationDTO update(Long id, StockLocationDTO requestDTO) {
+        StockLocation entity = repository.findByIdAndClientId(id, authContext.getCurrentClientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado"));
+        entity.setName(requestDTO.getName());
+        entity = repository.save(entity);
         return new StockLocationDTO(entity);
     }
 }
