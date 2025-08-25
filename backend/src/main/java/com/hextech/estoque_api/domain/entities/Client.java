@@ -22,7 +22,7 @@ public class Client {
     private List<User> users;
 
     @OneToMany(mappedBy = "client")
-    private List<Location> locations;
+    private List<StockLocation> stockLocations;
 
     @OneToMany(mappedBy = "client")
     private List<Product> products;
@@ -77,12 +77,12 @@ public class Client {
         this.users = users;
     }
 
-    public List<Location> getLocations() {
-        return locations;
+    public List<StockLocation> getStockLocations() {
+        return stockLocations;
     }
 
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
+    public void setStockLocations(List<StockLocation> stockLocations) {
+        this.stockLocations = stockLocations;
     }
 
     public List<Product> getProducts() {

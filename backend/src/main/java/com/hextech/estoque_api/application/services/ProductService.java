@@ -1,4 +1,4 @@
-package com.hextech.estoque_api.application.usecases;
+package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.dtos.ProductRequestDTO;
 import com.hextech.estoque_api.application.dtos.ProductResponseDTO;
