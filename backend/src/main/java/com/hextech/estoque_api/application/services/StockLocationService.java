@@ -54,4 +54,10 @@ public class StockLocationService {
         entity = repository.save(entity);
         return new StockLocationDTO(entity);
     }
+
+    public void deleteByIdAndClientId(Long id) {
+        StockLocation entity = repository.findByIdAndClientId(id, authContext.getCurrentClientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado"));
+        repository.delete(entity);
+    }
 }
