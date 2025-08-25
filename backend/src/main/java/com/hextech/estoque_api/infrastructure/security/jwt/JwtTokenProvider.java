@@ -6,6 +6,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.hextech.estoque_api.application.dtos.security.TokenDTO;
 import com.hextech.estoque_api.domain.entities.User;
+import com.hextech.estoque_api.infrastructure.security.CustomUserDetails;
 import com.hextech.estoque_api.infrastructure.security.exceptions.InvalidJwtAuthenticationException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -52,7 +54,17 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         DecodedJWT decodedJWT = decodedToken(token);
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(decodedJWT.getSubject());
+        Long clientId = decodedJWT.getClaim("clientId").asLong();
+        Long userId = decodedJWT.getClaim("userId").asLong();
+        String username = decodedJWT.getSubject();
+        List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+
+        List<GrantedAuthority> authorities = roles.stream()
+                .map(role -> (GrantedAuthority) () -> role)
+                .toList();
+
+        UserDetails userDetails = new CustomUserDetails(userId, clientId, username, "", authorities);
+
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
