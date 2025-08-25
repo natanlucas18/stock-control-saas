@@ -24,6 +24,12 @@ public class StockLocationController implements StockLocationControllerDocs {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<StockLocationDTO> findById(@PathVariable Long id) {
+        StockLocationDTO responseDTO = service.findByIdAndClientId(id);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PostMapping
     public ResponseEntity<StockLocationDTO> insert(@RequestBody StockLocationDTO requestDTO) {
         StockLocationDTO responseDTO = service.insert(requestDTO);
@@ -34,7 +40,7 @@ public class StockLocationController implements StockLocationControllerDocs {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<StockLocationDTO> insert(@PathVariable Long id, @RequestBody StockLocationDTO requestDTO) {
+    public ResponseEntity<StockLocationDTO> update(@PathVariable Long id, @RequestBody StockLocationDTO requestDTO) {
         StockLocationDTO responseDTO = service.update(id, requestDTO);
 
         return ResponseEntity.ok(responseDTO);

@@ -27,6 +27,13 @@ public class StockLocationService {
         return result.stream().map(StockLocationDTO::new).toList();
     }
 
+    @Transactional(readOnly = true)
+    public StockLocationDTO findByIdAndClientId(Long id) {
+        StockLocation entity = repository.findByIdAndClientId(id, authContext.getCurrentClientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado"));
+        return new StockLocationDTO(entity);
+    }
+
     public StockLocationDTO insert(StockLocationDTO requestDTO) {
         StockLocation entity = new StockLocation();
         entity.setName(requestDTO.getName());
