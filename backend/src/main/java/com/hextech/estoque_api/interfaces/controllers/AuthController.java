@@ -1,8 +1,7 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
 import com.hextech.estoque_api.application.dtos.security.AccountCredentialsDTO;
-import com.hextech.estoque_api.application.usecases.AuthService;
-import org.apache.commons.lang3.StringUtils;
+import com.hextech.estoque_api.application.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

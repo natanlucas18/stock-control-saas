@@ -1,8 +1,8 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
-import com.hextech.estoque_api.application.dtos.LocationDTO;
-import com.hextech.estoque_api.application.usecases.LocationService;
-import com.hextech.estoque_api.interfaces.controllers.docs.LocationControllerDocs;
+import com.hextech.estoque_api.application.dtos.StockLocationDTO;
+import com.hextech.estoque_api.application.services.StockLocationService;
+import com.hextech.estoque_api.interfaces.controllers.docs.StockLocationControllerDocs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,15 +14,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/locations", produces = "application/json")
-public class LocationController implements LocationControllerDocs {
+@RequestMapping(value = "/api/stock-locations", produces = "application/json")
+public class StockLocationController implements StockLocationControllerDocs {
 
     @Autowired
-    private LocationService service;
+    private StockLocationService service;
 
     @PostMapping
-    public ResponseEntity<LocationDTO> insert(@RequestBody LocationDTO requestDTO) {
-        LocationDTO responseDTO = service.insert(requestDTO);
+    public ResponseEntity<StockLocationDTO> insert(@RequestBody StockLocationDTO requestDTO) {
+        StockLocationDTO responseDTO = service.insert(requestDTO);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(responseDTO.getId()).toUri();
 

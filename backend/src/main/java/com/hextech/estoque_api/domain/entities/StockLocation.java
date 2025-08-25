@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "locations")
-public class Location {
+@Table(name = "stock_locations")
+public class StockLocation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,13 +18,13 @@ public class Location {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "stockLocation")
     private List<Product> products;
 
-    public Location() {
+    public StockLocation() {
     }
 
-    public Location(Long id, String name) {
+    public StockLocation(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -64,8 +64,8 @@ public class Location {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Location location = (Location) o;
-        return Objects.equals(id, location.id) && Objects.equals(name, location.name);
+        StockLocation stockLocation = (StockLocation) o;
+        return Objects.equals(id, stockLocation.id) && Objects.equals(name, stockLocation.name);
     }
 
     @Override

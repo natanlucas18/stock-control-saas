@@ -2,7 +2,7 @@ package com.hextech.estoque_api.interfaces.controllers;
 
 import com.hextech.estoque_api.application.dtos.ProductRequestDTO;
 import com.hextech.estoque_api.application.dtos.ProductResponseDTO;
-import com.hextech.estoque_api.application.usecases.ProductService;
+import com.hextech.estoque_api.application.services.ProductService;
 import com.hextech.estoque_api.interfaces.controllers.docs.ProductControllerDocs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

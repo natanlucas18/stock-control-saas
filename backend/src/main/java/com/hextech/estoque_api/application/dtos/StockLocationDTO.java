@@ -1,20 +1,20 @@
 package com.hextech.estoque_api.application.dtos;
 
-import com.hextech.estoque_api.domain.entities.Location;
+import com.hextech.estoque_api.domain.entities.StockLocation;
 
-public class LocationDTO {
+public class StockLocationDTO {
 
     private Long id;
     private String name;
 
-    public LocationDTO() {
+    public StockLocationDTO() {
     }
 
-    public LocationDTO(String name) {
+    public StockLocationDTO(String name) {
         this.name = name;
     }
 
-    public LocationDTO(Location entity) {
+    public StockLocationDTO(StockLocation entity) {
         this.id = entity.getId();
         this.name = entity.getName();
     }

@@ -1,4 +1,4 @@
-package com.hextech.estoque_api.application.usecases;
+package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

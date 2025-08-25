@@ -21,8 +21,8 @@ public class Product {
     private Client client;
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
+    @JoinColumn(name = "stock_location_id")
+    private StockLocation stockLocation;
 
     public Product() {
     }
@@ -83,12 +83,12 @@ public class Product {
         this.client = client;
     }
 
-    public Location getLocation() {
-        return location;
+    public StockLocation getStockLocation() {
+        return stockLocation;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setStockLocation(StockLocation stockLocation) {
+        this.stockLocation = stockLocation;
     }
 
     @Override
