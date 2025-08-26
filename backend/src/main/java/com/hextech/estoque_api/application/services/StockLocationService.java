@@ -60,4 +60,9 @@ public class StockLocationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado"));
         repository.delete(entity);
     }
+
+    public StockLocation validateStockLocation(Long id) {
+        return repository.findByIdAndClientId(id, authContext.getCurrentClientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado"));
+    }
 }
