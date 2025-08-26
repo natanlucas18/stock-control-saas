@@ -45,4 +45,10 @@ public class ProductController implements ProductControllerDocs {
         ProductResponseDTO responseDTO = service.update(id, requestDTO);
         return ResponseEntity.ok(responseDTO);
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        service.deleteByIdAndClientId(id);
+        return ResponseEntity.noContent().build();
+    }
 }

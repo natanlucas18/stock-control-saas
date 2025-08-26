@@ -62,6 +62,12 @@ public class ProductService {
         return new ProductResponseDTO(entity);
     }
 
+    public void deleteByIdAndClientId(Long id) {
+        Product entity = repository.findByIdAndClientId(id, authContext.getCurrentClientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
+        repository.delete(entity);
+    }
+
     private void copyDtoToEntity(ProductRequestDTO dto, Product entity) {
         entity.setName(dto.getName());
         entity.setPrice(dto.getPrice());
