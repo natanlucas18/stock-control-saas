@@ -38,7 +38,7 @@ export default function Products() {
   // Buscando todos os Produtos
   useEffect(() => {
     const getProducts = async () => {
-      const response = await fetch(`http://localhost:8080/products`);
+      const response = await fetch(`http://localhost:8080/api/products`);
       const data = await response.json();
       setProducts(data);
     }
@@ -48,7 +48,7 @@ export default function Products() {
   // Fazendo um POST de um produto
   const onSubmit = async (data: FormProducts) => {
     try {
-      const response = await fetch(`http://localhost:8080/products`, {
+      const response = await fetch(`http://localhost:8080/api/products`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -66,7 +66,7 @@ export default function Products() {
   };
 
   const deleteProduct = async (id: ProductsData) => {
-    const response = await fetch(`http://localhost:8080/products/${id}`);
+    const response = await fetch(`http://localhost:8080/api/products/${id}`);
     if (response.status <= 205) return toast.success("Produto deletado com sucesso!");
     return toast.error("Erro ao deletar produto!");
   };
@@ -121,14 +121,17 @@ export default function Products() {
             <table className='w-full text-sm text-left rtl:text-right text-gray-500'>
               <thead className='text-xs text-gray-300 uppercase bg-blue-900'>
                 <tr>
+                  <th scope='col' className='px-6 py-3'>Código</th>
                   <th scope='col' className='px-6 py-3'>Descrição</th>
                   <th scope='col' className='px-6 py-3'>nº sessão</th>
                   <th scope='col' className='px-6 py-3'>Opções</th>
                 </tr>
               </thead>
               <tbody>
-                {products?.map(product => (
+                {products? (
+                products?.map(product => (
                   <tr key={product.id} className='bg-gray-300 border-b uppercase text-black border-gray-200'>
+                    <td scope='row' className='px-6 py-4'>{product.code}</td>
                     <td scope='row' className='px-6 py-4'>{product.description}</td>
                     <td scope='row' className='px-6 py-4'>{product.idSession}</td>
                     <td scope='row' className='px-6 py-4 flex flex-row gap-2'>
@@ -140,7 +143,11 @@ export default function Products() {
                       </span>
                     </td>
                   </tr>
-                ))}
+                ))): (
+                  <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
+                    <td scope='row' className='px-6 py-4'>Nenhum produto cadastrado</td>
+                  </tr>
+                )}
               </tbody>
             </table>
 
