@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.application.services;
 
-import com.hextech.estoque_api.application.dtos.ProductRequestDTO;
-import com.hextech.estoque_api.application.dtos.ProductResponseDTO;
+import com.hextech.estoque_api.application.dtos.products.ProductRequestDTO;
+import com.hextech.estoque_api.application.dtos.products.ProductResponseDTO;
 import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.application.security.AuthContext;
 import com.hextech.estoque_api.domain.entities.Client;

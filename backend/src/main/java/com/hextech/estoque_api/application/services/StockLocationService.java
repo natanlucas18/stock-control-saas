@@ -1,6 +1,6 @@
 package com.hextech.estoque_api.application.services;
 
-import com.hextech.estoque_api.application.dtos.StockLocationDTO;
+import com.hextech.estoque_api.application.dtos.stockLocations.StockLocationDTO;
 import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.application.security.AuthContext;
 import com.hextech.estoque_api.domain.entities.Client;

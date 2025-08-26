@@ -1,4 +1,4 @@
-package com.hextech.estoque_api.application.dtos;
+package com.hextech.estoque_api.application.dtos.stockLocations;
 
 import com.hextech.estoque_api.domain.entities.StockLocation;
 
