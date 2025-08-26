@@ -1,10 +1,11 @@
 "use client"
-import { toast } from 'react-toastify'
+import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import Nav from '../Nav/page';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form'
-import { FormDataMovements } from '@/types/types';
+import { FormDataMovements, MovementsData, Option } from '@/types/types';
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -19,21 +20,22 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 const schemaMovements = z.object({
-  description: z.string().min(1, "Insira o nome do produto!"),
-  quantity: z.number().min(1,"Insira a quantidade!")
+  description: z.string().min(1, "Selecione um produto!"),
+  quantity: z.number().min(1, "Insira a quantidade!")
 })
 
-
-
 export default function Stock() {
-  const { register, handleSubmit, formState: {errors} } = useForm<FormDataMovements>({
+  const [movementsData, setMovementsData] = useState<MovementsData>([]);
+  const [options, setOptions] = useState<Option>([]);
+  const { register, handleSubmit, formState: { errors } } = useForm<FormDataMovements>({
     resolver: zodResolver(schemaMovements)
   });
 
   const handleEntrySubmit = async (data: FormDataMovements) => {
     const type = 'Entry';
-    const newData = {...data, type};
-    const response = await fetch(`http://localhost:8080/movements`, {
+    const newData = { ...data, type };
+    console.log(newData);
+    const response = await fetch(`http://localhost:8080/api/movements`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -57,8 +59,8 @@ export default function Stock() {
 
   const handleExitSubmit = async (data: FormDataMovements) => {
     const type = 'Exit';
-    const newData = {...data, type};
-    const response = await fetch(`http://localhost:8080/movements`, {
+    const newData = { ...data, type };
+    const response = await fetch(`http://localhost:8080/api/movements`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -79,11 +81,23 @@ export default function Stock() {
     };
   };
 
-  const generateLabel = async (data: FormDataMovements) => {
+  /*const generateLabel = async (data: FormDataMovements) => {
     const date = Date.now();
     const newData = { ...data, date };
-    {/*Lógica para conectar a API da zebra*/ }
+    //Lógica para conectar a API da zebra
   }
+  */
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('http://localhost:8080/api/movements');
+      const data = await response.json();
+      setMovementsData(data);
+      setOptions(data);
+      return;
+    }
+    fetchData();
+  }, []);
 
   return (
     <main className=' w-full flex flex-col gap-2 bg-white'>
@@ -102,12 +116,22 @@ export default function Stock() {
                 <div className="grid gap-4">
                   <div className="grid gap-3">
                     <Label htmlFor="description">Descrição</Label>
-                    <Input type='text' id="description" {...register("description")} placeholder='ex.: Caixa papelão 5kg' required/>
+                    <select
+                      id="dynamic-select"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      {...register("description")}>
+                      <option value={""}>Selecione...</option>
+                      {options.map((option) => (
+                        <option key={option.id} className='w-[90%]' value={option.id}>
+                          {option.description}
+                        </option>
+                      ))}
+                    </select>
                     {errors.description && <p className='text-red-500'>{errors.description.message}</p>}
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="quantity">Quantidade</Label>
-                    <Input type='number' id="quantity" {...register("quantity")} placeholder='ex.: 10.852' required/>
+                    <Input type='number' id="quantity" {...register("quantity")} placeholder='ex.: 10.852' required />
                     {errors.quantity && <p className='text-red-500'>{errors.quantity.message}</p>}
                   </div>
                 </div>
@@ -135,11 +159,21 @@ export default function Stock() {
                 <div className="grid gap-4">
                   <div className="grid gap-3">
                     <Label htmlFor="description">Descrição</Label>
-                    <Input id="description" {...register("description")} placeholder='ex.: Caixa papelão 5kg' required/>
+                    <select
+                      id="dynamic-select"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      {...register("description")}>
+                      <option value={""}>Selecione...</option>
+                      {options.map((option) => (
+                        <option key={option.id} className='w-[90%]' value={option.id}>
+                          {option.description}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="quantity-min">Quantidade</Label>
-                    <Input id="quantity" {...register("quantity")} placeholder='ex.: 10.852' required/>
+                    <Input id="quantity" {...register("quantity")} placeholder='ex.: 10.852' required />
                   </div>
                 </div>
                 <DialogFooter>
@@ -156,117 +190,27 @@ export default function Stock() {
           <table className='w-full text-sm text-left rtl:text-right text-gray-500 '>
             <thead className='text-xs text-gray-300 uppercase bg-blue-900'>
               <tr>
+                <th scope='col' className='px-6 py-3'>Cód</th>
                 <th scope='col' className='px-6 py-3'>Descrição</th>
                 <th scope='col' className='px-6 py-3'>nº sessão</th>
                 <th scope='col' className='px-6 py-3'>Quantidade</th>
               </tr>
             </thead>
             <tbody>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
-              <tr className='bg-gray-300 border-b uppercase text-black border-gray-200'>
-                <td scope='row' className='px-6 py-4'>cumbuca 500g resipack</td>
-                <td scope='row' className='px-6 py-4'>2</td>
-                <td scope='row' className='px-6 py-4'>108.000</td>
-              </tr>
+              {movementsData? (
+                movementsData.map((item) => (
+                  <tr key={item.id} className='bg-gray-300 border-b uppercase text-black border-gray-200'>
+                    <td className='px-6 py-4'>{item.code}</td>
+                    <td className='px-6 py-4'>{item.description}</td>
+                    <td className='px-6 py-4'>{item.idSession}</td>
+                    <td className='px-6 py-4'>{item.quantity}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3} className="text-center text-gray-400 py-4">Nenhum produto encontrado.</td>
+                </tr>
+              )}
             </tbody>
           </table>
 
