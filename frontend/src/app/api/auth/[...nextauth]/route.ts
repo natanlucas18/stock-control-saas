@@ -31,10 +31,8 @@ const handler = NextAuth({
           const authData:AuthData = await response.json();
           if(!authData.token) return null;
           (await cookies()).set("token", authData.token);
-          (await cookies()).set("id", authData.id);
           (await cookies()).set("name", authData.name);
           return {
-            id: authData.id,
             name: authData.name,
             email: authData.email,
           }
