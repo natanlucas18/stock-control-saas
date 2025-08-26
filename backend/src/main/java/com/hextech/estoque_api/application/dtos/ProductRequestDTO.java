@@ -7,14 +7,16 @@ public class ProductRequestDTO {
     private String name;
     private Double price;
     private String unitMeasure;
+    private Long stockLocationId;
 
     public ProductRequestDTO() {
     }
 
-    public ProductRequestDTO(String name, Double price, String unitMeasure) {
+    public ProductRequestDTO(String name, Double price, String unitMeasure, Long stockLocationId) {
         this.name = name;
         this.price = price;
         this.unitMeasure = unitMeasure;
+        this.stockLocationId = stockLocationId;
     }
 
     public ProductRequestDTO(Product entity) {
@@ -45,5 +47,13 @@ public class ProductRequestDTO {
 
     public void setUnitMeasure(String unitMeasure) {
         this.unitMeasure = unitMeasure;
+    }
+
+    public Long getStockLocationId() {
+        return stockLocationId;
+    }
+
+    public void setStockLocationId(Long stockLocationId) {
+        this.stockLocationId = stockLocationId;
     }
 }
