@@ -2,10 +2,10 @@ package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.dtos.ProductRequestDTO;
 import com.hextech.estoque_api.application.dtos.ProductResponseDTO;
+import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.application.security.AuthContext;
 import com.hextech.estoque_api.domain.entities.Client;
 import com.hextech.estoque_api.domain.entities.Product;
-import com.hextech.estoque_api.domain.entities.StockLocation;
 import com.hextech.estoque_api.domain.entities.UnitMeasure;
 import com.hextech.estoque_api.domain.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +31,16 @@ public class ProductService {
         Client client = new Client();
         client.setId(authContext.getCurrentClientId());
         entity.setClient(client);
+
+        entity = repository.save(entity);
+        return new ProductResponseDTO(entity);
+    }
+
+    public ProductResponseDTO update(Long id, ProductRequestDTO requestDTO) {
+        Product entity = repository.findByIdAndClientId(id, authContext.getCurrentClientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
+
+        copyDtoToEntity(requestDTO, entity);
 
         entity = repository.save(entity);
         return new ProductResponseDTO(entity);
