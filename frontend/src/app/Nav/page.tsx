@@ -23,7 +23,7 @@ export default function Nav() {
             <Link href="/Products" className="hover:text-gray-300">
               Produtos
             </Link>
-            <Link href="/Session" className="hover:text-gray-300">
+            <Link href="/Section" className="hover:text-gray-300">
               Sessão
             </Link>
             <Link href="/Stock" className="hover:text-gray-300">
@@ -80,7 +80,7 @@ export default function Nav() {
           <Link href="/Products" className="block px-4 py-2 hover:bg-blue-400">
             Produtos
           </Link>
-          <Link href="/Session" className="block px-4 py-2 hover:bg-blue-400">
+          <Link href="/Section" className="block px-4 py-2 hover:bg-blue-400">
             Sessão
           </Link>
           <Link href="/Stock" className="block px-4 py-2 hover:bg-blue-400">
