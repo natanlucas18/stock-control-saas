@@ -32,6 +32,13 @@ public class ProductService {
         return products.stream().map(ProductResponseDTO::new).toList();
     }
 
+    @Transactional(readOnly = true)
+    public ProductResponseDTO findByIdAndClientId(Long id) {
+        Product entity = repository.findByIdAndClientId(id, authContext.getCurrentClientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
+        return new ProductResponseDTO(entity);
+    }
+
     public ProductResponseDTO insert(ProductRequestDTO requestDTO) {
         Product entity = new Product();
         copyDtoToEntity(requestDTO, entity);

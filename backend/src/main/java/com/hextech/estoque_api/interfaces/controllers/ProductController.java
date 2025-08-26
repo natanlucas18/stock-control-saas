@@ -25,6 +25,12 @@ public class ProductController implements ProductControllerDocs {
         return ResponseEntity.ok(responseDTOS);
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long id) {
+        ProductResponseDTO responseDTO = service.findByIdAndClientId(id);
+        return ResponseEntity.ok(responseDTO);
+    }
+
     @PostMapping
     public ResponseEntity<ProductResponseDTO> insert(@RequestBody ProductRequestDTO requestDTO) {
         ProductResponseDTO responseDTO = service.insert(requestDTO);
