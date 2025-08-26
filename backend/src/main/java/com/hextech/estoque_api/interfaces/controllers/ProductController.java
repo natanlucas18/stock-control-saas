@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/products", produces = "application/json")
@@ -17,6 +18,12 @@ public class ProductController implements ProductControllerDocs {
 
     @Autowired
     private ProductService service;
+
+    @GetMapping
+    public ResponseEntity<List<ProductResponseDTO>> findAll() {
+        List<ProductResponseDTO> responseDTOS = service.findAllByClientId();
+        return ResponseEntity.ok(responseDTOS);
+    }
 
     @PostMapping
     public ResponseEntity<ProductResponseDTO> insert(@RequestBody ProductRequestDTO requestDTO) {

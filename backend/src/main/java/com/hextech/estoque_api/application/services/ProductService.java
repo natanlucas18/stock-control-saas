@@ -10,6 +10,9 @@ import com.hextech.estoque_api.domain.entities.UnitMeasure;
 import com.hextech.estoque_api.domain.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ProductService {
@@ -22,6 +25,12 @@ public class ProductService {
 
     @Autowired
     private StockLocationService stockLocationService;
+
+    @Transactional(readOnly = true)
+    public List<ProductResponseDTO> findAllByClientId() {
+        List<Product> products = repository.findAllByClientId(authContext.getCurrentClientId());
+        return products.stream().map(ProductResponseDTO::new).toList();
+    }
 
     public ProductResponseDTO insert(ProductRequestDTO requestDTO) {
         Product entity = new Product();
