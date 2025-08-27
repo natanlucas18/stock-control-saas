@@ -1,12 +1,13 @@
 package com.hextech.estoque_api.application.dtos.movements;
 
 import com.hextech.estoque_api.application.dtos.products.ProductMinDTO;
+import com.hextech.estoque_api.application.dtos.stockLocations.StockLocationDTO;
 import com.hextech.estoque_api.application.dtos.users.UserMinDTO;
-import com.hextech.estoque_api.domain.entities.*;
+import com.hextech.estoque_api.domain.entities.Movement;
 
 import java.time.LocalDate;
 
-public class StockLocationResponseDTO {
+public class MovementResponseDTO {
 
     private Long id;
     private String type;
@@ -15,12 +16,12 @@ public class StockLocationResponseDTO {
     private String note;
     private ProductMinDTO product;
     private UserMinDTO user;
-    private StockLocation stockLocation;
+    private StockLocationDTO stockLocation;
 
-    public StockLocationResponseDTO() {
+    public MovementResponseDTO() {
     }
 
-    public StockLocationResponseDTO(Movement entity) {
+    public MovementResponseDTO(Movement entity) {
         this.id = entity.getId();
         this.type = entity.getType().toString();
         this.quantity = entity.getQuantity();
@@ -28,7 +29,7 @@ public class StockLocationResponseDTO {
         this.note = entity.getNote();
         this.product = new ProductMinDTO(entity.getProduct().getId(), entity.getProduct().getName());
         this.user = new UserMinDTO(entity.getUser().getId(), entity.getUser().getName());
-        this.stockLocation = entity.getStockLocation();
+        this.stockLocation = new StockLocationDTO(entity.getStockLocation().getId(), entity.getStockLocation().getName());
     }
 
     public Long getId() {
@@ -87,11 +88,11 @@ public class StockLocationResponseDTO {
         this.user = user;
     }
 
-    public StockLocation getStockLocation() {
+    public StockLocationDTO getStockLocation() {
         return stockLocation;
     }
 
-    public void setStockLocation(StockLocation stockLocation) {
+    public void setStockLocation(StockLocationDTO stockLocation) {
         this.stockLocation = stockLocation;
     }
 }
