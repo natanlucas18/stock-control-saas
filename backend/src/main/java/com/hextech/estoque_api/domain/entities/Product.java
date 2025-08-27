@@ -91,6 +91,23 @@ public class Product {
         this.stockLocation = stockLocation;
     }
 
+    public void decreaseQuantity(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Quantidade deve ser maior que zero");
+        }
+        if (this.quantity < amount) {
+            throw new IllegalArgumentException("Quantidade insuficiente em estoque");
+        }
+        this.quantity -= amount;
+    }
+
+    public void increaseQuantity(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Quantidade deve ser maior que zero");
+        }
+        this.quantity += amount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

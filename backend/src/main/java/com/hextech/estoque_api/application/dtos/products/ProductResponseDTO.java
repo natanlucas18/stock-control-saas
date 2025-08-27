@@ -1,4 +1,4 @@
-package com.hextech.estoque_api.application.dtos;
+package com.hextech.estoque_api.application.dtos.products;
 
 import com.hextech.estoque_api.domain.entities.Product;
 

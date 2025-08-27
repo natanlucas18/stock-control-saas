@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.interfaces.controllers.docs;
 
-import com.hextech.estoque_api.application.dtos.ProductRequestDTO;
-import com.hextech.estoque_api.application.dtos.ProductResponseDTO;
+import com.hextech.estoque_api.application.dtos.products.ProductRequestDTO;
+import com.hextech.estoque_api.application.dtos.products.ProductResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

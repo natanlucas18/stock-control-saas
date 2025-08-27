@@ -36,12 +36,13 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long id, String nome, String email, String password, boolean enabled) {
+    public User(Long id, String nome, String email, String password, boolean enabled, Client client) {
         this.id = id;
         this.name = nome;
         this.email = email;
         this.password = password;
         this.enabled = enabled;
+        this.client = client;
     }
 
     public Long getId() {
