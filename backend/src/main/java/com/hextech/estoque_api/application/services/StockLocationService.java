@@ -36,7 +36,7 @@ public class StockLocationService {
 
     public StockLocationDTO insert(StockLocationDTO requestDTO) {
         StockLocation entity = new StockLocation();
-        entity.setName(requestDTO.getName());
+        entity.setName(requestDTO.name());
 
         Client client = new Client();
         client.setId(authContext.getCurrentClientId());
@@ -50,7 +50,7 @@ public class StockLocationService {
     public StockLocationDTO update(Long id, StockLocationDTO requestDTO) {
         StockLocation entity = repository.findByIdAndClientId(id, authContext.getCurrentClientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado"));
-        entity.setName(requestDTO.getName());
+        entity.setName(requestDTO.name());
         entity = repository.save(entity);
         return new StockLocationDTO(entity);
     }

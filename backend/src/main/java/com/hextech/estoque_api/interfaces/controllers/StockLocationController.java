@@ -34,7 +34,7 @@ public class StockLocationController implements StockLocationControllerDocs {
     public ResponseEntity<StockLocationDTO> insert(@RequestBody StockLocationDTO requestDTO) {
         StockLocationDTO responseDTO = service.insert(requestDTO);
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(responseDTO.getId()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(responseDTO.id()).toUri();
 
         return ResponseEntity.created(uri).body(responseDTO);
     }
