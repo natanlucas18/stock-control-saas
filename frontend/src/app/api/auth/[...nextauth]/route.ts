@@ -11,7 +11,7 @@ const handler = NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials:{
-        email: {}, 
+        username: {}, 
         password: {},
       },
 
@@ -22,19 +22,17 @@ const handler = NextAuth({
             method: 'POST',
             headers: {"content-type": "application/json"},
             body: JSON.stringify({
-              email: credentials.email,
+              username: credentials.username,
               password: credentials.password,
             }),
           });
-          console.log("route", credentials.email, credentials.password)
+          console.log("route", credentials.username, credentials.password)
           if(response.status !== 200) return null;
           const authData:AuthData = await response.json();
-          if(!authData.token) return null;
-          (await cookies()).set("token", authData.token);
-          (await cookies()).set("name", authData.name);
+          if(!authData.accessToken) return null;
+          (await cookies()).set("accessToken", authData.accessToken);
           return {
-            name: authData.name,
-            email: authData.email,
+            accessToken: authData.accessToken,
           }
         } catch(e) {
           console.log(e);

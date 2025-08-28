@@ -1,12 +1,9 @@
 export type AuthData = {
-  id: number,
-  email: string,
-  name: string,
-  token: string
+  accessToken: string
 };
 
 export type FormLogin = {
-  email: string;
+  username: string;
   password: string;
 };
 
