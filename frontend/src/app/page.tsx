@@ -1,103 +1,123 @@
-import Image from "next/image";
+'use client'
+import Link from 'next/link';
+import { useState } from 'react';
+import { FaInstagram, FaLinkedin } from 'react-icons/fa6'
 
-export default function Home() {
+
+export default function App() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <>
+      <nav className="bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex-shrink-0">
+              <h1 className="text-xl font-bold">
+                RevoApp
+              </h1>
+            </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {/* Desktop Menu */}
+            <div className="hidden md:flex space-x-4">
+              <Link href="/Products" className="hover:text-gray-300">
+                Preços
+              </Link>
+              <Link href="/Session" className="hover:text-gray-300">
+                Sobre nós
+              </Link>
+              <Link href="/Login" className="hover:text-gray-300">
+                Entrar
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="focus:outline-none"
+              >
+                <svg
+                  className="h-6 w-6"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {isOpen ? (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  ) : (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 6h16M4 12h16m-7 6h7"
+                    />
+                  )}
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isOpen && (
+          <div className="md:hidden h-[30vh] w-full absolute bg-gray-900 top-14">
+            <Link href="/Price" className="block px-4 py-2 hover:bg-blue-400">
+              Preços
+            </Link>
+            <Link href="/About" className="block px-4 py-2 hover:bg-blue-400">
+              Sobre nós
+            </Link>
+            <Link href="/Login" className="block px-4 py-2 hover:bg-blue-400">
+              Entrar
+            </Link>
+          </div>
+        )}
+      </nav >
+      <main className='flex flex-col'>
+        <section className="font-sans h-[91vh] bg-gray-900 flex flex-col items-center justify-items-center sm:p-18 rounded-b-[20px]">
+          <h2 className='text-center text-[1.5rem] font-bold mt-4 ml-2 mr-2 text-white'>Ferramenta para facilitar a <span className='text-gray-500'>organização<br />e o controle</span> do estoque da sua empresa!</h2>
+        </section>
+        <section className='w-full h-[100vh] flex flex-col bg-white'>
+
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      <footer className="bg-white">
+        <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
+          <div className="md:flex md:justify-between">
+            <div className="mb-6 md:mb-0">
+              <a href="https://flowbite.com/" className="flex items-center">
+                <span className="text-sm text-black sm:text-center dark:text-gray-400">©2025 RevoApp.
+                </span>
+              </a>
+            </div>
+            <div className="sm:flex sm:items-center sm:justify-between">
+              <div className="flex mt-4 sm:justify-center sm:mt-0">
+                <a href="#" className="text-black hover:text-gray-800 dark:hover:text-white ms-5">
+                  <span className="w-4 h-4">
+                    <FaInstagram />
+                  </span>
+                  <span className="sr-only">Instagram</span>
+                </a>
+                <a href="#" className="text-black hover:text-gray-800 dark:hover:text-white ms-5">
+                  <span className="w-4 h-4">
+                    <FaLinkedin />
+                  </span>
+                  <span className="sr-only">Linkedin</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </footer>
-    </div>
+    </>
   );
 }
+
+
