@@ -4,6 +4,7 @@ import com.hextech.estoque_api.application.dtos.movements.MovementRequestDTO;
 import com.hextech.estoque_api.application.dtos.movements.MovementResponseDTO;
 import com.hextech.estoque_api.application.exceptions.InvalidMovementTypeException;
 import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
+import com.hextech.estoque_api.application.factories.ReportPeriodFactory;
 import com.hextech.estoque_api.application.security.AuthContext;
 import com.hextech.estoque_api.domain.entities.*;
 import com.hextech.estoque_api.domain.repositories.*;
@@ -11,6 +12,8 @@ import com.hextech.estoque_api.domain.services.StockMovementDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class MovementService {
@@ -57,5 +60,13 @@ public class MovementService {
         productRepository.save(product);
         repository.save(entity);
         return new MovementResponseDTO(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MovementResponseDTO> getMovementsReport(String startDate, String endDate, Long clientId) {
+        ReportPeriod period = ReportPeriodFactory.fromStrings(startDate, endDate);
+
+        List<Movement> movements = repository.searchAllByClientIdAndDate(clientId, period.getStartDate(), period.getEndDate());
+        return movements.stream().map(MovementResponseDTO::new).toList();
     }
 }
