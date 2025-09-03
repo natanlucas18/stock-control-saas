@@ -1,0 +1,28 @@
+-- Produtos para client_id = 1 (empresa de tecnologia)
+INSERT INTO products (name, price, quantity, unit_measure, client_id, stock_location_id)
+VALUES ('Notebook Dell Inspiron', 4500.00, 10, 1, 1, 1),
+        ('Mouse Logitech M170', 80.00, 50, 1, 1, 1),
+        ('Teclado Mecânico Redragon', 250.00, 20, 1, 1, 1),
+        ('Monitor LG 24"', 900.00, 15, 1, 1, 1),
+        ('Headset HyperX Cloud', 350.00, 25, 1, 1, 1),
+        ('Cadeira Gamer', 1200.00, 5, 1, 1, 2),
+        ('Webcam Logitech C920', 400.00, 8, 1, 1, 2),
+        ('HD Externo Seagate 1TB', 300.00, 30, 1, 1, 2),
+        ('Roteador TP-Link AC1200', 150.00, 12, 1, 1, 2),
+        ('Estabilizador SMS 2000VA', 220.00, 18, 1, 1, 2);
+
+-- Produtos para client_id = 2 (loja de roupas)
+INSERT INTO products (name, price, quantity, unit_measure, client_id, stock_location_id)
+VALUES ('Camiseta Polo', 120.00, 40, 1, 2, 1),
+        ('Calça Jeans Slim', 200.00, 30, 1, 2, 1),
+        ('Tênis Nike Air Max', 600.00, 20, 1, 2, 1),
+        ('Jaqueta de Couro', 850.00, 10, 1, 2, 1),
+        ('Relógio Casio', 300.00, 15, 1, 2, 1);
+
+-- Produtos para client_id = 3 (pizzaria)
+INSERT INTO products (name, price, quantity, unit_measure, client_id, stock_location_id)
+VALUES ('Pizza Calabresa', 45.00, 100, 1, 3, 1),
+        ('Pizza Marguerita', 42.00, 80, 1, 3, 1),
+        ('Refrigerante Coca-Cola 2L', 12.00, 200, 1, 3, 1),
+        ('Suco Natural Laranja 1L', 15.00, 60, 1, 3, 1),
+        ('Sobremesa Pudim', 18.00, 40, 1, 3, 1);

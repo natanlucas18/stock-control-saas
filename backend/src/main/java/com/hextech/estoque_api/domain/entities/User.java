@@ -36,9 +36,9 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long id, String nome, String email, String password, boolean enabled, Client client) {
+    public User(Long id, String name, String email, String password, boolean enabled, Client client) {
         this.id = id;
-        this.name = nome;
+        this.name = name;
         this.email = email;
         this.password = password;
         this.enabled = enabled;
