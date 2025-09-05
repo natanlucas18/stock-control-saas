@@ -25,7 +25,7 @@ public class MovementController {
             @RequestParam(name = "startDate", required = false) String startDate,
             @RequestParam(name = "endDate", required = false) String endDate) {
 
-        List<MovementResponseDTO> movements = service.getMovementsReport(startDate, endDate, auth.getCurrentClientId());
+        List<MovementResponseDTO> movements = service.getMovementsReport(startDate, endDate, auth.getCurrentCompanyId());
         return ResponseEntity.ok(movements);
     }
 

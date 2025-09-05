@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthContextImpl implements AuthContext {
     @Override
-    public Long getCurrentClientId() {
+    public Long getCurrentCompanyId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getClientId();
+        return userDetails.getCompanyId();
     }
 
     @Override

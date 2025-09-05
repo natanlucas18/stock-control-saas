@@ -21,13 +21,13 @@ public class ProductController implements ProductControllerDocs {
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDTO>> findAll() {
-        List<ProductResponseDTO> responseDTOS = service.findAllByClientId();
+        List<ProductResponseDTO> responseDTOS = service.findAllByCompanyId();
         return ResponseEntity.ok(responseDTOS);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long id) {
-        ProductResponseDTO responseDTO = service.findByIdAndClientId(id);
+        ProductResponseDTO responseDTO = service.findByIdAndCompanyId(id);
         return ResponseEntity.ok(responseDTO);
     }
 
@@ -48,7 +48,7 @@ public class ProductController implements ProductControllerDocs {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        service.deleteByIdAndClientId(id);
+        service.deleteByIdAndCompanyId(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface StockLocationRepository extends JpaRepository<StockLocation, Long> {
 
-    List<StockLocation> findByClientId(Long clientId);
+    List<StockLocation> findByCompanyId(Long companyId);
 
-    Optional<StockLocation> findByIdAndClientId(Long id, Long clientId);
+    Optional<StockLocation> findByIdAndCompanyId(Long id, Long companyId);
 }

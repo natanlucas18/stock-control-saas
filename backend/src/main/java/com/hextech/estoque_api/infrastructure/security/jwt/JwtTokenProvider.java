@@ -45,16 +45,16 @@ public class JwtTokenProvider {
         algorithm = Algorithm.HMAC256(secretKey.getBytes());
     }
 
-    public TokenDTO createAccessToken(User user, List<String> roles, Long clientId) {
+    public TokenDTO createAccessToken(User user, List<String> roles, Long companyId) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
-        String accessToken = "Bearer " + getAccessToken(user, roles, now, validity, clientId);
+        String accessToken = "Bearer " + getAccessToken(user, roles, now, validity, companyId);
         return new TokenDTO(user.getUsername(), now, validity, accessToken);
     }
 
     public Authentication getAuthentication(String token) {
         DecodedJWT decodedJWT = decodedToken(token);
-        Long clientId = decodedJWT.getClaim("clientId").asLong();
+        Long companyId = decodedJWT.getClaim("companyId").asLong();
         Long userId = decodedJWT.getClaim("userId").asLong();
         String username = decodedJWT.getSubject();
         List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
@@ -63,7 +63,7 @@ public class JwtTokenProvider {
                 .map(role -> (GrantedAuthority) () -> role)
                 .toList();
 
-        UserDetails userDetails = new CustomUserDetails(userId, clientId, username, "", authorities);
+        UserDetails userDetails = new CustomUserDetails(userId, companyId, username, "", authorities);
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
@@ -97,11 +97,11 @@ public class JwtTokenProvider {
         return decodedJWT;
     }
 
-    private String getAccessToken(User user, List<String> roles, Date now, Date validity, Long clientId) {
+    private String getAccessToken(User user, List<String> roles, Date now, Date validity, Long companyId) {
         String issuerURL = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
         return JWT.create()
                 .withClaim("roles", roles)
-                .withClaim("clientId", clientId)
+                .withClaim("companyId", companyId)
                 .withClaim("userId", user.getId())
                 .withIssuedAt(now)
                 .withExpiresAt(validity)
