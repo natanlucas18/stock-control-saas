@@ -19,14 +19,14 @@ public class StockLocationController implements StockLocationControllerDocs {
     private StockLocationService service;
 
     @GetMapping
-    public ResponseEntity<List<StockLocationDTO>> findAllByClient() {
-        List<StockLocationDTO> responseDTO = service.findAllByClientId();
+    public ResponseEntity<List<StockLocationDTO>> findAllByCompany() {
+        List<StockLocationDTO> responseDTO = service.findAllByCompanyId();
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<StockLocationDTO> findById(@PathVariable Long id) {
-        StockLocationDTO responseDTO = service.findByIdAndClientId(id);
+        StockLocationDTO responseDTO = service.findByIdAndCompanyId(id);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -48,7 +48,7 @@ public class StockLocationController implements StockLocationControllerDocs {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        service.deleteByIdAndClientId(id);
+        service.deleteByIdAndCompanyId(id);
         return ResponseEntity.noContent().build();
     }
 }

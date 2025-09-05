@@ -4,7 +4,7 @@ create table users (
     email varchar(255) unique not null,
     password varchar(255) not null,
     enabled boolean not null,
-    client_id bigint,
+    company_id bigint,
     primary key (id),
-    foreign key (client_id) references clients(id) on delete set null
+    foreign key (company_id) references companies(id) on delete set null
     );

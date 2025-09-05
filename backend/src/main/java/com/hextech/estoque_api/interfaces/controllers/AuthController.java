@@ -21,7 +21,7 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody AccountCredentialsDTO credentials) {
         var token = service.login(credentials);
         if (token == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Credenciais inválidas!");
         }
         return ResponseEntity.ok().body(token);
     }

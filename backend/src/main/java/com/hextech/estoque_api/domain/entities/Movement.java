@@ -29,8 +29,8 @@ public class Movement {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     @ManyToOne
     @JoinColumn(name = "stock_location_id", nullable = false)
@@ -39,14 +39,14 @@ public class Movement {
     public Movement() {
     }
 
-    public Movement(MovementType type, Integer quantity ,LocalDate moment, String note,
-                    Product product, User user, Client client, StockLocation stockLocation) {
+    public Movement(MovementType type, Integer quantity , LocalDate moment, String note,
+                    Product product, User user, Company company, StockLocation stockLocation) {
         if (type != ENTRADA && type != SAIDA) throw new IllegalArgumentException("Tipo de movimentação inválida.");
         if (quantity == null || quantity <= 0) throw new IllegalArgumentException("Quantidade deve ser maior que zero.");
         if (moment == null) throw new IllegalArgumentException("Data de movimento inválida.");
         if (product == null) throw new IllegalArgumentException("Produto inválido.");
         if (user == null) throw new IllegalArgumentException("Usuário inválido.");
-        if (client == null) throw new IllegalArgumentException("Cliente inválido.");
+        if (company == null) throw new IllegalArgumentException("Empresa inválida.");
         if (stockLocation == null) throw new IllegalArgumentException("Local de estoque inválido.");
 
         this.type = type;
@@ -55,7 +55,7 @@ public class Movement {
         this.note = note;
         this.product = product;
         this.user = user;
-        this.client = client;
+        this.company = company;
         this.stockLocation = stockLocation;
     }
 
@@ -115,12 +115,12 @@ public class Movement {
         this.user = user;
     }
 
-    public Client getClient() {
-        return client;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public StockLocation getStockLocation() {
@@ -135,11 +135,11 @@ public class Movement {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Movement movement = (Movement) o;
-        return Objects.equals(id, movement.id) && Objects.equals(type, movement.type) && Objects.equals(quantity, movement.quantity) && Objects.equals(moment, movement.moment) && Objects.equals(note, movement.note) && Objects.equals(product, movement.product) && Objects.equals(user, movement.user) && Objects.equals(client, movement.client) && Objects.equals(stockLocation, movement.stockLocation);
+        return Objects.equals(id, movement.id) && Objects.equals(type, movement.type) && Objects.equals(quantity, movement.quantity) && Objects.equals(moment, movement.moment) && Objects.equals(note, movement.note) && Objects.equals(product, movement.product) && Objects.equals(user, movement.user) && Objects.equals(company, movement.company) && Objects.equals(stockLocation, movement.stockLocation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, quantity, moment, note, product, user, client, stockLocation);
+        return Objects.hash(id, type, quantity, moment, note, product, user, company, stockLocation);
     }
 }

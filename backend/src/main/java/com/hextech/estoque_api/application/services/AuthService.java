@@ -28,7 +28,7 @@ public class AuthService {
         );
         var user = userRepository.findByEmail(credentials.getUsername());
         if(user.isEmpty()) throw new UsernameNotFoundException("Usuário " + credentials.getUsername() + " não encontrado.");
-        var token = tokenProvider.createAccessToken(user.get(), user.get().getRoleNames(), user.get().getClient().getId());
+        var token = tokenProvider.createAccessToken(user.get(), user.get().getRoleNames(), user.get().getCompany().getId());
         return new TokenDTO(token.getUsername(),token.getCreated(), token.getExpiration(), token.getAccessToken());
     }
 }

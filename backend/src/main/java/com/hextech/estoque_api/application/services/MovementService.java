@@ -19,7 +19,7 @@ import java.util.List;
 public class MovementService {
 
     @Autowired
-    private ClientRepository clientRepository;
+    private CompanyRepository companyRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -35,16 +35,16 @@ public class MovementService {
 
     @Transactional
     public MovementResponseDTO createAndProcessMovement(MovementRequestDTO requestDTO) {
-        Client client = clientRepository.findById(authContext.getCurrentClientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado."));
+        Company company = companyRepository.findById(authContext.getCurrentCompanyId())
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
 
-        User user = userRepository.findByIdAndClientId(authContext.getCurrentUserId(), client.getId())
+        User user = userRepository.findByIdAndCompanyId(authContext.getCurrentUserId(), company.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
 
-        StockLocation stockLocation = stockLocationRepository.findByIdAndClientId(requestDTO.getStockLocationId(), client.getId())
+        StockLocation stockLocation = stockLocationRepository.findByIdAndCompanyId(requestDTO.getStockLocationId(), company.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado."));
 
-        Product product = productRepository.findByIdAndClientId(requestDTO.getProductId(), client.getId())
+        Product product = productRepository.findByIdAndCompanyId(requestDTO.getProductId(), company.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
 
         MovementType type;
@@ -55,7 +55,7 @@ public class MovementService {
         }
 
         Movement entity = domainService.processMovement(type, requestDTO.getQuantity(),
-                requestDTO.getNote(), product, user, client, stockLocation);
+                requestDTO.getNote(), product, user, company, stockLocation);
 
         productRepository.save(product);
         repository.save(entity);
@@ -63,10 +63,10 @@ public class MovementService {
     }
 
     @Transactional(readOnly = true)
-    public List<MovementResponseDTO> getMovementsReport(String startDate, String endDate, Long clientId) {
+    public List<MovementResponseDTO> getMovementsReport(String startDate, String endDate, Long companyId) {
         ReportPeriod period = ReportPeriodFactory.fromStrings(startDate, endDate);
 
-        List<Movement> movements = repository.searchAllByClientIdAndDate(clientId, period.getStartDate(), period.getEndDate());
+        List<Movement> movements = repository.searchAllByCompanyIdAndDate(companyId, period.getStartDate(), period.getEndDate());
         return movements.stream().map(MovementResponseDTO::new).toList();
     }
 }

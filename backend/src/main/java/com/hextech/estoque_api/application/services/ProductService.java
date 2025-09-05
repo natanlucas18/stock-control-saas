@@ -4,7 +4,7 @@ import com.hextech.estoque_api.application.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.application.dtos.products.ProductResponseDTO;
 import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.application.security.AuthContext;
-import com.hextech.estoque_api.domain.entities.Client;
+import com.hextech.estoque_api.domain.entities.Company;
 import com.hextech.estoque_api.domain.entities.Product;
 import com.hextech.estoque_api.domain.entities.UnitMeasure;
 import com.hextech.estoque_api.domain.repositories.ProductRepository;
@@ -27,14 +27,14 @@ public class ProductService {
     private StockLocationService stockLocationService;
 
     @Transactional(readOnly = true)
-    public List<ProductResponseDTO> findAllByClientId() {
-        List<Product> products = repository.findAllByClientId(authContext.getCurrentClientId());
+    public List<ProductResponseDTO> findAllByCompanyId() {
+        List<Product> products = repository.findAllByCompanyId(authContext.getCurrentCompanyId());
         return products.stream().map(ProductResponseDTO::new).toList();
     }
 
     @Transactional(readOnly = true)
-    public ProductResponseDTO findByIdAndClientId(Long id) {
-        Product entity = repository.findByIdAndClientId(id, authContext.getCurrentClientId())
+    public ProductResponseDTO findByIdAndCompanyId(Long id) {
+        Product entity = repository.findByIdAndCompanyId(id, authContext.getCurrentCompanyId())
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
         return new ProductResponseDTO(entity);
     }
@@ -44,16 +44,16 @@ public class ProductService {
         copyDtoToEntity(requestDTO, entity);
         entity.setQuantity(0);
 
-        Client client = new Client();
-        client.setId(authContext.getCurrentClientId());
-        entity.setClient(client);
+        Company company = new Company();
+        company.setId(authContext.getCurrentCompanyId());
+        entity.setCompany(company);
 
         entity = repository.save(entity);
         return new ProductResponseDTO(entity);
     }
 
     public ProductResponseDTO update(Long id, ProductRequestDTO requestDTO) {
-        Product entity = repository.findByIdAndClientId(id, authContext.getCurrentClientId())
+        Product entity = repository.findByIdAndCompanyId(id, authContext.getCurrentCompanyId())
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
 
         copyDtoToEntity(requestDTO, entity);
@@ -62,8 +62,8 @@ public class ProductService {
         return new ProductResponseDTO(entity);
     }
 
-    public void deleteByIdAndClientId(Long id) {
-        Product entity = repository.findByIdAndClientId(id, authContext.getCurrentClientId())
+    public void deleteByIdAndCompanyId(Long id) {
+        Product entity = repository.findByIdAndCompanyId(id, authContext.getCurrentCompanyId())
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
         repository.delete(entity);
     }

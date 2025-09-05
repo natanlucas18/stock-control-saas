@@ -8,15 +8,15 @@ import java.util.Collection;
 public class CustomUserDetails implements UserDetails {
 
     private final Long userId;
-    private final Long clientId;
+    private final Long companyId;
     private final String username;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(Long userId, Long clientId, String username, String password,
+    public CustomUserDetails(Long userId, Long companyId, String username, String password,
                              Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
-        this.clientId = clientId;
+        this.companyId = companyId;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
@@ -26,8 +26,8 @@ public class CustomUserDetails implements UserDetails {
         return userId;
     }
 
-    public Long getClientId() {
-        return clientId;
+    public Long getCompanyId() {
+        return companyId;
     }
 
     @Override

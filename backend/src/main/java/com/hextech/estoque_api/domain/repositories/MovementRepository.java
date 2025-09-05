@@ -13,9 +13,9 @@ public interface MovementRepository extends JpaRepository<Movement, Long> {
 
     @Query(nativeQuery = false, value =
             "SELECT m FROM Movement m " +
-            "WHERE m.client.id = :clientId " +
+            "WHERE m.company.id = :companyId " +
             "AND m.moment BETWEEN :startDate AND :endDate " +
             "ORDER BY m.moment DESC"
     )
-    List<Movement> searchAllByClientIdAndDate(Long clientId, LocalDate startDate, LocalDate endDate);
+    List<Movement> searchAllByCompanyIdAndDate(Long companyId, LocalDate startDate, LocalDate endDate);
 }

@@ -17,8 +17,8 @@ public class Product {
     private UnitMeasure unitMeasure;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @ManyToOne
     @JoinColumn(name = "stock_location_id")
@@ -75,12 +75,12 @@ public class Product {
         this.unitMeasure = unitMeasure;
     }
 
-    public Client getClient() {
-        return client;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public StockLocation getStockLocation() {

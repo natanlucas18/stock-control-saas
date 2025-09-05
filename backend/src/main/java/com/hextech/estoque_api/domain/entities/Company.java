@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "clients")
-public class Client {
+@Table(name = "companies")
+public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,19 +18,19 @@ public class Client {
     private String cnpj;
     private boolean enabled;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "company")
     private List<User> users;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "company")
     private List<StockLocation> stockLocations;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "company")
     private List<Product> products;
 
-    public Client() {
+    public Company() {
     }
 
-    public Client(Long id, String nome, String cnpj, boolean enabled) {
+    public Company(Long id, String nome, String cnpj, boolean enabled) {
         this.id = id;
         this.name = nome;
         this.cnpj = cnpj;
@@ -96,8 +96,8 @@ public class Client {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Client client = (Client) o;
-        return enabled == client.enabled && Objects.equals(id, client.id) && Objects.equals(name, client.name) && Objects.equals(cnpj, client.cnpj);
+        Company company = (Company) o;
+        return enabled == company.enabled && Objects.equals(id, company.id) && Objects.equals(name, company.name) && Objects.equals(cnpj, company.cnpj);
     }
 
     @Override

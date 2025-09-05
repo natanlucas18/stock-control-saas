@@ -15,8 +15,8 @@ public class StockLocation {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @OneToMany(mappedBy = "stockLocation")
     private List<Product> products;
@@ -45,12 +45,12 @@ public class StockLocation {
         this.name = name;
     }
 
-    public Client getClient() {
-        return client;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public List<Product> getProducts() {

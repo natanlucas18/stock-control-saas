@@ -2,7 +2,7 @@ package com.hextech.estoque_api.application.security;
 
 public interface AuthContext {
 
-    Long getCurrentClientId();
+    Long getCurrentCompanyId();
     Long getCurrentUserId();
     boolean isAuthenticated();
 }
