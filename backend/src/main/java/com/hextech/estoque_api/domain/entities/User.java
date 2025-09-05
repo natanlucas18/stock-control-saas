@@ -23,8 +23,8 @@ public class User implements UserDetails {
     private boolean enabled;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
@@ -36,13 +36,13 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long id, String nome, String email, String password, boolean enabled, Client client) {
+    public User(Long id, String nome, String email, String password, boolean enabled, Company company) {
         this.id = id;
         this.name = nome;
         this.email = email;
         this.password = password;
         this.enabled = enabled;
-        this.client = client;
+        this.company = company;
     }
 
     public Long getId() {
@@ -85,12 +85,12 @@ public class User implements UserDetails {
         this.enabled = enabled;
     }
 
-    public Client getClient() {
-        return client;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public List<Role> getRoles() {

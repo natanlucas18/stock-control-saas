@@ -5,8 +5,8 @@ create table products (
     quantity int not null,
     unit_measure varchar(50) not null,
     stock_location_id bigint,
-    client_id bigint,
+    company_id bigint,
     primary key (id),
-    foreign key (client_id) references clients(id) on delete set null,
+    foreign key (company_id) references companies(id) on delete set null,
     foreign key (stock_location_id) references stock_locations(id) on delete set null
     );
