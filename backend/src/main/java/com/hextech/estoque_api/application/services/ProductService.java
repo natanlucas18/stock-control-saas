@@ -2,6 +2,7 @@ package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.application.dtos.products.ProductResponseDTO;
+import com.hextech.estoque_api.application.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.application.security.AuthContext;
 import com.hextech.estoque_api.domain.entities.Company;
@@ -9,6 +10,7 @@ import com.hextech.estoque_api.domain.entities.Product;
 import com.hextech.estoque_api.domain.entities.UnitMeasure;
 import com.hextech.estoque_api.domain.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +37,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductResponseDTO findByIdAndCompanyId(Long id) {
         Product entity = repository.findByIdAndCompanyId(id, authContext.getCurrentCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
         return new ProductResponseDTO(entity);
     }
 
@@ -54,7 +56,7 @@ public class ProductService {
 
     public ProductResponseDTO update(Long id, ProductRequestDTO requestDTO) {
         Product entity = repository.findByIdAndCompanyId(id, authContext.getCurrentCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
 
         copyDtoToEntity(requestDTO, entity);
 
@@ -64,8 +66,12 @@ public class ProductService {
 
     public void deleteByIdAndCompanyId(Long id) {
         Product entity = repository.findByIdAndCompanyId(id, authContext.getCurrentCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
-        repository.delete(entity);
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
+        try {
+            repository.delete(entity);
+        } catch (DataIntegrityViolationException e) {
+            throw new DeletionConflictException("Falha na Integridade referencial.");
+        }
     }
 
     private void copyDtoToEntity(ProductRequestDTO dto, Product entity) {

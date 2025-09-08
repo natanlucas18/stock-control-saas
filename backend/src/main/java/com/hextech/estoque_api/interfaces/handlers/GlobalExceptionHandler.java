@@ -1,5 +1,6 @@
 package com.hextech.estoque_api.interfaces.handlers;
 
+import com.hextech.estoque_api.application.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.application.exceptions.InvalidMovementTypeException;
 import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.infrastructure.security.exceptions.InvalidJwtAuthenticationException;
@@ -47,6 +48,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidMovementTypeException.class)
     public ResponseEntity<CustomError> handleInvalidMovementType(InvalidMovementTypeException ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
+        CustomError error = new CustomError(Instant.now(), status.value(), ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(DeletionConflictException.class)
+    public ResponseEntity<CustomError> handleDeletionConflict(DeletionConflictException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
         CustomError error = new CustomError(Instant.now(), status.value(), ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(error);
     }
