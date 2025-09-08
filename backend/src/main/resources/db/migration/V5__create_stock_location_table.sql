@@ -3,5 +3,5 @@ create table stock_locations (
     name varchar(255) not null,
     company_id bigint,
     primary key (id),
-    foreign key (company_id) references companies(id) on delete set null
+    foreign key (company_id) references companies(id)
     );

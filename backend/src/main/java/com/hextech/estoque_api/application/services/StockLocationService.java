@@ -1,12 +1,14 @@
 package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.dtos.stockLocations.StockLocationDTO;
+import com.hextech.estoque_api.application.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.application.security.AuthContext;
 import com.hextech.estoque_api.domain.entities.Company;
 import com.hextech.estoque_api.domain.entities.StockLocation;
 import com.hextech.estoque_api.domain.repositories.StockLocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +32,7 @@ public class StockLocationService {
     @Transactional(readOnly = true)
     public StockLocationDTO findByIdAndCompanyId(Long id) {
         StockLocation entity = repository.findByIdAndCompanyId(id, authContext.getCurrentCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado."));
         return new StockLocationDTO(entity);
     }
 
@@ -49,7 +51,7 @@ public class StockLocationService {
 
     public StockLocationDTO update(Long id, StockLocationDTO requestDTO) {
         StockLocation entity = repository.findByIdAndCompanyId(id, authContext.getCurrentCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado."));
         entity.setName(requestDTO.name());
         entity = repository.save(entity);
         return new StockLocationDTO(entity);
@@ -57,12 +59,16 @@ public class StockLocationService {
 
     public void deleteByIdAndCompanyId(Long id) {
         StockLocation entity = repository.findByIdAndCompanyId(id, authContext.getCurrentCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado"));
-        repository.delete(entity);
+                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado."));
+        try {
+            repository.delete(entity);
+        } catch (DataIntegrityViolationException e) {
+            throw new DeletionConflictException("Falha na Integridade referencial.");
+        }
     }
 
     public StockLocation validateStockLocation(Long id) {
         return repository.findByIdAndCompanyId(id, authContext.getCurrentCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado."));
     }
 }

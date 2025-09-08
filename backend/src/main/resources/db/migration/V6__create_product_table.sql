@@ -7,6 +7,6 @@ create table products (
     stock_location_id bigint,
     company_id bigint,
     primary key (id),
-    foreign key (company_id) references companies(id) on delete set null,
-    foreign key (stock_location_id) references stock_locations(id) on delete set null
+    foreign key (company_id) references companies(id),
+    foreign key (stock_location_id) references stock_locations(id)
     );

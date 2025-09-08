@@ -6,5 +6,5 @@ create table users (
     enabled boolean not null,
     company_id bigint,
     primary key (id),
-    foreign key (company_id) references companies(id) on delete set null
+    foreign key (company_id) references companies(id)
     );
