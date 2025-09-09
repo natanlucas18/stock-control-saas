@@ -48,7 +48,7 @@ public class JwtTokenProvider {
     public TokenDTO createAccessToken(User user, List<String> roles, Long companyId) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
-        String accessToken = "Bearer " + getAccessToken(user, roles, now, validity, companyId);
+        String accessToken = getAccessToken(user, roles, now, validity, companyId);
         return new TokenDTO(user.getUsername(), now, validity, accessToken);
     }
 
