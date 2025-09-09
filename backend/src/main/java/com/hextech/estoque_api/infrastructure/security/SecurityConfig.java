@@ -63,10 +63,11 @@ public class SecurityConfig {
                                 "/auth/login",
                                 "/auth/register",
                                 "/swagger-ui/**",
-                                "/api-docs/**",
-                                        "/h2-console/**"
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/h2-console/**"
                         ).permitAll()
-                                .requestMatchers("/api/**").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .cors(cors -> {})
                 .build();
