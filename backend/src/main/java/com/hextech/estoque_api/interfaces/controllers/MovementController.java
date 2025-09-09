@@ -4,6 +4,7 @@ import com.hextech.estoque_api.application.dtos.movements.MovementRequestDTO;
 import com.hextech.estoque_api.application.dtos.movements.MovementResponseDTO;
 import com.hextech.estoque_api.application.security.AuthContext;
 import com.hextech.estoque_api.application.services.MovementService;
+import com.hextech.estoque_api.interfaces.controllers.docs.MovementControllerDocs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/movements", produces = "application/json")
-public class MovementController {
+public class MovementController implements MovementControllerDocs {
 
     @Autowired
     private MovementService service;
