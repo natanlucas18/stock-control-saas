@@ -5,6 +5,7 @@ INSERT INTO users (name, email, password, company_id, enabled) VALUES ('Nathan',
 INSERT INTO users (name, email, password, company_id, enabled) VALUES ('Natan', 'natan@gmail.com', '{pbkdf2}2d8e93af5a655ab01ad676fe44cffb9f1fb23dec17ff6b97b6491428bb785c1963f69959dce30e90', 2, true);
 
 INSERT INTO roles (authority) VALUES ('ROLE_ADMIN');
+INSERT INTO roles (authority) VALUES ('ROLE_OPERATOR');
 
 INSERT INTO user_role (user_id, role_id) VALUES (1, 1);
 INSERT INTO user_role (user_id, role_id) VALUES (2, 1);
