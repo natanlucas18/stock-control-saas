@@ -1,11 +1,11 @@
 package com.hextech.estoque_api.interfaces.handlers;
 
-import com.hextech.estoque_api.application.exceptions.DeletionConflictException;
-import com.hextech.estoque_api.application.exceptions.InvalidMovementTypeException;
-import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
-import com.hextech.estoque_api.application.exceptions.UserAlreadyExistsException;
+import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
+import com.hextech.estoque_api.domain.exceptions.InvalidMovementTypeException;
+import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
+import com.hextech.estoque_api.domain.exceptions.UserAlreadyExistsException;
 import com.hextech.estoque_api.infrastructure.security.exceptions.InvalidJwtAuthenticationException;
-import com.hextech.estoque_api.interfaces.dtos.CustomError;
+import com.hextech.estoque_api.interfaces.dtos.errors.CustomError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

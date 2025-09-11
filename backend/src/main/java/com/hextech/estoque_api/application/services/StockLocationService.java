@@ -1,12 +1,12 @@
 package com.hextech.estoque_api.application.services;
 
-import com.hextech.estoque_api.application.dtos.stockLocations.StockLocationDTO;
-import com.hextech.estoque_api.application.exceptions.DeletionConflictException;
-import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
-import com.hextech.estoque_api.application.security.AuthContext;
+import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
+import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
+import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
+import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.domain.entities.Company;
 import com.hextech.estoque_api.domain.entities.StockLocation;
-import com.hextech.estoque_api.domain.repositories.StockLocationRepository;
+import com.hextech.estoque_api.infrastructure.repositories.StockLocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

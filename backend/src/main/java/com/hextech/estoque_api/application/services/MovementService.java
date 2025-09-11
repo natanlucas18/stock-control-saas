@@ -1,14 +1,14 @@
 package com.hextech.estoque_api.application.services;
 
-import com.hextech.estoque_api.application.dtos.movements.MovementRequestDTO;
-import com.hextech.estoque_api.application.dtos.movements.MovementResponseDTO;
-import com.hextech.estoque_api.application.exceptions.InvalidMovementTypeException;
-import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.application.factories.ReportPeriodFactory;
-import com.hextech.estoque_api.application.security.AuthContext;
 import com.hextech.estoque_api.domain.entities.*;
-import com.hextech.estoque_api.domain.repositories.*;
+import com.hextech.estoque_api.domain.exceptions.InvalidMovementTypeException;
+import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.domain.services.StockMovementDomainService;
+import com.hextech.estoque_api.infrastructure.repositories.*;
+import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
+import com.hextech.estoque_api.interfaces.dtos.movements.MovementRequestDTO;
+import com.hextech.estoque_api.interfaces.dtos.movements.MovementResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

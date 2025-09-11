@@ -1,6 +1,6 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
-import com.hextech.estoque_api.application.dtos.stockLocations.StockLocationDTO;
+import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import com.hextech.estoque_api.application.services.StockLocationService;
 import com.hextech.estoque_api.interfaces.controllers.docs.StockLocationControllerDocs;
 import org.springframework.beans.factory.annotation.Autowired;
