@@ -1,6 +1,6 @@
 package com.hextech.estoque_api.interfaces.controllers.docs;
 
-import com.hextech.estoque_api.application.dtos.stockLocations.StockLocationDTO;
+import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

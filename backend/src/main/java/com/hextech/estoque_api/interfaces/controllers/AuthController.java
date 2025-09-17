@@ -1,6 +1,6 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
-import com.hextech.estoque_api.application.dtos.security.AccountCredentialsDTO;
+import com.hextech.estoque_api.interfaces.dtos.security.AccountCredentialsDTO;
 import com.hextech.estoque_api.application.services.AuthService;
 import com.hextech.estoque_api.interfaces.controllers.docs.AuthControllerDocs;
 import org.springframework.beans.factory.annotation.Autowired;

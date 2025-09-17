@@ -1,6 +1,7 @@
 package com.hextech.estoque_api.domain.services;
 
 import com.hextech.estoque_api.domain.entities.*;
+import com.hextech.estoque_api.domain.exceptions.InvalidMovementTypeException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ public class StockMovementDomainService {
         } else if (type.equals(MovementType.SAIDA)) {
             product.decreaseQuantity(quantity);
         } else {
-            throw new IllegalArgumentException("Tipo de movimentação inválida.");
+            throw new InvalidMovementTypeException("Tipo de movimentação inválida.");
         }
 
         return new Movement(type, quantity, LocalDate.now(), note, product, user, company, stockLocation);

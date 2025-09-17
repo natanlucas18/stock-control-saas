@@ -1,15 +1,15 @@
 package com.hextech.estoque_api.application.services;
 
-import com.hextech.estoque_api.application.dtos.users.UserRequestDTO;
-import com.hextech.estoque_api.application.dtos.users.UserResponseDTO;
-import com.hextech.estoque_api.application.exceptions.ResourceNotFoundException;
-import com.hextech.estoque_api.application.exceptions.UserAlreadyExistsException;
+import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
+import com.hextech.estoque_api.interfaces.dtos.users.UserRequestDTO;
+import com.hextech.estoque_api.interfaces.dtos.users.UserResponseDTO;
+import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
+import com.hextech.estoque_api.domain.exceptions.UserAlreadyExistsException;
 import com.hextech.estoque_api.domain.entities.Company;
 import com.hextech.estoque_api.domain.entities.Role;
 import com.hextech.estoque_api.domain.entities.User;
-import com.hextech.estoque_api.domain.repositories.CompanyRepository;
-import com.hextech.estoque_api.domain.repositories.RoleRepository;
-import com.hextech.estoque_api.domain.repositories.UserRepository;
+import com.hextech.estoque_api.infrastructure.repositories.RoleRepository;
+import com.hextech.estoque_api.infrastructure.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,7 +36,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = repository.findByEmail(username);
         if (user.isEmpty() || !user.get().isEnabled())
-            throw new UsernameNotFoundException("Usuário " + username + "não encontrado ou desabilitado.");
+            throw new UsernameNotFoundException("Usuário " + username + " não encontrado ou desabilitado.");
         else return user.get();
     }
 
@@ -48,7 +48,7 @@ public class UserService implements UserDetailsService {
                 });
 
         Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new RuntimeException("Empresa não encontrada."));
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
 
         List<Role> roles = roleRepository.findAllById(requestDTO.getRolesId());
         if (roles.size() != requestDTO.getRolesId().size()) {

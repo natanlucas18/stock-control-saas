@@ -1,8 +1,8 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
-import com.hextech.estoque_api.application.dtos.movements.MovementRequestDTO;
-import com.hextech.estoque_api.application.dtos.movements.MovementResponseDTO;
-import com.hextech.estoque_api.application.security.AuthContext;
+import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
+import com.hextech.estoque_api.interfaces.dtos.movements.MovementRequestDTO;
+import com.hextech.estoque_api.interfaces.dtos.movements.MovementResponseDTO;
 import com.hextech.estoque_api.application.services.MovementService;
 import com.hextech.estoque_api.interfaces.controllers.docs.MovementControllerDocs;
 import org.springframework.beans.factory.annotation.Autowired;

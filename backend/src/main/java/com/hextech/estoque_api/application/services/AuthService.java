@@ -1,8 +1,8 @@
 package com.hextech.estoque_api.application.services;
 
-import com.hextech.estoque_api.application.dtos.security.AccountCredentialsDTO;
-import com.hextech.estoque_api.application.dtos.security.TokenDTO;
-import com.hextech.estoque_api.domain.repositories.UserRepository;
+import com.hextech.estoque_api.interfaces.dtos.security.AccountCredentialsDTO;
+import com.hextech.estoque_api.interfaces.dtos.security.TokenDTO;
+import com.hextech.estoque_api.infrastructure.repositories.UserRepository;
 import com.hextech.estoque_api.infrastructure.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

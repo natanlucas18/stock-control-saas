@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.interfaces.controllers.docs;
 
-import com.hextech.estoque_api.application.dtos.movements.MovementRequestDTO;
-import com.hextech.estoque_api.application.dtos.movements.MovementResponseDTO;
+import com.hextech.estoque_api.interfaces.dtos.movements.MovementRequestDTO;
+import com.hextech.estoque_api.interfaces.dtos.movements.MovementResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

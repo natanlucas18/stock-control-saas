@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.interfaces.controllers.docs;
 
-import com.hextech.estoque_api.application.dtos.security.AccountCredentialsDTO;
-import com.hextech.estoque_api.application.dtos.security.TokenDTO;
+import com.hextech.estoque_api.interfaces.dtos.security.AccountCredentialsDTO;
+import com.hextech.estoque_api.interfaces.dtos.security.TokenDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
