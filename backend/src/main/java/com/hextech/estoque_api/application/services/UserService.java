@@ -36,7 +36,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = repository.findByEmail(username);
         if (user.isEmpty() || !user.get().isEnabled())
-            throw new UsernameNotFoundException("Usuário " + username + "não encontrado ou desabilitado.");
+            throw new UsernameNotFoundException("Usuário " + username + " não encontrado ou desabilitado.");
         else return user.get();
     }
 
@@ -48,7 +48,7 @@ public class UserService implements UserDetailsService {
                 });
 
         Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new RuntimeException("Empresa não encontrada."));
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
 
         List<Role> roles = roleRepository.findAllById(requestDTO.getRolesId());
         if (roles.size() != requestDTO.getRolesId().size()) {
