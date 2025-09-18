@@ -27,12 +27,33 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String name, Double price, Integer quantity, UnitMeasure unitMeasure) {
-        this.id = id;
+    private Product(String name, Double price, UnitMeasure unitMeasure, Company company, StockLocation stockLocation) {
         this.name = name;
         this.price = price;
-        this.quantity = quantity;
+        this.quantity = 0;
         this.unitMeasure = unitMeasure;
+        this.company = company;
+        this.stockLocation = stockLocation;
+    }
+
+    public static Product createNewProduct(String name, Double price, UnitMeasure unitMeasure, Company company, StockLocation stockLocation) {
+        if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome do produto não pode ser nulo ou vazio");
+        if (price == null || price <= 0) throw new IllegalArgumentException("Preço do produto não pode ser nulo, zero ou negativo");
+        if (unitMeasure == null) throw new IllegalArgumentException("Unidade de medida do produto não pode ser nula");
+        if (company == null) throw new IllegalArgumentException("Empresa do produto não pode ser nula");
+        if (stockLocation == null) throw new IllegalArgumentException("Local de estoque do produto não pode ser nulo");
+        return new Product(name, price, unitMeasure, company, stockLocation);
+    }
+
+    public void updateProduct(String name, Double price, UnitMeasure unitMeasure, StockLocation stockLocation) {
+        if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome do produto não pode ser nulo ou vazio");
+        if (price == null || price <= 0) throw new IllegalArgumentException("Preço do produto não pode ser nulo, zero ou negativo");
+        if (unitMeasure == null) throw new IllegalArgumentException("Unidade de medida do produto não pode ser nula");
+        if (stockLocation == null) throw new IllegalArgumentException("Local de estoque do produto não pode ser nulo");
+        this.name = name;
+        this.price = price;
+        this.unitMeasure = unitMeasure;
+        this.stockLocation = stockLocation;
     }
 
     public Long getId() {
