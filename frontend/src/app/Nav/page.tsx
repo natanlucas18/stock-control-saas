@@ -1,6 +1,14 @@
 "use client"
 import React, { useState } from "react";
 import Link from 'next/link'
+import { Menu } from '@/components/nav-menu';
+import { GrAddCircle } from 'react-icons/gr';
+import { FaList } from 'react-icons/fa';
+import { FaArrowCircleUp } from 'react-icons/fa';
+import { FaArrowCircleDown } from 'react-icons/fa';
+import { AiOutlineStock } from 'react-icons/ai';
+import { MdManageSearch } from 'react-icons/md';
+
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,24 +25,7 @@ export default function Nav() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-4">
-            <Link href="/Home" className="hover:text-gray-300">
-              Inicio
-            </Link>
-            <Link href="/Products" className="hover:text-gray-300">
-              Produtos
-            </Link>
-            <Link href="/Section" className="hover:text-gray-300">
-              Sessão
-            </Link>
-            <Link href="/Stock" className="hover:text-gray-300">
-              Estoque
-            </Link>
-            <Link href="/Hitory" className="hover:text-gray-300">
-              Histórico
-            </Link>
-            <Link href="/" className="hover:text-gray-300">
-              Sair
-            </Link>
+            <Menu />
           </div>
 
           {/* Mobile Menu Button */}
@@ -74,23 +65,64 @@ export default function Nav() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden h-[90vh] w-full absolute bg-blue-900 top-14 z-1">
-          <Link href="/Home" className="block px-4 py-2 hover:bg-blue-400">
-            Inicio
+          <Link href="/Home" className="block font-semibold px-4 py-2">
+            Home
           </Link>
-          <Link href="/Products" className="block px-4 py-2 hover:bg-blue-400">
-            Produtos
+
+          <div className="block px-4 py-2 text-gray-400 border-t-solid border-t border-gray-600">Produtos</div>
+          <Link href="/CreateProduct" className="block font-semibold px-4 py-1 ml-2">
+            <div className='flex flex-row items-center gap-1'>
+              <GrAddCircle />
+              <div>Novo Produto</div>
+            </div>
           </Link>
-          <Link href="/Section" className="block px-4 py-2 hover:bg-blue-400">
-            Sessão
+          <Link href="/Products" className="block font-semibold px-4 py-1 pb-2 ml-2">
+            <div className='flex flex-row items-center gap-1'>
+              <FaList />
+              <div>Listar Produtos</div>
+            </div>
           </Link>
-          <Link href="/Stock" className="block px-4 py-2 hover:bg-blue-400">
-            Estoque
+
+          <div className="block px-4 py-2 text-gray-400 border-t-solid border-t border-gray-600">Sessão</div>
+          <Link href="/CreateSection" className="block font-semibold px-4 ml-2 py-1">
+            <div className='flex flex-row items-center gap-1'>
+              <GrAddCircle />
+              <div>Nova Sessão</div>
+            </div>
           </Link>
-          <Link href="/History" className="block px-4 py-2 hover:bg-blue-400">
-            Histórico
+          <Link href="/Section" className="block font-semibold px-4 ml-2 pb-2 py-1">
+            <div className='flex flex-row items-center gap-1'>
+              <FaList />
+              <div>Listar Sessões</div>
+            </div>
           </Link>
-          <Link href="/" className="block px-4 py-2 hover:bg-blue-400">
-            Sair
+
+          <div className="block px-4 py-2 text-gray-400 border-t-solid border-t border-gray-600">Movimentações</div>
+          <Link href="/EntryStock" className="block font-semibold px-4 ml-2 py-1">
+            <div className='flex flex-row items-center gap-1'>
+              <FaArrowCircleUp className='text-green-500' />
+              <div>Entrada</div>
+            </div>
+          </Link>
+          <Link href="/Stock" className="block font-semibold px-4 ml-2 py-1">
+            <div className='flex flex-row items-center gap-1'>
+              <AiOutlineStock />
+              <div>Estoque</div>
+            </div>
+          </Link>
+          <Link href="/ExitStock" className="block font-semibold px-4 ml-2 pb-2 py-1">
+            <div className='flex flex-row items-center gap-1'>
+              <FaArrowCircleDown className='text-red-500' />
+              <div>Saida</div>
+            </div>
+          </Link>
+
+          <div className="block px-4 py-2 text-gray-400 border-t-solid border-t border-gray-600">Relatórios</div>
+          <Link href="/History" className="block font-semibold px-4 ml-2 py-2">
+            <div className='flex flex-row items-center gap-1'>
+              <MdManageSearch className='text-lg' />
+              <div>Buscar histórico</div>
+            </div>
           </Link>
         </div>
       )}

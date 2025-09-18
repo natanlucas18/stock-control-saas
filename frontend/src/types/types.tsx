@@ -15,14 +15,19 @@ export type FormDataMovements = {
 export type FormProducts = {
   description: string,
   idSession: number,
+  price: number,
+  unitMeasure: string,
   quantity_min: number,
   quantity_max: number
 };
 
 export type ProductsData = {
   id: number,
+  code: number,
   description: string,
   idSession: number,
+  price: number,
+  unitMeasure: string,
   quantity_min: number,
   quantity_max: number
 }[];
