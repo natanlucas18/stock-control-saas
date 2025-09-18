@@ -47,15 +47,13 @@ public class User implements UserDetails {
     }
 
     public static User createNewUser(String name, String email, String password, Company company, List<Role> roles, PasswordEncoder passwordEncoder) {
-        if (company == null) {
-            throw new IllegalArgumentException("Empresa não pode ser nula");
-        }
-        if (roles.isEmpty()) {
-            throw new IllegalArgumentException("Usuário deve ter pelo menos uma função");
-        }
+        if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome não pode ser nulo ou vazio.");
+        if (email == null || email.isBlank()) throw new IllegalArgumentException("Email não pode ser nulo ou vazio.");
+        if (password == null || password.isBlank()) throw new IllegalArgumentException("Senha não pode ser nula ou vazia.");
+        if (company == null) throw new IllegalArgumentException("Empresa não pode ser nula.");
+        if (roles.isEmpty()) throw new IllegalArgumentException("Usuário deve ter pelo menos uma função.");
 
         password = passwordEncoder.encode(password);
-
         return new User(name, email, password, company, roles);
     }
 
