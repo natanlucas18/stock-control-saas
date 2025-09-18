@@ -24,8 +24,19 @@ public class StockLocation {
     public StockLocation() {
     }
 
-    public StockLocation(Long id, String name) {
-        this.id = id;
+    private StockLocation(String name, Company company) {
+        this.name = name;
+        this.company = company;
+    }
+
+    public static StockLocation createNewStockLocation(String name, Company company) {
+        if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome não pode ser nulo ou vazio.");
+        if (company == null) throw new IllegalArgumentException("Empresa não pode ser nula.");
+        return new StockLocation(name, company);
+    }
+
+    public void updateStockLocation(String name) {
+        if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome não pode ser nulo ou vazio.");
         this.name = name;
     }
 

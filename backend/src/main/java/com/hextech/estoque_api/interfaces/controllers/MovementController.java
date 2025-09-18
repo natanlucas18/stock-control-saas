@@ -32,7 +32,7 @@ public class MovementController implements MovementControllerDocs {
 
     @PostMapping
     public ResponseEntity<MovementResponseDTO> createMovement(@RequestBody MovementRequestDTO requestDTO) {
-        MovementResponseDTO responseDTO = service.createAndProcessMovement(requestDTO);
+        MovementResponseDTO responseDTO = service.createAndProcessMovement(requestDTO, auth.getCurrentCompanyId(), auth.getCurrentUserId());
 
         URI uri = URI.create("/api/movements/" + responseDTO.getId());
 

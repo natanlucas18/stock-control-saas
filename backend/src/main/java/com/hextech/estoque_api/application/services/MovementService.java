@@ -6,7 +6,6 @@ import com.hextech.estoque_api.domain.exceptions.InvalidMovementTypeException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.domain.services.StockMovementDomainService;
 import com.hextech.estoque_api.infrastructure.repositories.*;
-import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +28,14 @@ public class MovementService {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
-    private AuthContext authContext;
-    @Autowired
     private StockMovementDomainService domainService;
 
     @Transactional
-    public MovementResponseDTO createAndProcessMovement(MovementRequestDTO requestDTO) {
-        Company company = companyRepository.findById(authContext.getCurrentCompanyId())
+    public MovementResponseDTO createAndProcessMovement(MovementRequestDTO requestDTO, Long currentCompanyId, Long currentUserId) {
+        Company company = companyRepository.findById(currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
 
-        User user = userRepository.findByIdAndCompanyId(authContext.getCurrentUserId(), company.getId())
+        User user = userRepository.findByIdAndCompanyId(currentUserId, company.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
 
         StockLocation stockLocation = stockLocationRepository.findByIdAndCompanyId(requestDTO.getStockLocationId(), company.getId())

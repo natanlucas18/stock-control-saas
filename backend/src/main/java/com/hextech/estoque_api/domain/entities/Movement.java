@@ -39,16 +39,7 @@ public class Movement {
     public Movement() {
     }
 
-    public Movement(MovementType type, Integer quantity , LocalDate moment, String note,
-                    Product product, User user, Company company, StockLocation stockLocation) {
-        if (type != ENTRADA && type != SAIDA) throw new IllegalArgumentException("Tipo de movimentação inválida.");
-        if (quantity == null || quantity <= 0) throw new IllegalArgumentException("Quantidade deve ser maior que zero.");
-        if (moment == null) throw new IllegalArgumentException("Data de movimento inválida.");
-        if (product == null) throw new IllegalArgumentException("Produto inválido.");
-        if (user == null) throw new IllegalArgumentException("Usuário inválido.");
-        if (company == null) throw new IllegalArgumentException("Empresa inválida.");
-        if (stockLocation == null) throw new IllegalArgumentException("Local de estoque inválido.");
-
+    private Movement(MovementType type, Integer quantity, LocalDate moment, String note, Product product, User user, Company company, StockLocation stockLocation) {
         this.type = type;
         this.quantity = quantity;
         this.moment = moment;
@@ -57,6 +48,18 @@ public class Movement {
         this.user = user;
         this.company = company;
         this.stockLocation = stockLocation;
+    }
+
+    public static Movement createNewMovement(MovementType type, Integer quantity , LocalDate moment, String note,
+                                             Product product, User user, Company company, StockLocation stockLocation) {
+        if (type != ENTRADA && type != SAIDA) throw new IllegalArgumentException("Tipo de movimentação inválida.");
+        if (quantity == null || quantity <= 0) throw new IllegalArgumentException("Quantidade deve ser maior que zero.");
+        if (moment == null) throw new IllegalArgumentException("Data de movimento inválida.");
+        if (product == null) throw new IllegalArgumentException("Produto inválido.");
+        if (user == null) throw new IllegalArgumentException("Usuário inválido.");
+        if (company == null) throw new IllegalArgumentException("Empresa inválida.");
+        if (stockLocation == null) throw new IllegalArgumentException("Local de estoque inválido.");
+        return new Movement(type, quantity, moment, note, product, user, company, stockLocation);
     }
 
     public Long getId() {

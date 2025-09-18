@@ -1,9 +1,6 @@
 package com.hextech.estoque_api.interfaces.handlers;
 
-import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
-import com.hextech.estoque_api.domain.exceptions.InvalidMovementTypeException;
-import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
-import com.hextech.estoque_api.domain.exceptions.UserAlreadyExistsException;
+import com.hextech.estoque_api.domain.exceptions.*;
 import com.hextech.estoque_api.infrastructure.security.exceptions.InvalidJwtAuthenticationException;
 import com.hextech.estoque_api.interfaces.dtos.errors.CustomError;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,6 +60,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<CustomError> handleUserAlreadyExists(UserAlreadyExistsException ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.CONFLICT;
+        CustomError error = new CustomError(Instant.now(), status.value(), ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(InvalidUnitMeasureException.class)
+    public ResponseEntity<CustomError> handleInvalidUnitMeasure(InvalidUnitMeasureException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         CustomError error = new CustomError(Instant.now(), status.value(), ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(error);
     }
