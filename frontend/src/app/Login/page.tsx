@@ -13,7 +13,7 @@ const schema = z.object({
 });
 
 export default function Login() {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormLogin>({
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormLogin>({
     resolver: zodResolver(schema)
   });
 
@@ -82,8 +82,8 @@ export default function Login() {
               <button
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-blue-800 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-              >
-                Entrar
+                >
+                {isSubmitting ? 'Logando...' : 'Entrar'}
               </button>
             </div>
           </form>
