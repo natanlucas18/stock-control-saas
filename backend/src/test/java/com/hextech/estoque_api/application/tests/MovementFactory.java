@@ -12,7 +12,7 @@ public class MovementFactory {
         User user = UserFactory.createUser(1L);
         Company company = CompanyFactory.createCompany(1L);
         StockLocation stockLocation = StockLocationFactory.createStockLocation(1L);
-        return new Movement(MovementType.ENTRADA, 10, LocalDate.now(), "Entrada de teste", product, user, company, stockLocation);
+        return Movement.createNewMovement(MovementType.ENTRADA, 10, LocalDate.now(), "Entrada de teste", product, user, company, stockLocation);
     }
 
     public static Movement createExitMovement() {
@@ -20,7 +20,7 @@ public class MovementFactory {
         User user = UserFactory.createUser(1L);
         Company company = CompanyFactory.createCompany(1L);
         StockLocation stockLocation = StockLocationFactory.createStockLocation(1L);
-        return new Movement(MovementType.SAIDA, 5, LocalDate.now(), "Saída de teste", product, user, company, stockLocation);
+        return Movement.createNewMovement(MovementType.SAIDA, 5, LocalDate.now(), "Saída de teste", product, user, company, stockLocation);
     }
 
     public static MovementRequestDTO createMovementRequestDTO() {

@@ -19,6 +19,6 @@ public class StockMovementDomainService {
             throw new InvalidMovementTypeException("Tipo de movimentação inválida.");
         }
 
-        return new Movement(type, quantity, LocalDate.now(), note, product, user, company, stockLocation);
+        return Movement.createNewMovement(type, quantity, LocalDate.now(), note, product, user, company, stockLocation);
     }
 }
