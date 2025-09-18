@@ -1,5 +1,6 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
+import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import com.hextech.estoque_api.application.services.StockLocationService;
 import com.hextech.estoque_api.interfaces.controllers.docs.StockLocationControllerDocs;
@@ -17,22 +18,24 @@ public class StockLocationController implements StockLocationControllerDocs {
 
     @Autowired
     private StockLocationService service;
+    @Autowired
+    private AuthContext authContext;
 
     @GetMapping
     public ResponseEntity<List<StockLocationDTO>> findAllByCompany() {
-        List<StockLocationDTO> responseDTO = service.findAllByCompanyId();
+        List<StockLocationDTO> responseDTO = service.findAllByCompanyId(authContext.getCurrentCompanyId());
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<StockLocationDTO> findById(@PathVariable Long id) {
-        StockLocationDTO responseDTO = service.findByIdAndCompanyId(id);
+        StockLocationDTO responseDTO = service.findByIdAndCompanyId(id, authContext.getCurrentCompanyId());
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping
     public ResponseEntity<StockLocationDTO> insert(@RequestBody StockLocationDTO requestDTO) {
-        StockLocationDTO responseDTO = service.insert(requestDTO);
+        StockLocationDTO responseDTO = service.insert(requestDTO, authContext.getCurrentCompanyId());
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(responseDTO.id()).toUri();
 
@@ -41,14 +44,14 @@ public class StockLocationController implements StockLocationControllerDocs {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<StockLocationDTO> update(@PathVariable Long id, @RequestBody StockLocationDTO requestDTO) {
-        StockLocationDTO responseDTO = service.update(id, requestDTO);
+        StockLocationDTO responseDTO = service.update(id, requestDTO, authContext.getCurrentCompanyId());
 
         return ResponseEntity.ok(responseDTO);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        service.deleteByIdAndCompanyId(id);
+        service.deleteByIdAndCompanyId(id, authContext.getCurrentCompanyId());
         return ResponseEntity.noContent().build();
     }
 }
