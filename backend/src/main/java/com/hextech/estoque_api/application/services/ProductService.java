@@ -1,9 +1,9 @@
 package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.domain.entities.Company;
-import com.hextech.estoque_api.domain.entities.Product;
+import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.StockLocation;
-import com.hextech.estoque_api.domain.entities.UnitMeasure;
+import com.hextech.estoque_api.domain.entities.product.UnitMeasure;
 import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.domain.exceptions.InvalidUnitMeasureException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
@@ -48,7 +48,15 @@ public class ProductService {
         StockLocation stockLocation = stockLocationRepository.findByIdAndCompanyId(requestDTO.getStockLocationId(), currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Local de estoque não encontrado."));
 
-        Product entity = Product.createNewProduct(requestDTO.getName(), requestDTO.getPrice(), UnitMeasure.valueOf(requestDTO.getUnitMeasure()), company, stockLocation);
+        UnitMeasure unitMeasure;
+        try {
+            unitMeasure = UnitMeasure.valueOf(requestDTO.getUnitMeasure());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidUnitMeasureException("Tipo de unidade de medida inválida.");
+        }
+
+        Product entity = Product.createNewProduct(requestDTO.getName(), requestDTO.getPrice(), requestDTO.getStockMax(),
+                requestDTO.getStockMin(), unitMeasure, company, stockLocation);
 
         entity = repository.save(entity);
         return new ProductResponseDTO(entity);
@@ -69,7 +77,8 @@ public class ProductService {
             throw new InvalidUnitMeasureException("Tipo de unidade de medida inválida.");
         }
 
-        entity.updateProduct(requestDTO.getName(), requestDTO.getPrice(), unitMeasure, stockLocation);
+        entity.updateProduct(requestDTO.getName(), requestDTO.getPrice(), requestDTO.getStockMax(),
+                requestDTO.getStockMin(), unitMeasure, stockLocation);
 
         entity = repository.save(entity);
         return new ProductResponseDTO(entity);

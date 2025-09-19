@@ -1,5 +1,6 @@
 package com.hextech.estoque_api.domain.entities;
 
+import com.hextech.estoque_api.domain.entities.product.Product;
 import jakarta.persistence.*;
 
 import java.util.List;

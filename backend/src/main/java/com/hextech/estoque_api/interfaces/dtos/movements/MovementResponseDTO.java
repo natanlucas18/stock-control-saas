@@ -5,13 +5,14 @@ import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import com.hextech.estoque_api.interfaces.dtos.users.UserMinDTO;
 import com.hextech.estoque_api.domain.entities.Movement;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class MovementResponseDTO {
 
     private Long id;
     private String type;
-    private Integer quantity;
+    private BigDecimal quantity;
     private LocalDate moment;
     private String note;
     private ProductMinDTO product;
@@ -27,7 +28,7 @@ public class MovementResponseDTO {
         this.quantity = entity.getQuantity();
         this.moment = entity.getMoment();
         this.note = entity.getNote();
-        this.product = new ProductMinDTO(entity.getProduct().getId(), entity.getProduct().getName());
+        this.product = new ProductMinDTO(entity.getProduct());
         this.user = new UserMinDTO(entity.getUser().getId(), entity.getUser().getName());
         this.stockLocation = new StockLocationDTO(entity.getStockLocation().getId(), entity.getStockLocation().getName());
     }
@@ -48,11 +49,11 @@ public class MovementResponseDTO {
         this.type = type;
     }
 
-    public Integer getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
 

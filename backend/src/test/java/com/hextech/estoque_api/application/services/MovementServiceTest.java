@@ -2,12 +2,11 @@ package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.tests.*;
 import com.hextech.estoque_api.domain.entities.MovementType;
-import com.hextech.estoque_api.domain.entities.Product;
+import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.exceptions.InvalidMovementTypeException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.domain.services.StockMovementDomainService;
 import com.hextech.estoque_api.infrastructure.repositories.*;
-import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Objects;
@@ -60,7 +58,7 @@ class MovementServiceTest {
         when(userRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(UserFactory.createUser(userId)));
         when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(StockLocationFactory.createStockLocation(requestDTO.getStockLocationId())));
         when(productRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(product));
-        when(domainService.processMovement(any(), anyInt(), anyString(), any(), any(), any(), any())).thenReturn(MovementFactory.createEntryMovement());
+        when(domainService.processMovement(any(), any(), anyString(), any(), any(), any(), any())).thenReturn(MovementFactory.createEntryMovement());
         when(productRepository.save(any())).thenReturn(product);
         when(repository.save(any())).thenReturn(MovementFactory.createEntryMovement());
 
@@ -70,7 +68,7 @@ class MovementServiceTest {
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(1)).processMovement(any(), anyInt(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(1)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(1)).save(any());
         verify(repository, times(1)).save(any());
 
@@ -94,7 +92,7 @@ class MovementServiceTest {
         verify(userRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(0)).processMovement(any(), anyInt(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(0)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Empresa não encontrada.");
@@ -118,7 +116,7 @@ class MovementServiceTest {
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(0)).processMovement(any(), anyInt(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(0)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Usuário não encontrado.");
@@ -142,7 +140,7 @@ class MovementServiceTest {
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(0)).processMovement(any(), anyInt(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(0)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Local de estoque não encontrado.");
@@ -168,7 +166,7 @@ class MovementServiceTest {
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(0)).processMovement(any(), anyInt(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(0)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Produto não encontrado.");
@@ -195,7 +193,7 @@ class MovementServiceTest {
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(0)).processMovement(any(), anyInt(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(0)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Tipo de movimentação inválida.");
@@ -211,7 +209,7 @@ class MovementServiceTest {
         when(userRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(UserFactory.createUser(userId)));
         when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(StockLocationFactory.createStockLocation(requestDTO.getStockLocationId())));
         when(productRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(ProductFactory.createProduct(requestDTO.getProductId())));
-        when(domainService.processMovement(any(), anyInt(), anyString(), any(), any(), any(), any())).thenThrow(new InvalidMovementTypeException("Tipo de movimentação inválida."));
+        when(domainService.processMovement(any(), any(), anyString(), any(), any(), any(), any())).thenThrow(new InvalidMovementTypeException("Tipo de movimentação inválida."));
 
         Exception thrown = assertThrows(InvalidMovementTypeException.class, () -> {
             movementService.createAndProcessMovement(requestDTO, companyId, userId);
@@ -221,7 +219,7 @@ class MovementServiceTest {
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(1)).processMovement(any(), anyInt(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(1)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Tipo de movimentação inválida.");

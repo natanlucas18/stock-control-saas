@@ -1,7 +1,9 @@
 package com.hextech.estoque_api.domain.entities;
 
+import com.hextech.estoque_api.domain.entities.product.Product;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -16,7 +18,7 @@ public class Movement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private MovementType type;
-    private Integer quantity;
+    private BigDecimal quantity;
     private LocalDate moment;
     private String note;
 
@@ -39,7 +41,7 @@ public class Movement {
     public Movement() {
     }
 
-    private Movement(MovementType type, Integer quantity, LocalDate moment, String note, Product product, User user, Company company, StockLocation stockLocation) {
+    private Movement(MovementType type, BigDecimal quantity, LocalDate moment, String note, Product product, User user, Company company, StockLocation stockLocation) {
         this.type = type;
         this.quantity = quantity;
         this.moment = moment;
@@ -50,10 +52,11 @@ public class Movement {
         this.stockLocation = stockLocation;
     }
 
-    public static Movement createNewMovement(MovementType type, Integer quantity , LocalDate moment, String note,
+    public static Movement createNewMovement(MovementType type, BigDecimal quantity , LocalDate moment, String note,
                                              Product product, User user, Company company, StockLocation stockLocation) {
+        BigDecimal zero = BigDecimal.ZERO;
         if (type != ENTRADA && type != SAIDA) throw new IllegalArgumentException("Tipo de movimentação inválida.");
-        if (quantity == null || quantity <= 0) throw new IllegalArgumentException("Quantidade deve ser maior que zero.");
+        if (quantity == null || quantity.compareTo(zero) <= 0) throw new IllegalArgumentException("Quantidade deve ser maior que zero.");
         if (moment == null) throw new IllegalArgumentException("Data de movimento inválida.");
         if (product == null) throw new IllegalArgumentException("Produto inválido.");
         if (user == null) throw new IllegalArgumentException("Usuário inválido.");
@@ -78,11 +81,11 @@ public class Movement {
         this.type = type;
     }
 
-    public Integer getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
 

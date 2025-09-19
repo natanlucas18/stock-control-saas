@@ -2,6 +2,7 @@ package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.factories.ReportPeriodFactory;
 import com.hextech.estoque_api.domain.entities.*;
+import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.exceptions.InvalidMovementTypeException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.domain.services.StockMovementDomainService;

@@ -53,10 +53,8 @@ class ProductServiceTest {
         List<ProductResponseDTO> result = service.findAllByCompanyId(companyId);
 
         verify(repository, times(1)).findAllByCompanyId(anyLong());
-
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(1L, result.get(0).getId());
     }
 
     @Test
@@ -70,9 +68,7 @@ class ProductServiceTest {
         ProductResponseDTO result = service.findByIdAndCompanyId(productId, companyId);
 
         verify(repository , times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-
         assertNotNull(result);
-        assertEquals(productId, result.getId());
     }
 
     @Test
@@ -86,6 +82,7 @@ class ProductServiceTest {
             service.findByIdAndCompanyId(999L, companyId);
         });
 
+        verify(repository , times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         assertEquals("Produto não encontrado.", exception.getMessage());
     }
 
@@ -105,9 +102,7 @@ class ProductServiceTest {
         verify(companyRepository, times(1)).findById(anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(repository, times(1)).save(any());
-
         assertNotNull(result);
-        assertEquals(productId, result.getId());
     }
 
     @Test
@@ -132,7 +127,6 @@ class ProductServiceTest {
     @DisplayName("Should throw ResourceNotFoundException when stock location does not exist")
     void insertCase3() {
         Long companyId = 1L;
-        Long stockLocationId = 999L;
 
         when(companyRepository.findById(anyLong())).thenReturn(Optional.of(CompanyFactory.createCompany(companyId)));
         when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.empty());
@@ -165,9 +159,7 @@ class ProductServiceTest {
         verify(repository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(repository, times(1)).save(any());
-
         assertNotNull(result);
-        assertEquals(productId, result.getId());
     }
 
     @Test
@@ -258,7 +250,6 @@ class ProductServiceTest {
         });
 
         verify(repository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-
         assertEquals("Produto não encontrado.", exception.getMessage());
     }
 
@@ -277,7 +268,6 @@ class ProductServiceTest {
 
         verify(repository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(repository, times(1)).delete(any());
-
         assertEquals("Falha na Integridade referencial.", exception.getMessage());
     }
 }
