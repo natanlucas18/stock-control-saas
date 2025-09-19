@@ -1,0 +1,50 @@
+version: '3.9'
+services:
+  api:
+    build: .
+    container_name: stock-control-api
+    ports:
+      - "8080:8080"
+    environment:
+      APP_PROFILE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_db:5432/stockdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres_db
+    networks:
+      - stock-control-dev-network
+
+  postgres_db:
+    image: postgres:15
+    container_name: stock-control-db
+    environment:
+      POSTGRES_DB: stockdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - stock-control-dev-network
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres_db
+    networks:
+      - stock-control-dev-network
+
+volumes:
+  postgres_data:
+
+networks:
+  stock-control-dev-network:
+    driver: bridge
