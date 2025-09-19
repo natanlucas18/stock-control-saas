@@ -1,9 +1,11 @@
 package com.hextech.estoque_api.interfaces.dtos.movements;
 
+import java.math.BigDecimal;
+
 public class MovementRequestDTO {
 
     private String type;
-    private Integer quantity;
+    private BigDecimal quantity;
     private String note;
     private Long productId;
     private Long stockLocationId;
@@ -11,7 +13,7 @@ public class MovementRequestDTO {
     public MovementRequestDTO() {
     }
 
-    public MovementRequestDTO(String type, Integer quantity, String note, Long productId, Long stockLocationId) {
+    public MovementRequestDTO(String type, BigDecimal quantity, String note, Long productId, Long stockLocationId) {
         this.type = type;
         this.quantity = quantity;
         this.note = note;
@@ -27,11 +29,11 @@ public class MovementRequestDTO {
         this.type = type;
     }
 
-    public Integer getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
 

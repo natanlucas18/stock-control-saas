@@ -1,21 +1,16 @@
 package com.hextech.estoque_api.application.tests;
 
-import com.hextech.estoque_api.domain.entities.Product;
-import com.hextech.estoque_api.domain.entities.UnitMeasure;
+import com.hextech.estoque_api.domain.entities.product.Product;
+import com.hextech.estoque_api.domain.entities.product.UnitMeasure;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
+
+import java.math.BigDecimal;
 
 public class ProductFactory {
 
     public static Product createProduct(Long id) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName("Test Product");
-        product.setPrice(100.0);
-        product.setQuantity(50);
-        product.setUnitMeasure(UnitMeasure.UN);
-        product.setStockLocation(StockLocationFactory.createStockLocation(1L));
-        product.setCompany(CompanyFactory.createCompany(1L));
-        return product;
+        return Product.createNewProduct("Test Product " + id, new BigDecimal("100.00"), new BigDecimal(100), new BigDecimal(10),
+                UnitMeasure.UN, CompanyFactory.createCompany(1L), StockLocationFactory.createStockLocation(1L));
     }
 
     public static ProductRequestDTO createProductRequestDTO() {
@@ -23,6 +18,8 @@ public class ProductFactory {
         ProductRequestDTO dto = new ProductRequestDTO();
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
+        dto.setStockMax(product.getStockMax());
+        dto.setStockMin(product.getStockMin());
         dto.setUnitMeasure(product.getUnitMeasure().toString());
         dto.setStockLocationId(product.getStockLocation().getId());
         return dto;
