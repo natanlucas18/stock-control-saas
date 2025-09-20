@@ -1,8 +1,3 @@
-import Nav from '../Nav/page';
-export default function Home () {
-  return(
-  <>
-    <Nav />
-  </>
-  )
+export default function Home() {
+  return <h1>Home</h1>;
 }
