@@ -14,6 +14,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger
 } from '@/components/ui/navigation-menu';
+import { PathLinks } from '@/types/path-links';
 
 export function Menu() {
   return (
@@ -35,12 +36,12 @@ export function Menu() {
           <NavigationMenuTrigger className='bg-blue-900'>
             Produtos
           </NavigationMenuTrigger>
-          <NavigationMenuContent>
+          <NavigationMenuContent className='z-50'>
             <ul className='grid w-[300px] gap-4'>
               <li>
                 <NavigationMenuLink asChild>
                   <Link
-                    href='/criar-produto'
+                    href={PathLinks.CREATE_PRODUCT}
                     className='flex-row items-center gap-2'
                   >
                     <GrAddCircle className='text-black' />
@@ -49,7 +50,7 @@ export function Menu() {
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
                   <Link
-                    href='/Products'
+                    href={PathLinks.LIST_PRODUCTS}
                     className='flex-row items-center gap-2'
                   >
                     <FaList className='text-black' />
@@ -65,7 +66,7 @@ export function Menu() {
           <NavigationMenuTrigger className='bg-blue-900'>
             Sessão
           </NavigationMenuTrigger>
-          <NavigationMenuContent>
+          <NavigationMenuContent className='z-50'>
             <ul className='grid w-[200px] gap-4'>
               <li>
                 <NavigationMenuLink asChild>
@@ -95,7 +96,7 @@ export function Menu() {
           <NavigationMenuTrigger className='bg-blue-900'>
             Movimentações
           </NavigationMenuTrigger>
-          <NavigationMenuContent>
+          <NavigationMenuContent className='z-50'>
             <ul className='grid w-[200px] gap-4'>
               <li>
                 <NavigationMenuLink asChild>
@@ -134,7 +135,7 @@ export function Menu() {
           <NavigationMenuTrigger className='bg-blue-900'>
             Relatórios
           </NavigationMenuTrigger>
-          <NavigationMenuContent>
+          <NavigationMenuContent className='z-50'>
             <ul className='grid w-[200px] gap-4'>
               <li>
                 <NavigationMenuLink asChild>
