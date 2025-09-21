@@ -13,22 +13,30 @@ export type FormDataMovements = {
 };
 
 export type FormProducts = {
-  description: string,
-  idSession: number,
+  name: string,
+  stockLocationId: number,
   price: number,
   unitMeasure: string,
-  quantity_min: number,
-  quantity_max: number
+  stockMin: number,
+  stockMax: number
 };
 
 export type ProductsData = {
   id: number,
-  code: number,
-  description: string,
-  idSession: number,
+  name: string,
+  stockLocationId: number,
   price: number,
   unitMeasure: string,
-  quantity_min: number,
-  quantity_max: number
+  stockMin: number,
+  stockMax: number
 }[];
+
+export type FormStockLocation = {
+  name: string;
+}
+
+export type StockLocationData = {
+  id: number;
+  name: string;
+};
 
