@@ -1,5 +1,6 @@
 'use client';
 import { Menu } from '@/components/nav-menu';
+import { PathLinks } from '@/types/path-links';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AiOutlineStock } from 'react-icons/ai';
@@ -73,7 +74,7 @@ export default function Navbar() {
               Produtos
             </div>
             <Link
-              href='/criar-produto'
+              href={PathLinks.CREATE_PRODUCT}
               className='block font-semibold px-4 py-1 ml-2'
               onClick={() => setIsOpen(false)}
             >
@@ -83,7 +84,7 @@ export default function Navbar() {
               </div>
             </Link>
             <Link
-              href='/Products'
+              href={PathLinks.LIST_PRODUCTS}
               className='block font-semibold px-4 py-1 pb-2 ml-2'
               onClick={() => setIsOpen(false)}
             >
