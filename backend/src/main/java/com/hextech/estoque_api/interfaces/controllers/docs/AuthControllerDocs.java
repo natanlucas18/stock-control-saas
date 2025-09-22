@@ -1,5 +1,6 @@
 package com.hextech.estoque_api.interfaces.controllers.docs;
 
+import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
 import com.hextech.estoque_api.interfaces.dtos.security.AccountCredentialsDTO;
 import com.hextech.estoque_api.interfaces.dtos.security.TokenDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,8 +16,8 @@ public interface AuthControllerDocs {
 
     @Operation(summary = "Realiza o login de um usuário")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = TokenDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = StandardResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
-    ResponseEntity<?> login(AccountCredentialsDTO credentials);
+    ResponseEntity<StandardResponse<?>> login(AccountCredentialsDTO credentials);
 }

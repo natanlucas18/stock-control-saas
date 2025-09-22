@@ -1,9 +1,10 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
-import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
-import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import com.hextech.estoque_api.application.services.StockLocationService;
+import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.controllers.docs.StockLocationControllerDocs;
+import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
+import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,36 +23,36 @@ public class StockLocationController implements StockLocationControllerDocs {
     private AuthContext authContext;
 
     @GetMapping
-    public ResponseEntity<List<StockLocationDTO>> findAllByCompany() {
-        List<StockLocationDTO> responseDTO = service.findAllByCompanyId(authContext.getCurrentCompanyId());
-        return ResponseEntity.ok().body(responseDTO);
+    public ResponseEntity<StandardResponse<?>> findAllByCompany() {
+        List<StockLocationDTO> response = service.findAllByCompanyId(authContext.getCurrentCompanyId());
+        return ResponseEntity.ok().body(new StandardResponse<>(true, response));
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<StockLocationDTO> findById(@PathVariable Long id) {
-        StockLocationDTO responseDTO = service.findByIdAndCompanyId(id, authContext.getCurrentCompanyId());
-        return ResponseEntity.ok().body(responseDTO);
+    public ResponseEntity<StandardResponse<?>> findById(@PathVariable Long id) {
+        StockLocationDTO response = service.findByIdAndCompanyId(id, authContext.getCurrentCompanyId());
+        return ResponseEntity.ok().body(new StandardResponse<>(true, response));
     }
 
     @PostMapping
-    public ResponseEntity<StockLocationDTO> insert(@RequestBody StockLocationDTO requestDTO) {
-        StockLocationDTO responseDTO = service.insert(requestDTO, authContext.getCurrentCompanyId());
+    public ResponseEntity<StandardResponse<?>> insert(@RequestBody StockLocationDTO requestDTO) {
+        StockLocationDTO response = service.insert(requestDTO, authContext.getCurrentCompanyId());
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(responseDTO.id()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(response.id()).toUri();
 
-        return ResponseEntity.created(uri).body(responseDTO);
+        return ResponseEntity.created(uri).body(new StandardResponse<>(true, response));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<StockLocationDTO> update(@PathVariable Long id, @RequestBody StockLocationDTO requestDTO) {
-        StockLocationDTO responseDTO = service.update(id, requestDTO, authContext.getCurrentCompanyId());
+    public ResponseEntity<StandardResponse<?>> update(@PathVariable Long id, @RequestBody StockLocationDTO requestDTO) {
+        StockLocationDTO response = service.update(id, requestDTO, authContext.getCurrentCompanyId());
 
-        return ResponseEntity.ok(responseDTO);
+        return ResponseEntity.ok(new StandardResponse<>(true, response));
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<StandardResponse<Void>> deleteById(@PathVariable Long id) {
         service.deleteByIdAndCompanyId(id, authContext.getCurrentCompanyId());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new StandardResponse<>(true, null));
     }
 }

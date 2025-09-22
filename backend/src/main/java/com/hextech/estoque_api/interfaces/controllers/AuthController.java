@@ -1,10 +1,10 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
-import com.hextech.estoque_api.interfaces.dtos.security.AccountCredentialsDTO;
 import com.hextech.estoque_api.application.services.AuthService;
 import com.hextech.estoque_api.interfaces.controllers.docs.AuthControllerDocs;
+import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
+import com.hextech.estoque_api.interfaces.dtos.security.AccountCredentialsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +19,8 @@ public class AuthController implements AuthControllerDocs {
     private AuthService service;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AccountCredentialsDTO credentials) {
+    public ResponseEntity<StandardResponse<?>> login(@RequestBody AccountCredentialsDTO credentials) {
         var token = service.login(credentials);
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Credenciais inválidas!");
-        }
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok().body(new StandardResponse<>(true, token));
     }
 }
