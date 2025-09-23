@@ -3,10 +3,15 @@ package com.hextech.estoque_api.interfaces.controllers;
 import com.hextech.estoque_api.application.services.ProductService;
 import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.controllers.docs.ProductControllerDocs;
+import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PageMetadata;
+import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PaginatedResponse;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -14,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/products", produces = "application/json")
 public class ProductController implements ProductControllerDocs {
@@ -24,9 +30,16 @@ public class ProductController implements ProductControllerDocs {
     private ProductService service;
 
     @GetMapping
-    public ResponseEntity<StandardResponse<?>> findAll() {
-        List<ProductResponseDTO> response = service.findAllByCompanyId(authContext.getCurrentCompanyId());
-        return ResponseEntity.ok(new StandardResponse<>(true, response));
+    public ResponseEntity<StandardResponse<?>> findAllPaged(Pageable pageable) {
+        int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
+        Pageable adjustedPageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
+        Page<ProductResponseDTO> response = service.findAllByCompanyId(authContext.getCurrentCompanyId(), adjustedPageable);
+
+        List<ProductResponseDTO> content = response.getContent();
+        PageMetadata pageMetadata = new PageMetadata(response);
+
+        PaginatedResponse<ProductResponseDTO> paginatedResponse = new PaginatedResponse<ProductResponseDTO>(content, pageMetadata);
+        return ResponseEntity.ok(new StandardResponse<>(true, paginatedResponse));
     }
 
     @GetMapping(value = "/{id}")

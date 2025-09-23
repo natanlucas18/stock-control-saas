@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 @Tag(name = "Produtos", description = "Operações de Produtos")
@@ -19,7 +20,7 @@ public interface ProductControllerDocs {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
-    ResponseEntity<StandardResponse<?>> findAll();
+    ResponseEntity<StandardResponse<?>> findAllPaged(Pageable pageable);
 
     @Operation(summary = "Busca um produto pelo ID")
     @ApiResponses(value = {

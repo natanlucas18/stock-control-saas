@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 @Tag(name = "Movimentações", description = "Operações de Movimentações")
@@ -20,7 +21,7 @@ public interface MovementControllerDocs {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
     })
-    ResponseEntity<StandardResponse<?>> reportMovements(String startDate, String endDate);
+    ResponseEntity<StandardResponse<?>> reportMovements(String startDate, String endDate, Pageable pageable);
 
     @Operation(summary = "Cria uma nova movimentação")
     @ApiResponses(value = {

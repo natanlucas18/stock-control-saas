@@ -2,11 +2,11 @@ package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.tests.CompanyFactory;
 import com.hextech.estoque_api.application.tests.StockLocationFactory;
+import com.hextech.estoque_api.domain.entities.StockLocation;
 import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
 import com.hextech.estoque_api.infrastructure.repositories.StockLocationRepository;
-import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,19 +41,23 @@ class StockLocationServiceTest {
     }
 
     @Test
-    @DisplayName("Should return all stock locations for the current company")
-    void findAllByCompanyIdCase1() {
+    @DisplayName("Should return all stock locations paged for the current company")
+    void findAllByCompanyIdPagedCase1() {
         Long companyId = 1L;
         Long stockLocationId = 1L;
+        long totalElements = 1;
 
-        when(repository.findByCompanyId(anyLong())).thenReturn(List.of(StockLocationFactory.createStockLocation(stockLocationId)));
+        Pageable pageable = PageRequest.of(0, 8);
+        Page<StockLocation> page = new PageImpl<>(List.of(StockLocationFactory.createStockLocation(stockLocationId)), pageable, totalElements);
 
-        List<StockLocationDTO> result = service.findAllByCompanyId(companyId);
+        when(repository.findByCompanyId(anyLong(), any())).thenReturn(page);
 
-        verify(repository, times(1)).findByCompanyId(anyLong());
+        Page<StockLocationDTO> result = service.findAllByCompanyId(companyId, pageable);
+
+        verify(repository, times(1)).findByCompanyId(anyLong(), any());
         assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(stockLocationId, result.get(0).id());
+        assertEquals(1, result.getTotalElements());
+        assertEquals(1, result.getContent().size());
     }
 
     @Test

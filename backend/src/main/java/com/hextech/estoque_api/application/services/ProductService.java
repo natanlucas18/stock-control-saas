@@ -1,8 +1,8 @@
 package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.domain.entities.Company;
-import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.StockLocation;
+import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.product.UnitMeasure;
 import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.domain.exceptions.InvalidUnitMeasureException;
@@ -14,10 +14,10 @@ import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class ProductService {
@@ -30,9 +30,9 @@ public class ProductService {
     private StockLocationRepository stockLocationRepository;
 
     @Transactional(readOnly = true)
-    public List<ProductResponseDTO> findAllByCompanyId(Long currentCompanyId) {
-        List<Product> products = repository.findAllByCompanyId(currentCompanyId);
-        return products.stream().map(ProductResponseDTO::new).toList();
+    public Page<ProductResponseDTO> findAllByCompanyId(Long currentCompanyId, Pageable pageable) {
+        Page<Product> products = repository.findAllByCompanyId(currentCompanyId, pageable);
+        return products.map(ProductResponseDTO::new);
     }
 
     @Transactional(readOnly = true)

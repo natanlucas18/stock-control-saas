@@ -10,10 +10,10 @@ import com.hextech.estoque_api.infrastructure.repositories.*;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class MovementService {
@@ -61,10 +61,10 @@ public class MovementService {
     }
 
     @Transactional(readOnly = true)
-    public List<MovementResponseDTO> getMovementsReport(String startDate, String endDate, Long companyId) {
+    public Page<MovementResponseDTO> getMovementsReport(String startDate, String endDate, Long companyId, Pageable pageable) {
         ReportPeriod period = ReportPeriodFactory.fromStrings(startDate, endDate);
 
-        List<Movement> movements = repository.searchAllByCompanyIdAndDate(companyId, period.getStartDate(), period.getEndDate());
-        return movements.stream().map(MovementResponseDTO::new).toList();
+        Page<Movement> movements = repository.searchAllByCompanyIdAndDate(companyId, period.getStartDate(), period.getEndDate(), pageable);
+        return movements.map(MovementResponseDTO::new);
     }
 }

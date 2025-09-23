@@ -9,10 +9,10 @@ import com.hextech.estoque_api.infrastructure.repositories.StockLocationReposito
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class StockLocationService {
@@ -23,9 +23,9 @@ public class StockLocationService {
     private CompanyRepository companyRepository;
 
     @Transactional(readOnly = true)
-    public List<StockLocationDTO> findAllByCompanyId(Long companyId) {
-        List<StockLocation> result = repository.findByCompanyId(companyId);
-        return result.stream().map(StockLocationDTO::new).toList();
+    public Page<StockLocationDTO> findAllByCompanyId(Long companyId, Pageable pageable) {
+        Page<StockLocation> result = repository.findByCompanyId(companyId, pageable);
+        return result.map(StockLocationDTO::new);
     }
 
     @Transactional(readOnly = true)
