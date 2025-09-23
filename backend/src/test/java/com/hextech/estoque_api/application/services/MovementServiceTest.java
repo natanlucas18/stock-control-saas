@@ -1,7 +1,9 @@
 package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.tests.*;
+import com.hextech.estoque_api.domain.entities.Movement;
 import com.hextech.estoque_api.domain.entities.MovementType;
+import com.hextech.estoque_api.domain.entities.StockLocation;
 import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.exceptions.InvalidMovementTypeException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
@@ -15,6 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Objects;
@@ -231,15 +237,19 @@ class MovementServiceTest {
         String startDate = "2025-08-25";
         String endDate = "2025-08-30";
         Long companyId = 1L;
+        long totalElements = 1;
 
-        when(repository.searchAllByCompanyIdAndDate(anyLong(), any(), any())).thenReturn(List.of(MovementFactory.createEntryMovement()));
+        Pageable pageable = PageRequest.of(0, 8);
+        Page<Movement> page = new PageImpl<>(List.of(MovementFactory.createEntryMovement()), pageable, totalElements);
 
-        List<MovementResponseDTO> result = movementService.getMovementsReport(startDate, endDate, companyId);
+        when(repository.searchAllByCompanyIdAndDate(anyLong(), any(), any(), any())).thenReturn(page);
 
-        verify(repository, times(1)).searchAllByCompanyIdAndDate(anyLong(), any(), any());
+        Page<MovementResponseDTO> result = movementService.getMovementsReport(startDate, endDate, companyId, pageable);
 
+        verify(repository, times(1)).searchAllByCompanyIdAndDate(anyLong(), any(), any(), any());
         assert !result.isEmpty();
-        assert result.get(0).getType().equals(MovementType.ENTRADA.toString());
+        assert result.getTotalElements() == 1;
+        assert result.getNumberOfElements() == 1;
     }
 
     @Test
@@ -248,13 +258,17 @@ class MovementServiceTest {
         String startDate = null;
         String endDate = null;
         Long companyId = 1L;
+        long totalElements = 1;
+        Pageable pageable = PageRequest.of(0, 8);
+        Page<Movement> page = new PageImpl<>(List.of(MovementFactory.createEntryMovement()), pageable, totalElements);
 
-        when(repository.searchAllByCompanyIdAndDate(anyLong(), any(), any())).thenReturn(List.of());
-        List<MovementResponseDTO> result = movementService.getMovementsReport(startDate, endDate, companyId);
+        when(repository.searchAllByCompanyIdAndDate(anyLong(), any(), any(), any())).thenReturn(page);
+        Page<MovementResponseDTO> result = movementService.getMovementsReport(startDate, endDate, companyId, pageable);
 
-        verify(repository, times(1)).searchAllByCompanyIdAndDate(anyLong(), any(), any());
-
-        assert result.isEmpty();
+        verify(repository, times(1)).searchAllByCompanyIdAndDate(anyLong(), any(), any(), any());
+        assert !result.isEmpty();
+        assert result.getTotalElements() == 1;
+        assert result.getNumberOfElements() == 1;
     }
 
     @Test
@@ -263,11 +277,13 @@ class MovementServiceTest {
         String startDate = "invalid-date";
         String endDate = "2025-08-30";
         Long companyId = 1L;
+        Pageable pageable = PageRequest.of(0, 8);
 
         Exception thrown = assertThrows(IllegalArgumentException.class, () -> {
-            movementService.getMovementsReport(startDate, endDate, companyId);
+            movementService.getMovementsReport(startDate, endDate, companyId, pageable);
         });
 
+        verify(repository, times(0)).searchAllByCompanyIdAndDate(anyLong(), any(), any(), any());
         assert Objects.equals(thrown.getMessage(), "Datas inválidas.");
     }
 }

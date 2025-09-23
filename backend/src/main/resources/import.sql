@@ -13,8 +13,10 @@ INSERT INTO user_role (user_id, role_id) VALUES (2, 1);
 INSERT INTO stock_locations (name, company_id) VALUES ('Armazem 1', 1);
 INSERT INTO stock_locations (name, company_id) VALUES ('Galpão 1', 2);
 
-INSERT INTO products (name, price, quantity, unit_measure, company_id, stock_location_id) VALUES ('Camisa P', 100.80, 500, 1, 1, 1);
-INSERT INTO products (name, price, quantity, unit_measure, company_id, stock_location_id) VALUES ('Calça M', 150, 500, 1, 2, 2);
+INSERT INTO products (name, price, quantity, stock_min, stock_max, unit_measure, company_id, stock_location_id) VALUES ('Camisa P', 100.80, 500, 100, 600, 1, 1, 1);
+INSERT INTO products (name, price, quantity, stock_min, stock_max, unit_measure, company_id, stock_location_id) VALUES ('Camisa P', 100.80, 500, 100, 600, 1, 1, 1);
+INSERT INTO products (name, price, quantity, stock_min, stock_max, unit_measure, company_id, stock_location_id) VALUES ('Camisa P', 100.80, 500, 100, 600, 1, 1, 1);
+INSERT INTO products (name, price, quantity, stock_min, stock_max, unit_measure, company_id, stock_location_id) VALUES ('Calça M', 150, 500, 100, 600, 1, 2, 2);
 
 INSERT INTO movements (type, quantity, moment, note, product_id, user_id, company_id, stock_location_id) VALUES (0, 100, '2025-08-01', 'Entrada de produto', 1, 1, 1, 1);
 INSERT INTO movements (type, quantity, moment, note, product_id, user_id, company_id, stock_location_id) VALUES (0, 50, '2025-08-05', 'Entrada inicial de estoque', 1, 1, 1, 1);

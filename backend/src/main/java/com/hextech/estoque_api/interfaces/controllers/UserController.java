@@ -1,18 +1,16 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
-import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
-import com.hextech.estoque_api.interfaces.dtos.users.UserRequestDTO;
-import com.hextech.estoque_api.interfaces.dtos.users.UserResponseDTO;
 import com.hextech.estoque_api.application.services.UserService;
+import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.controllers.docs.UserControllerDocs;
+import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
+import com.hextech.estoque_api.interfaces.dtos.users.UserRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/users", produces = "application/json")
 public class UserController implements UserControllerDocs {
@@ -23,10 +21,10 @@ public class UserController implements UserControllerDocs {
     private AuthContext authContext;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@RequestBody UserRequestDTO requestDTO) {
+    public ResponseEntity<StandardResponse<?>> register(@RequestBody UserRequestDTO requestDTO) {
 
-        var userResponseDTO = service.createNewUser(requestDTO, authContext.getCurrentCompanyId());
+        var response = service.createNewUser(requestDTO, authContext.getCurrentCompanyId());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new StandardResponse<>(true, response));
     }
 }

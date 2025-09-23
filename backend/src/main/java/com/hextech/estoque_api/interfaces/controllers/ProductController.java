@@ -1,11 +1,17 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
+import com.hextech.estoque_api.application.services.ProductService;
 import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
+import com.hextech.estoque_api.interfaces.controllers.docs.ProductControllerDocs;
+import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PageMetadata;
+import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PaginatedResponse;
+import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
-import com.hextech.estoque_api.application.services.ProductService;
-import com.hextech.estoque_api.interfaces.controllers.docs.ProductControllerDocs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -13,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/products", produces = "application/json")
 public class ProductController implements ProductControllerDocs {
@@ -23,35 +30,42 @@ public class ProductController implements ProductControllerDocs {
     private ProductService service;
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDTO>> findAll() {
-        List<ProductResponseDTO> responseDTOS = service.findAllByCompanyId(authContext.getCurrentCompanyId());
-        return ResponseEntity.ok(responseDTOS);
+    public ResponseEntity<StandardResponse<?>> findAllPaged(Pageable pageable) {
+        int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
+        Pageable adjustedPageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
+        Page<ProductResponseDTO> response = service.findAllByCompanyId(authContext.getCurrentCompanyId(), adjustedPageable);
+
+        List<ProductResponseDTO> content = response.getContent();
+        PageMetadata pageMetadata = new PageMetadata(response);
+
+        PaginatedResponse<ProductResponseDTO> paginatedResponse = new PaginatedResponse<ProductResponseDTO>(content, pageMetadata);
+        return ResponseEntity.ok(new StandardResponse<>(true, paginatedResponse));
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long id) {
-        ProductResponseDTO responseDTO = service.findByIdAndCompanyId(id, authContext.getCurrentCompanyId());
-        return ResponseEntity.ok(responseDTO);
+    public ResponseEntity<StandardResponse<?>> findById(@PathVariable Long id) {
+        ProductResponseDTO response = service.findByIdAndCompanyId(id, authContext.getCurrentCompanyId());
+        return ResponseEntity.ok(new StandardResponse<>(true, response));
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDTO> insert(@RequestBody ProductRequestDTO requestDTO) {
-        ProductResponseDTO responseDTO = service.insert(requestDTO, authContext.getCurrentCompanyId());
+    public ResponseEntity<StandardResponse<?>> insert(@RequestBody ProductRequestDTO requestDTO) {
+        ProductResponseDTO response = service.insert(requestDTO, authContext.getCurrentCompanyId());
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(responseDTO.getId()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(response.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(responseDTO);
+        return ResponseEntity.created(uri).body(new StandardResponse<>(true, response));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ProductResponseDTO> update(@PathVariable Long id, @RequestBody ProductRequestDTO requestDTO) {
-        ProductResponseDTO responseDTO = service.update(id, requestDTO, authContext.getCurrentCompanyId());
-        return ResponseEntity.ok(responseDTO);
+    public ResponseEntity<StandardResponse<?>> update(@PathVariable Long id, @RequestBody ProductRequestDTO requestDTO) {
+        ProductResponseDTO response = service.update(id, requestDTO, authContext.getCurrentCompanyId());
+        return ResponseEntity.ok(new StandardResponse<>(true, response));
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<StandardResponse<Void>> deleteById(@PathVariable Long id) {
         service.deleteByIdAndCompanyId(id, authContext.getCurrentCompanyId());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new StandardResponse<>(true, null));
     }
 }

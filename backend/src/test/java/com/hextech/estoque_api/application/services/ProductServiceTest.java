@@ -3,12 +3,12 @@ package com.hextech.estoque_api.application.services;
 import com.hextech.estoque_api.application.tests.CompanyFactory;
 import com.hextech.estoque_api.application.tests.ProductFactory;
 import com.hextech.estoque_api.application.tests.StockLocationFactory;
+import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
 import com.hextech.estoque_api.infrastructure.repositories.ProductRepository;
 import com.hextech.estoque_api.infrastructure.repositories.StockLocationRepository;
-import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,17 +44,22 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("Should return all products for the current company")
-    void findAllByCompanyIdCase1() {
+    @DisplayName("Should return all products paged for the current company")
+    void findAllByCompanyIdPagedCase1() {
         Long companyId = 1L;
+        long totalElements = 1;
 
-        when(repository.findAllByCompanyId(anyLong())).thenReturn(List.of(ProductFactory.createProduct(1L)));
+        Pageable pageable = PageRequest.of(0, 8);
+        Page<Product> page = new PageImpl<>(List.of(ProductFactory.createProduct(1L)), pageable, totalElements);
 
-        List<ProductResponseDTO> result = service.findAllByCompanyId(companyId);
+        when(repository.findAllByCompanyId(anyLong(), any())).thenReturn(page);
 
-        verify(repository, times(1)).findAllByCompanyId(anyLong());
+        Page<ProductResponseDTO> result = service.findAllByCompanyId(companyId, pageable);
+
+        verify(repository, times(1)).findAllByCompanyId(anyLong(), any());
         assertNotNull(result);
-        assertEquals(1, result.size());
+        assertEquals(1, result.getTotalElements());
+        assertEquals(1, result.getContent().size());
     }
 
     @Test
