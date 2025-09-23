@@ -95,25 +95,25 @@ export default function Navbar() {
             </Link>
 
             <div className='block px-4 py-2 text-gray-400 border-t-solid border-t border-gray-600'>
-              Sessão
+              Local de estoque
             </div>
             <Link
-              href='/CreateSection'
+              href={PathLinks.CREATE_STOCK_LOCATION}
               className='block font-semibold px-4 ml-2 py-1'
               onClick={() => setIsOpen(false)}
             >
               <div className='flex flex-row items-center gap-1'>
                 <GrAddCircle />
-                <div>Nova Sessão</div>
+                <div>Novo Local de Estoque</div>
               </div>
             </Link>
             <Link
-              href='/Section'
+              href={PathLinks.LIST_STOCK_LOCATIONS}
               className='block font-semibold px-4 ml-2 pb-2 py-1'
             >
               <div className='flex flex-row items-center gap-1'>
                 <FaList />
-                <div>Listar Sessões</div>
+                <div>Listar Locais de Estoque</div>
               </div>
             </Link>
 

@@ -64,27 +64,27 @@ export function Menu() {
 
         <NavigationMenuItem>
           <NavigationMenuTrigger className='bg-blue-900'>
-            Sessão
+            Local de Estoque
           </NavigationMenuTrigger>
           <NavigationMenuContent className='z-50'>
             <ul className='grid w-[200px] gap-4'>
               <li>
                 <NavigationMenuLink asChild>
                   <Link
-                    href='/CreateSection'
+                    href={PathLinks.CREATE_STOCK_LOCATION}
                     className='flex-row items-center gap-2'
                   >
                     <GrAddCircle className='text-black' />
-                    <div className='font-medium'>Nova Sessão</div>
+                    <div className='font-medium'>Novo Local de Estoque</div>
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
                   <Link
-                    href='/Section'
+                    href={PathLinks.LIST_STOCK_LOCATIONS}
                     className='flex-row items-center gap-2'
                   >
                     <FaList className='text-black' />
-                    <div className='font-medium'>Listar Sessões</div>
+                    <div className='font-medium'>Listar Locais de Estoque</div>
                   </Link>
                 </NavigationMenuLink>
               </li>
