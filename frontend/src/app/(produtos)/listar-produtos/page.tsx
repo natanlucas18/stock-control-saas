@@ -1,5 +1,5 @@
-import ProductsList from '@/components/products-list';
+import ProductsTable from '@/components/products-table';
 
 export default async function ProductsListPage() {
-  return <ProductsList />;
+  return <ProductsTable pageSize={4} />;
 }
