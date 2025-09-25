@@ -4,7 +4,7 @@ import com.hextech.estoque_api.domain.entities.product.Product;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static com.hextech.estoque_api.domain.entities.MovementType.ENTRADA;
@@ -19,7 +19,7 @@ public class Movement {
     private Long id;
     private MovementType type;
     private BigDecimal quantity;
-    private LocalDate moment;
+    private LocalDateTime moment;
     private String note;
 
     @ManyToOne
@@ -41,7 +41,7 @@ public class Movement {
     public Movement() {
     }
 
-    private Movement(MovementType type, BigDecimal quantity, LocalDate moment, String note, Product product, User user, Company company, StockLocation stockLocation) {
+    private Movement(MovementType type, BigDecimal quantity, LocalDateTime moment, String note, Product product, User user, Company company, StockLocation stockLocation) {
         this.type = type;
         this.quantity = quantity;
         this.moment = moment;
@@ -52,7 +52,7 @@ public class Movement {
         this.stockLocation = stockLocation;
     }
 
-    public static Movement createNewMovement(MovementType type, BigDecimal quantity , LocalDate moment, String note,
+    public static Movement createNewMovement(MovementType type, BigDecimal quantity , LocalDateTime moment, String note,
                                              Product product, User user, Company company, StockLocation stockLocation) {
         BigDecimal zero = BigDecimal.ZERO;
         if (type != ENTRADA && type != SAIDA) throw new IllegalArgumentException("Tipo de movimentação inválida.");
@@ -89,11 +89,11 @@ public class Movement {
         this.quantity = quantity;
     }
 
-    public LocalDate getMoment() {
+    public LocalDateTime getMoment() {
         return moment;
     }
 
-    public void setMoment(LocalDate moment) {
+    public void setMoment(LocalDateTime moment) {
         this.moment = moment;
     }
 

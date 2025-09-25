@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Repository
 public interface MovementRepository extends JpaRepository<Movement, Long> {
@@ -18,5 +18,5 @@ public interface MovementRepository extends JpaRepository<Movement, Long> {
             "AND m.moment BETWEEN :startDate AND :endDate " +
             "ORDER BY m.moment DESC"
     )
-    Page<Movement> searchAllByCompanyIdAndDate(Long companyId, LocalDate startDate, LocalDate endDate, Pageable pageable);
+    Page<Movement> searchAllByCompanyIdAndDate(Long companyId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 }
