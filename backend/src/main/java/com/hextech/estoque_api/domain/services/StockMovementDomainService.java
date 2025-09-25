@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class StockMovementDomainService {
@@ -21,6 +22,6 @@ public class StockMovementDomainService {
             throw new InvalidMovementTypeException("Tipo de movimentação inválida.");
         }
 
-        return Movement.createNewMovement(type, quantity, LocalDate.now(), note, product, user, company, stockLocation);
+        return Movement.createNewMovement(type, quantity, LocalDateTime.now(), note, product, user, company, stockLocation);
     }
 }

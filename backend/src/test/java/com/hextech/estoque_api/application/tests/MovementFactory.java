@@ -5,7 +5,7 @@ import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementRequestDTO;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class MovementFactory {
 
@@ -14,7 +14,7 @@ public class MovementFactory {
         User user = UserFactory.createUser(1L);
         Company company = CompanyFactory.createCompany(1L);
         StockLocation stockLocation = StockLocationFactory.createStockLocation(1L);
-        return Movement.createNewMovement(MovementType.ENTRADA, new BigDecimal(10), LocalDate.now(), "Entrada de teste", product, user, company, stockLocation);
+        return Movement.createNewMovement(MovementType.ENTRADA, new BigDecimal(10), LocalDateTime.now(), "Entrada de teste", product, user, company, stockLocation);
     }
 
     public static Movement createExitMovement() {
@@ -22,7 +22,7 @@ public class MovementFactory {
         User user = UserFactory.createUser(1L);
         Company company = CompanyFactory.createCompany(1L);
         StockLocation stockLocation = StockLocationFactory.createStockLocation(1L);
-        return Movement.createNewMovement(MovementType.SAIDA, new BigDecimal(5), LocalDate.now(), "Saída de teste", product, user, company, stockLocation);
+        return Movement.createNewMovement(MovementType.SAIDA, new BigDecimal(5), LocalDateTime.now(), "Saída de teste", product, user, company, stockLocation);
     }
 
     public static MovementRequestDTO createMovementRequestDTO() {

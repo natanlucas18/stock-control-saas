@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -46,19 +45,18 @@ class AuthServiceTest {
         AccountCredentialsDTO credentials = new AccountCredentialsDTO("test@test.com", "123456");
         User user = UserFactory.createUser(1L);
         String tokenString = "testToken";
-        TokenDTO tokenDTO = new TokenDTO(credentials.getUsername(), new Date(), new Date(System.currentTimeMillis() + 360000), "testToken");
+        TokenDTO tokenDTO = new TokenDTO(tokenString, new Date(), new Date(System.currentTimeMillis() + 360000), user);
 
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
-        when(tokenProvider.createAccessToken(any(), any(), anyLong())).thenReturn(tokenDTO);
+        when(tokenProvider.createAccessToken(any())).thenReturn(tokenDTO);
 
         TokenDTO result = service.login(credentials);
 
         verify(authenticationManager, times(1)).authenticate(any());
         verify(userRepository, times(1)).findByEmail(anyString());
-        verify(tokenProvider, times(1)).createAccessToken(any(), any(), anyLong());
+        verify(tokenProvider, times(1)).createAccessToken(any());
         assertNotNull(result);
         assertEquals(tokenString, result.getAccessToken());
-        assertEquals(credentials.getUsername(), result.getUsername());
     }
 
     @Test
@@ -74,7 +72,7 @@ class AuthServiceTest {
 
         verify(authenticationManager, times(1)).authenticate(any());
         verify(userRepository, times(1)).findByEmail(anyString());
-        verify(tokenProvider, times(0)).createAccessToken(any(), any(), anyLong());
+        verify(tokenProvider, times(0)).createAccessToken(any());
         assertEquals("Usuário " + credentials.getUsername() + " não encontrado.", thrown.getMessage());
     }
 
@@ -91,7 +89,7 @@ class AuthServiceTest {
 
         verify(authenticationManager, times(1)).authenticate(any());
         verify(userRepository, times(0)).findByEmail(anyString());
-        verify(tokenProvider, times(0)).createAccessToken(any(), any(), anyLong());
+        verify(tokenProvider, times(0)).createAccessToken(any());
         assertEquals("Authentication failed", thrown.getMessage());
     }
 }

@@ -1,14 +1,14 @@
 package com.hextech.estoque_api.domain.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ReportPeriod {
 
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
-    public ReportPeriod(LocalDate startDate, LocalDate endDate) {
+    public ReportPeriod(LocalDateTime startDate, LocalDateTime endDate) {
         if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
             throw new IllegalArgumentException("Data de início não pode ser posterior à data de fim.");
         }
@@ -16,19 +16,19 @@ public class ReportPeriod {
         this.endDate = endDate;
     }
 
-    public LocalDate getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 

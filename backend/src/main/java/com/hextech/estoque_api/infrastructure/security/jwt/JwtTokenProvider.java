@@ -21,18 +21,27 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class JwtTokenProvider {
 
-    @Value("${spring.security.jwt.secret-key:secret}")
-    private String secretKey = "secret";
+    @Value("${security.jwt.secret-key}")
+    private String secretKey;
 
-    @Value("${spring.security.jwt.expire-length:3600000}")
-    private long validityInMilliseconds = 3600000; // 1h
+    @Value("${security.jwt.issuer}")
+    private String issuer;
+
+    @Value("${security.jwt.audience}")
+    private String audience;
+
+    @Value("${security.jwt.expire-length}")
+    private long validityInMilliseconds;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -45,11 +54,11 @@ public class JwtTokenProvider {
         algorithm = Algorithm.HMAC256(secretKey.getBytes());
     }
 
-    public TokenDTO createAccessToken(User user, List<String> roles, Long companyId) {
+    public TokenDTO createAccessToken(User user) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
-        String accessToken = getAccessToken(user, roles, now, validity, companyId);
-        return new TokenDTO(user.getUsername(), now, validity, accessToken);
+        String accessToken = getAccessToken(user, now, validity);
+        return new TokenDTO(accessToken, now, validity, user);
     }
 
     public Authentication getAuthentication(String token) {
@@ -76,10 +85,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            DecodedJWT decodedJWT = decodedToken(token);
-            if(decodedJWT.getExpiresAt().before(new Date())) {
-                return false;
-            }
+            decodedToken(token);
             return true;
         } catch (Exception e) {
             throw new InvalidJwtAuthenticationException("Token inválido ou expirado", e);
@@ -92,21 +98,26 @@ public class JwtTokenProvider {
 
     private DecodedJWT decodedToken(String token) {
         Algorithm alg = Algorithm.HMAC256(secretKey.getBytes());
-        JWTVerifier verifier = JWT.require(alg).build();
+        JWTVerifier verifier = JWT.require(alg)
+                .withIssuer(issuer)
+                .withAudience(audience)
+                .build();
         DecodedJWT decodedJWT = verifier.verify(token);
         return decodedJWT;
     }
 
-    private String getAccessToken(User user, List<String> roles, Date now, Date validity, Long companyId) {
-        String issuerURL = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
+    private String getAccessToken(User user, Date now, Date validity) {
         return JWT.create()
-                .withClaim("roles", roles)
-                .withClaim("companyId", companyId)
-                .withClaim("userId", user.getId())
-                .withIssuedAt(now)
-                .withExpiresAt(validity)
                 .withSubject(user.getUsername())
-                .withIssuer(issuerURL)
+                .withIssuer(issuer)
+                .withAudience(audience)
+                .withIssuedAt(now)
+                .withNotBefore(now)
+                .withExpiresAt(validity)
+                .withJWTId(UUID.randomUUID().toString())
+                .withClaim("userId", user.getId())
+                .withClaim("roles", user.getRoleNames())
+                .withClaim("companyId", user.getCompany().getId())
                 .sign(algorithm);
     }
 }

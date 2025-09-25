@@ -1,22 +1,26 @@
 package com.hextech.estoque_api.interfaces.dtos.movements;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hextech.estoque_api.domain.entities.Movement;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductMinDTO;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import com.hextech.estoque_api.interfaces.dtos.users.UserMinDTO;
-import com.hextech.estoque_api.domain.entities.Movement;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class MovementResponseDTO {
 
     private Long id;
     private String type;
     private BigDecimal quantity;
-    private LocalDate moment;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime moment;
     private String note;
     private ProductMinDTO product;
     private UserMinDTO user;
+    @JsonProperty("stock_location")
     private StockLocationDTO stockLocation;
 
     public MovementResponseDTO() {
@@ -57,11 +61,11 @@ public class MovementResponseDTO {
         this.quantity = quantity;
     }
 
-    public LocalDate getMoment() {
+    public LocalDateTime getMoment() {
         return moment;
     }
 
-    public void setMoment(LocalDate moment) {
+    public void setMoment(LocalDateTime moment) {
         this.moment = moment;
     }
 

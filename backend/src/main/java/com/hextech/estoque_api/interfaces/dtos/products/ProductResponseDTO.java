@@ -1,7 +1,9 @@
 package com.hextech.estoque_api.interfaces.dtos.products;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.product.StockStatus;
+import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 
 import java.math.BigDecimal;
 
@@ -11,15 +13,22 @@ public class ProductResponseDTO {
     private String name;
     private BigDecimal price;
     private BigDecimal quantity;
+    @JsonProperty("stock_max")
     private BigDecimal stockMax;
+    @JsonProperty("stock_min")
     private BigDecimal stockMin;
+    @JsonProperty("unit_measure")
     private String unitMeasure;
+    @JsonProperty("stock_location")
+    private StockLocationDTO stockLocation;
+    @JsonProperty("stock_status")
     private StockStatus stockStatus;
 
     public ProductResponseDTO() {
     }
 
-    public ProductResponseDTO(Long id, String name, BigDecimal price, BigDecimal quantity, BigDecimal stockMax, BigDecimal stockMin, String unitMeasure, StockStatus stockStatus) {
+    public ProductResponseDTO(Long id, String name, BigDecimal price, BigDecimal quantity, BigDecimal stockMax,
+                              BigDecimal stockMin, String unitMeasure, StockLocationDTO stockLocation, StockStatus stockStatus) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -27,6 +36,7 @@ public class ProductResponseDTO {
         this.stockMax = stockMax;
         this.stockMin = stockMin;
         this.unitMeasure = unitMeasure;
+        this.stockLocation = stockLocation;
         this.stockStatus = stockStatus;
     }
 
@@ -38,6 +48,7 @@ public class ProductResponseDTO {
         this.stockMax = entity.getStockMax();
         this.stockMin = entity.getStockMin();
         this.unitMeasure = entity.getUnitMeasure().toString();
+        this.stockLocation = new StockLocationDTO(entity.getStockLocation());
         this.stockStatus = entity.checkStockStatus();
     }
 
@@ -95,6 +106,14 @@ public class ProductResponseDTO {
 
     public void setUnitMeasure(String unitMeasure) {
         this.unitMeasure = unitMeasure;
+    }
+
+    public StockLocationDTO getStockLocation() {
+        return stockLocation;
+    }
+
+    public void setStockLocation(StockLocationDTO stockLocation) {
+        this.stockLocation = stockLocation;
     }
 
     public StockStatus getStockStatus() {
