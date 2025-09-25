@@ -1,46 +1,81 @@
 package com.hextech.estoque_api.interfaces.dtos.security;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hextech.estoque_api.domain.entities.User;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 public class TokenDTO {
 
-    private String username;
-    private Date created;
-    private Date expiration;
+    @JsonProperty("user_id")
+    private Long userId;
+    @JsonProperty("user_name")
+    private String userName;
+    @JsonProperty("user_roles")
+    private List<String> userRoles;
+    @JsonProperty("access_token")
     private String accessToken;
+    @JsonProperty("created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime createdAt;
+    @JsonProperty("expires_at")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime expiresAt;
 
     public TokenDTO() {
     }
 
-    public TokenDTO(String username, Date created, Date expiration, String accessToken) {
-        this.username = username;
-        this.created = created;
-        this.expiration = expiration;
+    public TokenDTO(String accessToken, Date createdAt, Date expiresAt, User user) {
+        this.userId = user.getId();
+        this.userName = user.getName();
+        this.userRoles = user.getRoleNames();
         this.accessToken = accessToken;
+        this.createdAt = createdAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        this.expiresAt = expiresAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
-    public String getUsername() {
-        return username;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public Date getCreated() {
-        return created;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public Date getExpiration() {
-        return expiration;
+    public List<String> getUserRoles() {
+        return userRoles;
     }
 
-    public void setExpiration(Date expiration) {
-        this.expiration = expiration;
+    public void setUserRoles(List<String> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(LocalDateTime expiresAt) {
+        this.expiresAt = expiresAt;
     }
 
     public String getAccessToken() {
