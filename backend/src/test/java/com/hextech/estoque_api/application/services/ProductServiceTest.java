@@ -46,17 +46,19 @@ class ProductServiceTest {
     @Test
     @DisplayName("Should return all products paged for the current company")
     void findAllByCompanyIdPagedCase1() {
+        Product product = ProductFactory.createProduct(1L);
+        String productName = product.getName();
         Long companyId = 1L;
         long totalElements = 1;
 
         Pageable pageable = PageRequest.of(0, 8);
-        Page<Product> page = new PageImpl<>(List.of(ProductFactory.createProduct(1L)), pageable, totalElements);
+        Page<Product> page = new PageImpl<>(List.of(product), pageable, totalElements);
 
-        when(repository.findAllByCompanyId(anyLong(), any())).thenReturn(page);
+        when(repository.findAllByNameAndCompanyId(any(), anyLong(), any())).thenReturn(page);
 
-        Page<ProductResponseDTO> result = service.findAllByCompanyId(companyId, pageable);
+        Page<ProductResponseDTO> result = service.findAllByCompanyId(productName, companyId, pageable);
 
-        verify(repository, times(1)).findAllByCompanyId(anyLong(), any());
+        verify(repository, times(1)).findAllByNameAndCompanyId(any(), anyLong(), any());
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
         assertEquals(1, result.getContent().size());

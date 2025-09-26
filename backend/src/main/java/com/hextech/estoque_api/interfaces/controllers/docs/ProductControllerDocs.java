@@ -20,7 +20,7 @@ public interface ProductControllerDocs {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
-    ResponseEntity<StandardResponse<?>> findAllPaged(Pageable pageable);
+    ResponseEntity<StandardResponse<?>> findAllPaged(String name, Pageable pageable);
 
     @Operation(summary = "Busca um produto pelo ID")
     @ApiResponses(value = {
