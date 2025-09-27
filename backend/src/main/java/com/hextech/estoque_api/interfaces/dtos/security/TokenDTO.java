@@ -11,18 +11,12 @@ import java.util.List;
 
 public class TokenDTO {
 
-    @JsonProperty("user_id")
     private Long userId;
-    @JsonProperty("user_name")
     private String userName;
-    @JsonProperty("user_roles")
     private List<String> userRoles;
-    @JsonProperty("access_token")
     private String accessToken;
-    @JsonProperty("created_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
-    @JsonProperty("expires_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime expiresAt;
 
