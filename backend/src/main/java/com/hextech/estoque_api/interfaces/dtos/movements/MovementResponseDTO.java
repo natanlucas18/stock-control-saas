@@ -1,7 +1,6 @@
 package com.hextech.estoque_api.interfaces.dtos.movements;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hextech.estoque_api.domain.entities.Movement;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductMinDTO;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
@@ -20,7 +19,6 @@ public class MovementResponseDTO {
     private String note;
     private ProductMinDTO product;
     private UserMinDTO user;
-    @JsonProperty("stock_location")
     private StockLocationDTO stockLocation;
 
     public MovementResponseDTO() {

@@ -1,6 +1,5 @@
 package com.hextech.estoque_api.interfaces.dtos.products;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.product.StockStatus;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
@@ -13,15 +12,10 @@ public class ProductResponseDTO {
     private String name;
     private BigDecimal price;
     private BigDecimal quantity;
-    @JsonProperty("stock_max")
     private BigDecimal stockMax;
-    @JsonProperty("stock_min")
     private BigDecimal stockMin;
-    @JsonProperty("unit_measure")
     private String unitMeasure;
-    @JsonProperty("stock_location")
     private StockLocationDTO stockLocation;
-    @JsonProperty("stock_status")
     private StockStatus stockStatus;
 
     public ProductResponseDTO() {
