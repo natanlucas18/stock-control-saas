@@ -1,11 +1,7 @@
 'use client';
 
 import { createProduct } from '@/app/requests/products-request';
-import { productFormSchema, ProductFormType } from '@/types/product-schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,17 +9,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from './ui/form';
-import { Input } from './ui/input';
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from './ui/select';
+} from '@/components/ui/select';
+import { productFormSchema, ProductFormType } from '@/types/product-schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 export default function ProductForm() {
+  const router = useRouter();
   const hookForm = useForm<ProductFormType>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
@@ -32,18 +34,23 @@ export default function ProductForm() {
       stockMin: 0,
       stockMax: 0,
       unitMeasure: '',
-      stockLocationId: 0
+      stockLocation: {
+        id: 0
+      }
     }
   });
 
-  const onSubmit = async (data: ProductFormType) => {
-    const result = await createProduct(data);
-    console.log(result);
+  async function onSubmit(formData: ProductFormType) {
+    const { success } = await createProduct(formData);
 
-    if (result.success) toast.success('Produto cadastrado com sucesso!');
+    if (success) {
+      toast.success('Produto cadastrado com sucesso!');
+      hookForm.reset();
+      router.refresh();
+    }
 
-    if (!result.success) toast.error('Erro ao cadastrar produto!');
-  };
+    if (!success) toast.error('Erro ao cadastrar produto!');
+  }
 
   return (
     <div>
@@ -101,7 +108,7 @@ export default function ProductForm() {
                       <SelectValue placeholder='Unidade de Medida' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='UND'>UND</SelectItem>
+                      <SelectItem value='UN'>UN</SelectItem>
                       <SelectItem value='KG'>KG</SelectItem>
                     </SelectContent>
                   </Select>
@@ -113,7 +120,7 @@ export default function ProductForm() {
 
           <FormField
             control={hookForm.control}
-            name='stockLocationId'
+            name='stockLocation.id'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>ID Local do Estoque</FormLabel>

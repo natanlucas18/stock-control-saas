@@ -1,5 +1,15 @@
 export type AuthData = {
-  accessToken: string
+  user_id: string;
+  user_name: string;
+  user_roles: [];
+  access_token: string;
+  created_at: string;
+  expires_at: string;
+};
+
+export type LoginForm = {
+  username: string;
+  password: string;
 };
 
 export type FormLogin = {
@@ -8,27 +18,26 @@ export type FormLogin = {
 };
 
 export type FormDataMovements = {
-  description: string,
-  quantity: number
+  description: string;
+  quantity: number;
 };
 
 export type FormProducts = {
-  description: string,
-  idSession: number,
-  price: number,
-  unitMeasure: string,
-  quantity_min: number,
-  quantity_max: number
+  description: string;
+  idSession: number;
+  price: number;
+  unitMeasure: string;
+  quantity_min: number;
+  quantity_max: number;
 };
 
 export type ProductsData = {
-  id: number,
-  code: number,
-  description: string,
-  idSession: number,
-  price: number,
-  unitMeasure: string,
-  quantity_min: number,
-  quantity_max: number
+  id: number;
+  code: number;
+  description: string;
+  idSession: number;
+  price: number;
+  unitMeasure: string;
+  quantity_min: number;
+  quantity_max: number;
 }[];
-

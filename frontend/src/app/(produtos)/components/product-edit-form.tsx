@@ -1,13 +1,16 @@
 'use client';
 
+import { editProduct } from '@/app/requests/products-request';
 import {
   productFormSchema,
   ProductFormType,
   ProductsData
 } from '@/types/product-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { Button } from './ui/button';
+import { toast } from 'react-toastify';
+import { Button } from '../../../components/ui/button';
 import {
   Form,
   FormControl,
@@ -15,33 +18,39 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from './ui/form';
-import { Input } from './ui/input';
+} from '../../../components/ui/form';
+import { Input } from '../../../components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from './ui/select';
+} from '../../../components/ui/select';
 
 export default function ProductEditForm({
   defaultValues
 }: {
   defaultValues: ProductsData;
 }) {
+  const router = useRouter();
   const hookForm = useForm<ProductFormType>({
     resolver: zodResolver(productFormSchema),
     defaultValues
   });
-  const id = defaultValues.id;
-  const onSubmit = async (data: ProductFormType) => {
-    console.log({ ...data, id });
+  const productId = defaultValues.id;
 
-    // if (result.success) toast.success('Produto cadastrado com sucesso!');
+  async function onSubmit(data: ProductFormType) {
+    const { success } = await editProduct(data, productId);
 
-    // if (!result.success) toast.error('Erro ao cadastrar produto!');
-  };
+    if (success) {
+      toast.success('Produto editado com sucesso!');
+      hookForm.reset();
+      router.refresh();
+    }
+
+    if (!success) toast.error('Erro ao editar produto!');
+  }
 
   return (
     <div>
@@ -99,7 +108,7 @@ export default function ProductEditForm({
                       <SelectValue placeholder='Unidade de Medida' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='UND'>UND</SelectItem>
+                      <SelectItem value='UN'>UN</SelectItem>
                       <SelectItem value='KG'>KG</SelectItem>
                     </SelectContent>
                   </Select>
@@ -111,7 +120,7 @@ export default function ProductEditForm({
 
           <FormField
             control={hookForm.control}
-            name='stockLocationId'
+            name='stockLocation.id'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>ID Local do Estoque</FormLabel>
