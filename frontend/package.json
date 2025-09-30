@@ -3,10 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node ./src/lib/post-dev.js",
+    "dev:run": "npm run services:up && next dev",
+    "postdev": "npm run services:stop",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "services:up": "docker compose -f ../backend/docker-compose.yml up -d",
+    "services:stop": "docker compose -f ../backend/docker-compose.yml stop",
+    "services:down": "docker compose -f ../backend/docker-compose.yml down",
+    "services:build": "docker compose -f ../backend/docker-compose.yml up --build -d"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
