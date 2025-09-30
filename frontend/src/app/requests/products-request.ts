@@ -1,20 +1,18 @@
 'use server';
 
+import { getToken } from '@/lib/get-token';
 import { ProductFormType, ProductsData } from '@/types/product-schema';
-import { ServerDTO } from '@/types/server-dto';
+import { ServerDTO, ServerDTOArray } from '@/types/server-dto';
 import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
-
-const token = (await cookies()).get('AccessToken')?.value || '';
 
 export async function createProduct(data: ProductFormType) {
-  const response = await fetch('http://localhost:3000/api/products', {
+  const response = await fetch('http://localhost:8080/api/products', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${await getToken()}`
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify({ ...data, stockLocationId: data.stockLocation.id })
   });
 
   revalidateTag('products');
@@ -24,11 +22,57 @@ export async function createProduct(data: ProductFormType) {
   return responseData as ServerDTO<ProductsData>;
 }
 
-export async function getAllProducts() {
-  const response = await fetch(`http://localhost:8080/api/products`, {
-    next: { tags: ['products'], revalidate: 60 }
-  });
+export async function editProduct(data: ProductFormType, productId: number) {
+  const response = await fetch(
+    `http://localhost:8080/api/products/${productId}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${await getToken()}`
+      },
+      body: JSON.stringify({ ...data, stockLocationId: data.stockLocation.id })
+    }
+  );
+
+  revalidateTag('products');
+
   const responseData = await response.json();
 
-  return responseData as ServerDTO<ProductsData[]>;
+  return responseData as ServerDTO<ProductsData>;
+}
+
+type Params = {
+  pageSize?: string;
+  pageNumber?: string;
+};
+
+export async function getAllProducts({ pageSize, pageNumber }: Params) {
+  const response = await fetch(
+    `http://localhost:8080/api/products?size=${pageSize}&page=${pageNumber}`,
+    {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`
+      },
+      next: { tags: ['products'], revalidate: 60 }
+    }
+  );
+  const responseData = await response.json();
+
+  return responseData as ServerDTOArray<ProductsData>;
+}
+
+export async function softDeleteProduct(id: number) {
+  const response = await fetch(`http://localhost:8080/api/products/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${await getToken()}`
+    }
+  });
+
+  revalidateTag('products');
+
+  const responseData = await response.json();
+
+  return responseData as ServerDTO<ProductsData>;
 }
