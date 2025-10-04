@@ -63,7 +63,6 @@ import {
   MoreHorizontal
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 type ProductsTableProps = {
@@ -149,14 +148,11 @@ type PaginationTableProps = {
 function PaginationTable({ paginationOptions }: PaginationTableProps) {
   const { totalPages, first, last, pageNumber } = paginationOptions;
   const { setUrlParam } = useUrlParams();
-  const [currentPage, setCurrentPage] = useState(pageNumber);
+  const visiblePages = getVisiblePages(pageNumber, totalPages);
 
   function handlePageChange(pageNumber: number) {
-    setCurrentPage(pageNumber);
     setUrlParam('page', pageNumber.toString());
   }
-
-  const visiblePages = getVisiblePages(pageNumber, totalPages);
 
   return (
     <Pagination>
@@ -165,7 +161,7 @@ function PaginationTable({ paginationOptions }: PaginationTableProps) {
           <Button
             disabled={first}
             onClick={() => {
-              handlePageChange(currentPage - 1);
+              handlePageChange(pageNumber - 1);
             }}
           >
             <ChevronLeftIcon />
@@ -192,7 +188,7 @@ function PaginationTable({ paginationOptions }: PaginationTableProps) {
           <Button
             disabled={last}
             onClick={() => {
-              handlePageChange(currentPage + 1);
+              handlePageChange(pageNumber + 1);
             }}
           >
             Próximo
