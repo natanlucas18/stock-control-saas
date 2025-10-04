@@ -36,7 +36,10 @@ export default function ProductEditForm({
   const router = useRouter();
   const hookForm = useForm<ProductFormType>({
     resolver: zodResolver(productFormSchema),
-    defaultValues
+    defaultValues: {
+      ...defaultValues,
+      stockLocationId: defaultValues.stockLocation.id
+    }
   });
   const productId = defaultValues.id;
 
@@ -120,7 +123,7 @@ export default function ProductEditForm({
 
           <FormField
             control={hookForm.control}
-            name='stockLocation.id'
+            name='stockLocationId'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>ID Local do Estoque</FormLabel>

@@ -12,7 +12,7 @@ export async function createProduct(data: ProductFormType) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${await getToken()}`
     },
-    body: JSON.stringify({ ...data, stockLocationId: data.stockLocation.id })
+    body: JSON.stringify(data)
   });
 
   revalidateTag('products');
@@ -31,7 +31,7 @@ export async function editProduct(data: ProductFormType, productId: number) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${await getToken()}`
       },
-      body: JSON.stringify({ ...data, stockLocationId: data.stockLocation.id })
+      body: JSON.stringify(data)
     }
   );
 

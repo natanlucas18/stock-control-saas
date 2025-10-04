@@ -84,8 +84,13 @@ export function ProductsTable({
             <TableHead className='w-[100px]'>ID</TableHead>
             <TableHead>Produto</TableHead>
             <TableHead>Quantidade</TableHead>
-            <TableHead className='text-right'>Preço</TableHead>
-            <TableHead className='text-right'>Ações</TableHead>
+            <TableHead className='text-left'>Preço</TableHead>
+            <TableHead className='text-left'>Estoque Max</TableHead>
+            <TableHead className='text-left'>Estoque Min</TableHead>
+            <TableHead className='text-left'>Unidade</TableHead>
+            <TableHead className='text-left'>Local</TableHead>
+            <TableHead className='text-left'>Status</TableHead>
+            <TableHead className='text-left'>Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

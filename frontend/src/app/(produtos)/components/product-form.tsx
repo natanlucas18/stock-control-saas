@@ -34,9 +34,7 @@ export default function ProductForm() {
       stockMin: 0,
       stockMax: 0,
       unitMeasure: '',
-      stockLocation: {
-        id: 0
-      }
+      stockLocationId: 0
     }
   });
 
@@ -120,7 +118,7 @@ export default function ProductForm() {
 
           <FormField
             control={hookForm.control}
-            name='stockLocation.id'
+            name='stockLocationId'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>ID Local do Estoque</FormLabel>
