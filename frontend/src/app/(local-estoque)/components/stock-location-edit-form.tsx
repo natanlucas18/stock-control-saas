@@ -1,8 +1,12 @@
 'use client';
-import { StockLocationsData, stockLocationsFormSchema, StockLocationsFormType } from '@/types/stock-location-schema';
+import {
+  StockLocationsData,
+  stockLocationsFormSchema,
+  StockLocationsFormType
+} from '@/types/stock-location-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Button } from './ui/button';
+import { Button } from '../../../components/ui/button';
 import {
   Form,
   FormControl,
@@ -10,22 +14,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from './ui/form';
-import { Input } from './ui/input';
+} from '../../../components/ui/form';
+import { Input } from '../../../components/ui/input';
 
-export default function StockLocationEditForm({defaultValues}:{defaultValues:StockLocationsData}) {
+export default function StockLocationEditForm({
+  defaultValues
+}: {
+  defaultValues: StockLocationsData;
+}) {
   const hookForm = useForm<StockLocationsFormType>({
     resolver: zodResolver(stockLocationsFormSchema),
     defaultValues
   });
-    const id = defaultValues.id;
-    const onSubmit = async (data: StockLocationsFormType) => {
-      console.log({ ...data, id });
-  
-      // if (result.success) toast.success('Alteração feita com sucesso!');
-  
-      // if (!result.success) toast.error('Erro ao salvar alteração!');
-    };
+  const id = defaultValues.id;
+  const onSubmit = async (data: StockLocationsFormType) => {
+    console.log({ ...data, id });
+
+    // if (result.success) toast.success('Alteração feita com sucesso!');
+
+    // if (!result.success) toast.error('Erro ao salvar alteração!');
+  };
 
   return (
     <div>

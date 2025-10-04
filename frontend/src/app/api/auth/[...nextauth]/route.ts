@@ -1,11 +1,12 @@
 import { login } from '@/app/requests/login-request';
+import { PathLinks } from '@/types/path-links';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { cookies } from 'next/headers';
 
 const handler = NextAuth({
   pages: {
-    signIn: '/Login'
+    signIn: PathLinks.LOGIN
   },
   providers: [
     CredentialsProvider({
@@ -26,13 +27,13 @@ const handler = NextAuth({
 
           if (!success) return null;
 
-          await setToken(data.access_token);
+          await setToken(data.accessToken);
 
           return {
-            id: data.user_id,
-            name: data.user_name
+            id: data.userId,
+            name: data.userName
           };
-        } catch (e) {
+        } catch {
           return null;
         }
       }
@@ -41,7 +42,7 @@ const handler = NextAuth({
 });
 
 async function setToken(token: string) {
-  (await cookies()).set('access_token', token);
+  (await cookies()).set('accessToken', token);
 }
 
 export { handler as GET, handler as POST };

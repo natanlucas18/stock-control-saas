@@ -1,4 +1,4 @@
-import StockLocationEditForm from '@/components/stock-location-edit-form';
+import StockLocationEditForm from '@/app/(local-estoque)/components/stock-location-edit-form';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -73,7 +73,11 @@ export const columns: ColumnDef<StockLocationsData>[] = [
   }
 ];
 
-function EditStockLocationDialog({ stockLocation }: { stockLocation: StockLocationsData }) {
+function EditStockLocationDialog({
+  stockLocation
+}: {
+  stockLocation: StockLocationsData;
+}) {
   return (
     <Dialog>
       <DialogTrigger>Editar</DialogTrigger>

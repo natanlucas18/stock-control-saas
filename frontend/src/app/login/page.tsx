@@ -1,5 +1,6 @@
 'use client';
-import { FormLogin } from '@/types/types';
+import { LoginForm } from '@/types/login-schema';
+import { PathLinks } from '@/types/path-links';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
@@ -15,14 +16,14 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm<FormLogin>({
+  } = useForm<LoginForm>({
     resolver: zodResolver(schema)
   });
 
-  const onSubmit = async (data: FormLogin) => {
+  const onSubmit = async (data: LoginForm) => {
     signIn('credentials', {
       ...data,
-      callbackUrl: '/Home'
+      callbackUrl: PathLinks.DASHBOARD
     });
   };
   return (
