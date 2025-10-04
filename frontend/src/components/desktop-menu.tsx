@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import { PathLinks } from '@/types/path-links';
 
-export function Menu() {
+export function DesktopMenu() {
   return (
     <NavigationMenu
       viewport={false}
