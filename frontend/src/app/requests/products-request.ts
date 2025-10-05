@@ -43,8 +43,8 @@ export async function editProduct(data: ProductFormType, productId: number) {
 }
 
 type Params = {
-  pageSize?: string;
-  pageNumber?: string;
+  pageSize?: number;
+  pageNumber?: number;
 };
 
 export async function getAllProducts({ pageSize, pageNumber }: Params) {

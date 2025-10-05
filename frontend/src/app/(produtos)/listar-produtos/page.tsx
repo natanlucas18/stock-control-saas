@@ -1,10 +1,10 @@
 import { getAllProducts } from '@/app/requests/products-request';
-import { ProductsTable } from './products-table';
+import { ProductsTable } from '../components/products-table';
 
 export default async function ProductsListPage({
   searchParams
 }: {
-  searchParams?: Promise<{ size?: string; page?: string }>;
+  searchParams?: Promise<{ size?: number; page?: number }>;
 }) {
   const params = await searchParams;
   const { data } = await getAllProducts({
