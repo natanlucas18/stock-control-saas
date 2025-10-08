@@ -1,4 +1,6 @@
-import Navbar from '@/components/navbar';
+'use client';
+import AppSidebar from '@/components/app-sidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
@@ -30,10 +32,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
-        <ToastContainer />
-        {children}
+        <SidebarProvider>
+          <AppSidebar />
+          <main className='flex-1 p-4'>
+            <div className='p-2'>
+              <SidebarTrigger />
+            </div>
+            <ToastContainer />
+            {children}
+          </main>
+        </SidebarProvider>
       </body>
     </html>
+
   );
 }
+
