@@ -1,5 +1,22 @@
-import StockLocationsTable from '@/app/(local-estoque)/components/stock-locations-table';
+import { getAllStockLocations } from '@/app/requests/stock-location-request';
+import { StockLocationsTable } from './local-estoque-table';
 
-export default async function StockLocationListPage() {
-  return <StockLocationsTable pageSize={4} />;
+export default async function StockLocationsListPage({
+  searchParams
+}: {
+  searchParams?: Promise<{ size?: string; page?: string }>;
+}) {
+  const params = await searchParams;
+  const { data } = await getAllStockLocations({
+    pageSize: params?.size,
+    pageNumber: params?.page
+  });
+  const { content: locations, pagination } = data || {};
+
+  return (
+    <StockLocationsTable
+      products={locations}
+      paginationOptions={pagination}
+    />
+  );
 }

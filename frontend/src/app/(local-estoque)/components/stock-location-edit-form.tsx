@@ -1,11 +1,14 @@
 'use client';
+import { updateStockLocation } from '@/app/requests/stock-location-request';
 import {
   StockLocationsData,
   stockLocationsFormSchema,
   StockLocationsFormType
 } from '@/types/stock-location-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { Button } from '../../../components/ui/button';
 import {
   Form,
@@ -22,17 +25,23 @@ export default function StockLocationEditForm({
 }: {
   defaultValues: StockLocationsData;
 }) {
+  const router = useRouter();
   const hookForm = useForm<StockLocationsFormType>({
     resolver: zodResolver(stockLocationsFormSchema),
     defaultValues
   });
   const id = defaultValues.id;
   const onSubmit = async (data: StockLocationsFormType) => {
-    console.log({ ...data, id });
+      const {success} = await updateStockLocation(id, data);
 
-    // if (result.success) toast.success('Alteração feita com sucesso!');
-
-    // if (!result.success) toast.error('Erro ao salvar alteração!');
+      if(success) {
+        toast.success('Local de estoque editado com sucesso!')
+        hookForm.reset()
+        router.refresh()
+      }
+      if(!success) {
+        toast.error('Erro ao editar local de estoque!');
+      }
   };
 
   return (
