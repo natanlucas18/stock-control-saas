@@ -1,7 +1,8 @@
 'use server';
 
+import { LoginForm } from '@/types/login-schema';
 import { ServerDTO } from '@/types/server-dto';
-import { AuthData, LoginForm } from '@/types/types';
+import { User } from '@/types/user-schema';
 
 export async function login(formData: LoginForm) {
   const response = await fetch('http://localhost:8080/auth/login', {
@@ -11,5 +12,5 @@ export async function login(formData: LoginForm) {
   });
   const responseData = await response.json();
 
-  return responseData as ServerDTO<AuthData>;
+  return responseData as ServerDTO<User>;
 }

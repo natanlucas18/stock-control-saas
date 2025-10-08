@@ -27,7 +27,8 @@ const handler = NextAuth({
 
           if (!success) return null;
 
-          await setToken(data.accessToken);
+          await setCookie('accessToken', data.accessToken);
+          await setCookie('userRoles', JSON.stringify(data.userRoles));
 
           return {
             id: data.userId,
@@ -41,8 +42,8 @@ const handler = NextAuth({
   ]
 });
 
-async function setToken(token: string) {
-  (await cookies()).set('accessToken', token);
+async function setCookie(key: string, value: string) {
+  (await cookies()).set(key, value);
 }
 
 export { handler as GET, handler as POST };
