@@ -1,37 +1,83 @@
 'use server';
 
+import { getToken } from '@/lib/get-token';
 import { ServerDTO } from '@/types/server-dto';
-import { StockLocationsData, StockLocationsFormType } from '@/types/stock-location-schema';
+import {
+  StockLocationsData,
+  StockLocationsFormType
+} from '@/types/stock-location-schema';
 import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
-
-const token = (await cookies()).get('AccessToken')?.value || '';
-
 export async function createStockLocations(data: StockLocationsFormType) {
   const response = await fetch('http://localhost:8080/api/stock-locations', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${await getToken()}`
     },
     body: JSON.stringify(data)
   });
 
-  revalidateTag('products');
+  revalidateTag('locations');
 
   const responseData = await response.json();
 
   return responseData as ServerDTO<StockLocationsData>;
 }
 
-export async function getAllStockLocations() {
-  const response = await fetch(`http://localhost:8080/api/products`, {
-    headers: {
-      'Authorization': `Bearer ${token}`
-    },
-    next: { tags: ['products'], revalidate: 60 }
-  });
+type Params = {
+  pageSize?: string;
+  pageNumber?: string;
+};
+
+export async function getAllStockLocations({ pageSize, pageNumber }: Params) {
+  const response = await fetch(
+    `http://localhost:8080/api/stock-locations?size=${pageSize}&page=${pageNumber}`,
+    {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`
+      },
+      next: { tags: ['locations'], revalidate: 60 }
+    }
+  );
   const responseData = await response.json();
 
   return responseData as ServerDTO<StockLocationsData[]>;
+}
+
+export async function updateStockLocation(
+  id: number,
+  data: StockLocationsFormType
+) {
+  const response = await fetch(
+    `http://localhost:8080/api/stock-locations/${id}`,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }
+  );
+  revalidateTag('locations');
+
+  const responseData = await response.json();
+
+  return responseData as ServerDTO<StockLocationsData>;
+}
+
+export async function deleteStockLocation(id: number) {
+  const response = await fetch(
+    `http://localhost:8080/api/stock-locations/${id}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${await getToken()}`
+      }
+    }
+  );
+  revalidateTag('locations');
+  const responseData = await response.json();
+
+  return responseData as ServerDTO<StockLocationsData>;
 }
