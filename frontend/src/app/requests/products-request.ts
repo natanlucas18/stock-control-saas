@@ -45,11 +45,18 @@ export async function editProduct(data: ProductFormType, productId: number) {
 type Params = {
   pageSize?: number;
   pageNumber?: number;
+  search?: string;
+  sort?: string;
 };
 
-export async function getAllProducts({ pageSize, pageNumber }: Params) {
+export async function getAllProducts({
+  sort = '',
+  pageSize,
+  pageNumber,
+  search = ''
+}: Params) {
   const response = await fetch(
-    `http://localhost:8080/api/products?size=${pageSize}&page=${pageNumber}`,
+    `http://localhost:8080/api/products?sort=${sort}&size=${pageSize}&page=${pageNumber}&name=${search}`,
     {
       headers: {
         Authorization: `Bearer ${await getToken()}`

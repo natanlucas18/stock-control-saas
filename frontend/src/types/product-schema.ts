@@ -1,4 +1,5 @@
 import z from 'zod';
+import { StockLocationsData } from './stock-location-schema';
 
 export type ProductsData = {
   id: number;
@@ -8,10 +9,7 @@ export type ProductsData = {
   stockMax: number;
   stockMin: number;
   unitMeasure: string;
-  stockLocation: {
-    id: number;
-    name: string;
-  };
+  stockLocation: StockLocationsData;
   stockStatus: {
     level: string;
     message: string;
