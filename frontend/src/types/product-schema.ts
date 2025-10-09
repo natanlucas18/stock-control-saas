@@ -1,4 +1,5 @@
 import z from 'zod';
+import { StockLocationsData } from './stock-location-schema';
 
 export type ProductsData = {
   id: number;
@@ -8,10 +9,7 @@ export type ProductsData = {
   stockMax: number;
   stockMin: number;
   unitMeasure: string;
-  stockLocation: {
-    id: number;
-    name: string;
-  };
+  stockLocation: StockLocationsData;
   stockStatus: {
     level: string;
     message: string;
@@ -28,11 +26,9 @@ export const productFormSchema = z.object({
     .number<number>()
     .min(1, 'Insira uma quantidade máxima para o produto!'),
   unitMeasure: z.string().min(1, 'Insira a unidade de medida do produto!'),
-  stockLocation: z.object({
-    id: z.coerce
-      .number<number>()
-      .min(1, 'Insira o local de estoque do produto!')
-  })
+  stockLocationId: z.coerce
+    .number<number>()
+    .min(1, 'Insira o local de estoque do produto!')
 });
 
 export type ProductFormType = z.infer<typeof productFormSchema>;

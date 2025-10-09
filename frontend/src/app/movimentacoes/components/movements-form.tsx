@@ -1,6 +1,6 @@
 'use client';
 
-import { createProduct } from '@/app/requests/products-request';
+import { createMovements } from '@/app/requests/movements-request';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -18,35 +18,38 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { productFormSchema, ProductFormType } from '@/types/product-schema';
+import {
+  movementsFormSchema,
+  MovementsFormType
+} from '@/types/movements-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { MovementsPopover } from './movements-popover';
 
-export default function ProductForm() {
+export default function MovementsForm() {
   const router = useRouter();
-  const hookForm = useForm<ProductFormType>({
-    resolver: zodResolver(productFormSchema),
+  const hookForm = useForm<MovementsFormType>({
+    resolver: zodResolver(movementsFormSchema),
     defaultValues: {
-      name: '',
-      price: 0,
-      stockMin: 0,
-      stockMax: 0,
-      unitMeasure: '',
+      type: 'ENTRADA',
+      quantity: 0,
+      note: '',
+      productId: 0,
       stockLocationId: 0
     }
   });
 
-  async function onSubmit(formData: ProductFormType) {
-    const { success } = await createProduct(formData);
+  async function onSubmit(formData: MovementsFormType) {
+    const { success, data } = await createMovements(formData);
+    console.log(data);
 
     if (success) {
       toast.success('Produto cadastrado com sucesso!');
       hookForm.reset();
       router.refresh();
     }
-
     if (!success) toast.error('Erro ao cadastrar produto!');
   }
 
@@ -59,10 +62,66 @@ export default function ProductForm() {
         >
           <FormField
             control={hookForm.control}
-            name='name'
+            name='type'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nome</FormLabel>
+                <FormLabel>Tipo</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <SelectTrigger className='w-[180px]'>
+                      <SelectValue placeholder='Unidade de Medida' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='ENTRADA'>ENTRADA</SelectItem>
+                      <SelectItem value='SAIDA'>SAIDA</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={hookForm.control}
+            name='productId'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Produto</FormLabel>
+                <FormControl>
+                  <MovementsPopover onChange={field.onChange} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={hookForm.control}
+            name='quantity'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantidade</FormLabel>
+                <FormControl>
+                  <Input
+                    type='number'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={hookForm.control}
+            name='note'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Observações</FormLabel>
                 <FormControl>
                   <Input
                     type='text'
@@ -76,52 +135,10 @@ export default function ProductForm() {
 
           <FormField
             control={hookForm.control}
-            name='price'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Preço</FormLabel>
-                <FormControl>
-                  <Input
-                    type='number'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={hookForm.control}
-            name='unitMeasure'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Unidade de Medida</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Unidade de Medida' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='UN'>UN</SelectItem>
-                      <SelectItem value='KG'>KG</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={hookForm.control}
             name='stockLocationId'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ID Local do Estoque</FormLabel>
+                <FormLabel>ID do Estoque</FormLabel>
                 <FormControl>
                   <Input
                     type='number'
@@ -133,41 +150,7 @@ export default function ProductForm() {
             )}
           />
 
-          <FormField
-            control={hookForm.control}
-            name='stockMin'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Quantidade Mínima</FormLabel>
-                <FormControl>
-                  <Input
-                    type='number'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={hookForm.control}
-            name='stockMax'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Quantidade Máximo</FormLabel>
-                <FormControl>
-                  <Input
-                    type='number'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button type='submit'>Salvar Produto</Button>
+          <Button type='submit'>Enviar</Button>
         </form>
       </Form>
     </div>
