@@ -6,6 +6,7 @@ export enum PathLinks {
   LIST_STOCK_LOCATIONS = '/listar-locais-estoque',
   CREATE_STOCK_LOCATION = '/criar-local-estoque',
   LOGIN = '/login',
+  REGISTER = '/register',
   MOVEMENTS = '/movimentacoes',
   REPORTS = '/relatorios',
   USERS = '/usuarios'
