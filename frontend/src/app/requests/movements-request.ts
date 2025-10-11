@@ -1,6 +1,6 @@
 'use server';
 
-import { getToken } from '@/lib/get-token';
+import { getCookie } from '@/lib/get-token';
 import { MovementsData, MovementsFormType } from '@/types/movements-schema';
 import { ServerDTO } from '@/types/server-dto';
 import { revalidateTag } from 'next/cache';
@@ -10,7 +10,7 @@ export async function createMovements(formData: MovementsFormType) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${await getToken()}`
+      Authorization: `Bearer ${await getCookie('accessToken')}`
     },
     body: JSON.stringify(formData)
   });

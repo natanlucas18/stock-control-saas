@@ -2,6 +2,6 @@
 
 import { cookies } from 'next/headers';
 
-export async function getToken() {
-  return (await cookies()).get('accessToken')?.value || '';
+export async function getCookie(key: string) {
+  return (await cookies()).get(key)?.value || '';
 }
