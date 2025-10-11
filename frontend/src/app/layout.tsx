@@ -1,6 +1,6 @@
-'use client';
 import AppSidebar from '@/components/app-sidebar';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { getServerSession } from 'next-auth';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,11 +16,13 @@ const geistMono = Geist_Mono({
   subsets: ['latin']
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession();
+
   return (
     <html lang='pt-br'>
       <body
@@ -29,8 +31,9 @@ export default function RootLayout({
         <SidebarProvider>
           <AppSidebar />
           <main className='flex-1 p-4'>
-            <div className='p-2'>
+            <div className='flex p-2 gap-2.5 justify-between items-center'>
               <SidebarTrigger />
+              <h1>{session?.user?.name}</h1>
             </div>
             <ToastContainer />
             {children}
@@ -38,7 +41,5 @@ export default function RootLayout({
         </SidebarProvider>
       </body>
     </html>
-
   );
 }
-
