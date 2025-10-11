@@ -15,7 +15,7 @@ export default async function StockLocationsListPage({
 
   return (
     <StockLocationsTable
-      products={locations}
+      locations={locations}
       paginationOptions={pagination}
     />
   );

@@ -43,7 +43,6 @@ export default function MovementsForm() {
 
   async function onSubmit(formData: MovementsFormType) {
     const { success, data } = await createMovements(formData);
-    console.log(data);
 
     if (success) {
       toast.success('Produto cadastrado com sucesso!');
