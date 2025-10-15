@@ -1,4 +1,4 @@
-import { getAllProducts } from '@/app/requests/products-request';
+import { getAllProducts } from '@/app/services/products-service';
 import { ProductsTable } from '../components/products-table';
 
 type UrlParams = {

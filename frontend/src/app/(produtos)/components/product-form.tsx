@@ -1,6 +1,6 @@
 'use client';
 
-import { createProduct } from '@/app/requests/products-request';
+import { createProduct } from '@/app/services/products-service';
 import { Button } from '@/components/ui/button';
 import {
   Form,

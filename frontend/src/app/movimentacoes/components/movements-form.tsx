@@ -1,6 +1,6 @@
 'use client';
 
-import { createMovements } from '@/app/requests/movements-request';
+import { createMovements } from '@/app/services/movements-request';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -49,6 +49,7 @@ export default function MovementsForm() {
       hookForm.reset();
       router.refresh();
     }
+
     if (!success) toast.error('Erro ao cadastrar produto!');
   }
 

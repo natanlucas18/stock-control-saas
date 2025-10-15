@@ -1,4 +1,4 @@
-import { getAllStockLocations } from '@/app/requests/stock-location-request';
+import { getAllStockLocations } from '@/app/services/stock-location-request';
 import { StockLocationsTable } from './local-estoque-table';
 
 export default async function StockLocationsListPage({

@@ -1,5 +1,5 @@
 'use client';
-import { updateStockLocation } from '@/app/requests/stock-location-request';
+import { updateStockLocation } from '@/app/services/stock-location-request';
 import {
   StockLocationsData,
   stockLocationsFormSchema,
@@ -32,16 +32,16 @@ export default function StockLocationEditForm({
   });
   const id = defaultValues.id;
   const onSubmit = async (data: StockLocationsFormType) => {
-      const {success} = await updateStockLocation(id, data);
+    const { success } = await updateStockLocation(id, data);
 
-      if(success) {
-        toast.success('Local de estoque editado com sucesso!')
-        hookForm.reset()
-        router.refresh()
-      }
-      if(!success) {
-        toast.error('Erro ao editar local de estoque!');
-      }
+    if (success) {
+      toast.success('Local de estoque editado com sucesso!');
+      hookForm.reset();
+      router.refresh();
+    }
+    if (!success) {
+      toast.error('Erro ao editar local de estoque!');
+    }
   };
 
   return (
