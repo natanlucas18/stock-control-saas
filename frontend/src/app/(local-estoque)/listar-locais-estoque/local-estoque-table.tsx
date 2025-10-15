@@ -1,7 +1,7 @@
 'use client';
 
 import { useUrlParams } from '@/app/hooks/use-url-params';
-import { deleteStockLocation } from '@/app/requests/stock-location-request';
+import { deleteStockLocation } from '@/app/services/stock-location-request';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -217,7 +217,11 @@ function ProductsDropdownMenu({ location }: { location: StockLocationsData }) {
   );
 }
 
-function EditStockLocationDialog({ location }: { location: StockLocationsData }) {
+function EditStockLocationDialog({
+  location
+}: {
+  location: StockLocationsData;
+}) {
   return (
     <Dialog>
       <DialogTrigger>Editar</DialogTrigger>

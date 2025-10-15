@@ -1,6 +1,6 @@
 'use client';
 
-import { getAllProducts } from '@/app/requests/products-request';
+import { useProducts } from '@/app/hooks/use-products';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -26,33 +26,24 @@ import { getVisiblePages } from '@/lib/utils';
 import { ProductsData } from '@/types/product-schema';
 import { PaginationOptions } from '@/types/server-dto';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 type MovementsPopoverProps = {
   onChange: (value: number) => void;
 };
 
 export function MovementsPopover({ onChange }: MovementsPopoverProps) {
-  const [open, setOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Pick<
     ProductsData,
     'id' | 'name' | 'quantity'
   > | null>(null);
+  const [open, setOpen] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
-  const [products, setProducts] = useState<ProductsData[]>([]);
-  const [paginationOptions, setPaginationOptions] =
-    useState<PaginationOptions>();
-  const [search, setSearch] = useState(''); //estado que vai armazenar os dados no input search e setar na função getAllProducts({ search }). O setSeach será aplicado no onChageValue do Command
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      getAllProducts({ pageNumber, search, pageSize: 10 }).then((response) => {
-        setProducts(response.data.content);
-        setPaginationOptions(response.data.pagination);
-      });
-    }, 400);
-    return () => clearTimeout(timeout);
+  const [search, setSearch] = useState('');
+  const params = useMemo(() => {
+    return { pageNumber, search, pageSize: 10 };
   }, [pageNumber, search]);
+  const { products, paginationOptions } = useProducts(params);
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import { login } from '@/app/requests/login-request';
+import { login } from '@/app/services/login-request';
 import { PathLinks } from '@/types/path-links';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';

@@ -1,6 +1,6 @@
 'use client';
 
-import { editProduct } from '@/app/requests/products-request';
+import { editProduct } from '@/app/services/products-service';
 import {
   productFormSchema,
   ProductFormType,

@@ -2,7 +2,7 @@
 
 import ProductEditForm from '@/app/(produtos)/components/product-edit-form';
 import { useUrlParams } from '@/app/hooks/use-url-params';
-import { softDeleteProduct } from '@/app/requests/products-request';
+import { softProductDelete } from '@/app/services/products-service';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -248,7 +248,7 @@ function EditProductDialog({ product }: { product: ProductsData }) {
 function DeleteProductAlert({ productId }: { productId: number }) {
   const router = useRouter();
   async function onDelete(id: number) {
-    const { success } = await softDeleteProduct(id);
+    const { success } = await softProductDelete(id);
 
     if (success) {
       toast.success('Produto excluído com sucesso');

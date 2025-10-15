@@ -1,6 +1,13 @@
 import z from 'zod';
 import { StockLocationsData } from './stock-location-schema';
 
+export type ProductParams = {
+  pageSize?: number;
+  pageNumber?: number;
+  search?: string;
+  sort?: string;
+};
+
 export type ProductsData = {
   id: number;
   name: string;

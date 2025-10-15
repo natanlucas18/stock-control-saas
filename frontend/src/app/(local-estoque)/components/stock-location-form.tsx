@@ -1,6 +1,6 @@
 'use client';
 
-import { createStockLocations } from '@/app/requests/stock-location-request';
+import { createStockLocations } from '@/app/services/stock-location-request';
 import {
   stockLocationsFormSchema,
   StockLocationsFormType
