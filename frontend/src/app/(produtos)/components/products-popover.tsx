@@ -27,22 +27,26 @@ import { ProductsData } from '@/types/product-schema';
 import { PaginationOptions } from '@/types/server-dto';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useDebounce } from 'use-debounce';
 
-type MovementsPopoverProps = {
+type ProductsPopoverProps = {
   onChange: (value: number) => void;
 };
 
-export function MovementsPopover({ onChange }: MovementsPopoverProps) {
+export function ProductsPopover({ onChange }: ProductsPopoverProps) {
   const [selectedProduct, setSelectedProduct] = useState<Pick<
     ProductsData,
     'id' | 'name' | 'quantity'
   > | null>(null);
   const [open, setOpen] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
+
   const [search, setSearch] = useState('');
+  const [searchValue] = useDebounce(search, 500);
+
   const params = useMemo(() => {
-    return { pageNumber, search, pageSize: 10 };
-  }, [pageNumber, search]);
+    return { pageNumber, search: searchValue, pageSize: 10 };
+  }, [pageNumber, searchValue]);
   const { products, paginationOptions } = useProducts(params);
 
   return (
