@@ -10,16 +10,14 @@ import {
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
+  AlertDialogTitle
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger
+  DialogTitle
 } from '@/components/ui/dialog';
 import {
   DropdownMenu,
@@ -63,6 +61,7 @@ import {
   MoreHorizontal
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 type ProductsTableProps = {
@@ -81,14 +80,10 @@ export function ProductsTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className='w-[100px]'>ID</TableHead>
+            <TableHead className='w-[100px]'>Código</TableHead>
             <TableHead>Produto</TableHead>
             <TableHead>Quantidade</TableHead>
-            <TableHead className='text-left'>Preço</TableHead>
-            <TableHead className='text-left'>Estoque Max</TableHead>
-            <TableHead className='text-left'>Estoque Min</TableHead>
             <TableHead className='text-left'>Unidade</TableHead>
-            <TableHead className='text-left'>Local</TableHead>
             <TableHead className='text-left'>Status</TableHead>
             <TableHead className='text-left'>Ações</TableHead>
           </TableRow>
@@ -99,11 +94,7 @@ export function ProductsTable({
               <TableCell>{product.id}</TableCell>
               <TableCell>{product.name}</TableCell>
               <TableCell>{product.quantity}</TableCell>
-              <TableCell>{product.price}</TableCell>
-              <TableCell>{product.stockMax}</TableCell>
-              <TableCell>{product.stockMin}</TableCell>
               <TableCell>{product.unitMeasure}</TableCell>
-              <TableCell>{product.stockLocation.name}</TableCell>
               <TableCell>{product.stockStatus.message}</TableCell>
               <TableCell>
                 <ProductsDropdownMenu product={product} />
@@ -206,35 +197,68 @@ function PaginationTable({ paginationOptions }: PaginationTableProps) {
 }
 
 function ProductsDropdownMenu({ product }: { product: ProductsData }) {
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDeletAlert, setOpenDeletAlert] = useState(false);
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant='ghost'
-          className='h-8 w-8 p-0'
-        >
-          <MoreHorizontal className='h-4 w-4' />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(product.id.toString())}
-        >
-          Copiar ID
-        </DropdownMenuItem>
-        <EditProductDialog product={product} />
-        <DropdownMenuSeparator />
-        <DeleteProductAlert productId={product.id} />
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant='ghost'
+            className='h-8 w-8 p-0'
+          >
+            <MoreHorizontal className='h-4 w-4' />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align='end'>
+          <DropdownMenuLabel>Ações</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() => navigator.clipboard.writeText(product.id.toString())}
+          >
+            Copiar Código
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setOpenEditDialog(true)}>
+            Editar
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            variant='destructive'
+            onSelect={() => setOpenDeletAlert(true)}
+          >
+            Excluir
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <DeleteProductAlert
+        productId={product.id}
+        open={openDeletAlert}
+        onOpenChange={setOpenDeletAlert}
+      />
+      <EditProductDialog
+        product={product}
+        open={openEditDialog}
+        onOpenChange={setOpenEditDialog}
+      />
+    </>
   );
 }
 
-function EditProductDialog({ product }: { product: ProductsData }) {
+function EditProductDialog({
+  product,
+  open,
+  onOpenChange
+}: {
+  product: ProductsData;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   return (
-    <Dialog>
-      <DialogTrigger>Editar</DialogTrigger>
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Editar Produto</DialogTitle>
@@ -245,7 +269,15 @@ function EditProductDialog({ product }: { product: ProductsData }) {
   );
 }
 
-function DeleteProductAlert({ productId }: { productId: number }) {
+function DeleteProductAlert({
+  productId,
+  open,
+  onOpenChange
+}: {
+  productId: number;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const router = useRouter();
   async function onDelete(id: number) {
     const { success } = await softProductDelete(id);
@@ -261,8 +293,10 @@ function DeleteProductAlert({ productId }: { productId: number }) {
   }
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger>Excluir</AlertDialogTrigger>
+    <AlertDialog
+      open={open}
+      onOpenChange={onOpenChange}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Tem certeza que deseja excluir?</AlertDialogTitle>
