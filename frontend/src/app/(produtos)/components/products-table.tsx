@@ -27,6 +27,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Pagination,
   PaginationContent,
@@ -63,6 +64,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useDebouncedCallback } from 'use-debounce';
 
 type ProductsTableProps = {
   products: ProductsData[];
@@ -77,6 +79,7 @@ export function ProductsTable({
   return (
     <>
       <PageSizeFilter />
+      <SearchInput />
       <Table>
         <TableHeader>
           <TableRow>
@@ -107,6 +110,24 @@ export function ProductsTable({
         <PaginationTable paginationOptions={paginationOptions} />
       )}
     </>
+  );
+}
+
+function SearchInput() {
+  const { setUrlParam } = useUrlParams();
+  const debouncedState = useDebouncedCallback((value: string) => {
+    setUrlParam('name', value);
+  }, 500);
+
+  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
+    debouncedState(e.target.value);
+  }
+
+  return (
+    <Input
+      placeholder='Pesquisar'
+      onChange={handleSearch}
+    />
   );
 }
 
