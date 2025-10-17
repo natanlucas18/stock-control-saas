@@ -91,7 +91,7 @@ export function ProductsTable({
         <TableBody>
           {products.map((product) => (
             <TableRow key={product.id}>
-              <TableCell>{product.id}</TableCell>
+              <TableCell>{product.code}</TableCell>
               <TableCell>{product.name}</TableCell>
               <TableCell>{product.quantity}</TableCell>
               <TableCell>{product.unitMeasure}</TableCell>
@@ -214,7 +214,7 @@ function ProductsDropdownMenu({ product }: { product: ProductsData }) {
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Ações</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(product.id.toString())}
+            onClick={() => navigator.clipboard.writeText(product.code)}
           >
             Copiar Código
           </DropdownMenuItem>

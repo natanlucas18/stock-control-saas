@@ -10,6 +10,7 @@ export type ProductParams = {
 
 export type ProductsData = {
   id: number;
+  code: string;
   name: string;
   quantity: number;
   price: number;
@@ -24,6 +25,7 @@ export type ProductsData = {
 };
 
 export const productFormSchema = z.object({
+  code: z.string().min(1, 'Insira um código do produto!'),
   name: z.string().min(1, 'Insira uma descrição para o produto!'),
   price: z.coerce.number<number>().min(1, 'Insira o preço do produto!'),
   stockMin: z.coerce
