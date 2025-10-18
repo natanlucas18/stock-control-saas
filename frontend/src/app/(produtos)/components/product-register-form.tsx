@@ -24,7 +24,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-export default function ProductForm() {
+export default function ProductRegisterForm() {
   const router = useRouter();
   const hookForm = useForm<ProductFormType>({
     resolver: zodResolver(productFormSchema),
