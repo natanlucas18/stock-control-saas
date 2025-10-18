@@ -57,8 +57,11 @@ import { ProductsData } from '@/types/product-schema';
 import { PaginationOptions } from '@/types/server-dto';
 import { Separator } from '@radix-ui/react-select';
 import {
+  ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ChevronsUpDownIcon,
+  ChevronUpIcon,
   MoreHorizontal
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -76,15 +79,56 @@ export function ProductsTable({
   products,
   paginationOptions
 }: ProductsTableProps) {
+  const { setUrlParam, params } = useUrlParams();
+
+  function handleSort(sort: string) {
+    const currentSort = params.get('sort');
+    const isSorted =
+      currentSort !== `${sort},asc` || currentSort !== `${sort},desc`;
+    if (isSorted) setUrlParam('sort', `${sort},asc`);
+
+    switch (currentSort) {
+      case `${sort},asc`:
+        setUrlParam('sort', `${sort},desc`);
+        break;
+      case `${sort},desc`:
+        setUrlParam('sort', '');
+        break;
+      case null:
+        setUrlParam('sort', `${sort},asc`);
+        break;
+    }
+  }
+
+  function getSortIcon(sort: string) {
+    const currentSort = params.get('sort');
+
+    switch (currentSort) {
+      case `${sort},asc`:
+        return <ChevronUpIcon />;
+      case `${sort},desc`:
+        return <ChevronDownIcon />;
+      default:
+        return <ChevronsUpDownIcon />;
+    }
+  }
+
   return (
     <>
       <PageSizeFilter />
       <SearchInput />
+
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead className='w-[100px]'>Código</TableHead>
-            <TableHead>Produto</TableHead>
+            <TableHead
+              className='cursor-pointer flex items-center gap-1'
+              onClick={() => handleSort('name')}
+            >
+              Produto
+              {getSortIcon('name')}
+            </TableHead>
             <TableHead>Quantidade</TableHead>
             <TableHead className='text-left'>Unidade</TableHead>
             <TableHead className='text-left'>Status</TableHead>
