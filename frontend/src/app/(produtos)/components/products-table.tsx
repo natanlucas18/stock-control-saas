@@ -41,9 +41,11 @@ import {
   SelectGroup,
   SelectItem,
   SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 import {
   Table,
   TableBody,
@@ -55,19 +57,20 @@ import {
 import { getVisiblePages } from '@/lib/utils';
 import { ProductsData } from '@/types/product-schema';
 import { PaginationOptions } from '@/types/server-dto';
-import { Separator } from '@radix-ui/react-select';
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsUpDownIcon,
   ChevronUpIcon,
-  MoreHorizontal
+  MoreHorizontal,
+  SearchIcon
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDebouncedCallback } from 'use-debounce';
+import ProductRegisterDialog from './product-register-dialog';
 
 type ProductsTableProps = {
   products: ProductsData[];
@@ -115,9 +118,14 @@ export function ProductsTable({
 
   return (
     <>
-      <PageSizeFilter />
-      <SearchInput />
-
+      <div className='flex justify-between'>
+        <div className='flex gap-2.5'>
+          <SearchInput />
+          <PageSizeFilter />
+        </div>
+        <ProductRegisterDialog />
+      </div>
+      <Separator className='my-5' />
       <Table>
         <TableHeader>
           <TableRow>
@@ -168,10 +176,14 @@ function SearchInput() {
   }
 
   return (
-    <Input
-      placeholder='Pesquisar'
-      onChange={handleSearch}
-    />
+    <div className='relative'>
+      <SearchIcon className='absolute inset-y-0 left-0 flex place-self-center pointer-events-none pl-2' />
+      <Input
+        className='pl-7'
+        placeholder='Pesquisar'
+        onChange={handleSearch}
+      />
+    </div>
   );
 }
 
@@ -191,7 +203,7 @@ function PageSizeFilter() {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Opções</SelectLabel>
-          <Separator />
+          <SelectSeparator />
           <SelectItem value='5'>5</SelectItem>
           <SelectItem value='10'>10</SelectItem>
           <SelectItem value='15'>15</SelectItem>
