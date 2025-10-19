@@ -70,6 +70,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDebouncedCallback } from 'use-debounce';
+import ProductDetailsSheet from './product-details-sheet';
 import ProductRegisterDialog from './product-register-dialog';
 
 type ProductsTableProps = {
@@ -83,6 +84,8 @@ export function ProductsTable({
   paginationOptions
 }: ProductsTableProps) {
   const { setUrlParam, params } = useUrlParams();
+  const [openDetails, setOpenDetails] = useState(false);
+  const [product, setProduct] = useState<ProductsData>();
 
   function handleSort(sort: string) {
     const currentSort = params.get('sort');
@@ -145,7 +148,14 @@ export function ProductsTable({
         </TableHeader>
         <TableBody>
           {products.map((product) => (
-            <TableRow key={product.id}>
+            <TableRow
+              key={product.id}
+              onDoubleClick={() => {
+                setOpenDetails(true);
+                setProduct(product);
+              }}
+              className='cursor-pointer'
+            >
               <TableCell>{product.code}</TableCell>
               <TableCell>{product.name}</TableCell>
               <TableCell>{product.quantity}</TableCell>
@@ -161,6 +171,11 @@ export function ProductsTable({
       {paginationOptions && (
         <PaginationTable paginationOptions={paginationOptions} />
       )}
+      <ProductDetailsSheet
+        product={product}
+        open={openDetails}
+        onOpenChange={setOpenDetails}
+      />
     </>
   );
 }
