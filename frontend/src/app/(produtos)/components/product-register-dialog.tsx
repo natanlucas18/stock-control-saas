@@ -1,4 +1,4 @@
-import { buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -11,13 +11,8 @@ import ProductRegisterForm from './product-register-form';
 export default function ProductRegisterDialog() {
   return (
     <Dialog>
-      <DialogTrigger
-        className={buttonVariants({
-          variant: 'default',
-          className: 'cursor-pointer'
-        })}
-      >
-        Cadastrar Produto
+      <DialogTrigger asChild>
+        <Button>Criar Produto</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
