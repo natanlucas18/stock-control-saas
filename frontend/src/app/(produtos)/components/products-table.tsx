@@ -1,24 +1,7 @@
 'use client';
 
-import ProductEditForm from '@/app/(produtos)/components/product-edit-form';
 import { useUrlParams } from '@/app/hooks/use-url-params';
-import { softProductDelete } from '@/app/services/products-service';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,11 +49,12 @@ import {
   MoreHorizontal,
   SearchIcon
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 import { useDebouncedCallback } from 'use-debounce';
+import ProductDeleteAlert from './product-delete-alert';
 import ProductDetailsSheet from './product-details-sheet';
+import ProductEditDialog from './product-edit-dialog';
 import ProductRegisterDialog from './product-register-dialog';
 
 type ProductsTableProps = {
@@ -172,7 +156,7 @@ export function ProductsTable({
         <PaginationTable paginationOptions={paginationOptions} />
       )}
       <ProductDetailsSheet
-        product={product}
+        product={product!}
         open={openDetails}
         onOpenChange={setOpenDetails}
       />
@@ -323,83 +307,17 @@ function ProductsDropdownMenu({ product }: { product: ProductsData }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <DeleteProductAlert
-        productId={product.id}
+      <ProductDeleteAlert
+        product={product}
         open={openDeletAlert}
         onOpenChange={setOpenDeletAlert}
       />
-      <EditProductDialog
+
+      <ProductEditDialog
         product={product}
         open={openEditDialog}
         onOpenChange={setOpenEditDialog}
       />
     </>
-  );
-}
-
-function EditProductDialog({
-  product,
-  open,
-  onOpenChange
-}: {
-  product: ProductsData;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
-  return (
-    <Dialog
-      open={open}
-      onOpenChange={onOpenChange}
-    >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Editar Produto</DialogTitle>
-        </DialogHeader>
-        <ProductEditForm defaultValues={product} />
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function DeleteProductAlert({
-  productId,
-  open,
-  onOpenChange
-}: {
-  productId: number;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
-  const router = useRouter();
-  async function onDelete(id: number) {
-    const { success } = await softProductDelete(id);
-
-    if (success) {
-      toast.success('Produto excluído com sucesso');
-      router.refresh();
-    }
-
-    if (!success) {
-      toast.error('Erro ao excluir produto');
-    }
-  }
-
-  return (
-    <AlertDialog
-      open={open}
-      onOpenChange={onOpenChange}
-    >
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Tem certeza que deseja excluir?</AlertDialogTitle>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => onDelete(productId)}>
-            Continue
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
   );
 }
