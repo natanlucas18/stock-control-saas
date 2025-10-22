@@ -24,11 +24,12 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-export default function ProductForm() {
+export default function ProductRegisterForm() {
   const router = useRouter();
   const hookForm = useForm<ProductFormType>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
+      code: '',
       name: '',
       price: 0,
       stockMin: 0,
@@ -57,6 +58,24 @@ export default function ProductForm() {
           onSubmit={hookForm.handleSubmit(onSubmit)}
           className='space-y-8 border p-5 rounded-md'
         >
+          <FormField
+            control={hookForm.control}
+            name='code'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Código</FormLabel>
+                <FormControl>
+                  <Input
+                    type='text'
+                    placeholder='BR-00000'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={hookForm.control}
             name='name'

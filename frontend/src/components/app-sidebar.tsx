@@ -21,10 +21,7 @@ import {
   MapPinHouse,
   Package
 } from 'lucide-react';
-import { signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { Button } from './ui/button';
 
 export default function AppSidebar() {
   const userRoles = getCookie('userRoles');
@@ -99,39 +96,39 @@ export default function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
-              {isAdmin && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={PathLinks.REPORTS}
-                      className='flex items-center gap-2'
-                    >
-                      <BarChart />
-                      <span>Relatórios</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
+              {/* {isAdmin && ( */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    href={PathLinks.REPORTS}
+                    className='flex items-center gap-2'
+                  >
+                    <BarChart />
+                    <span>Relatórios</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              {/* )} */}
 
-              {isDev && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={PathLinks.REGISTER}
-                      className='flex items-center gap-2'
-                    >
-                      <BarChart />
-                      <span>Registro</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
+              {/* {isDev && ( */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    href={PathLinks.REGISTER}
+                    className='flex items-center gap-2'
+                  >
+                    <BarChart />
+                    <span>Registro</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              {/* )} */}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        {token ? (
+        {/* {token ? (
           <Button
             onClick={() => {
               signOut({ callbackUrl: '/login' });
@@ -141,7 +138,7 @@ export default function AppSidebar() {
           </Button>
         ) : (
           <Button onClick={() => redirect('/login')}>Entrar</Button>
-        )}
+        )} */}
       </SidebarFooter>
     </Sidebar>
   );

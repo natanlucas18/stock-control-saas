@@ -1,26 +1,7 @@
 'use client';
 
-import ProductEditForm from '@/app/(produtos)/components/product-edit-form';
 import { useUrlParams } from '@/app/hooks/use-url-params';
-import { softProductDelete } from '@/app/services/products-service';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Pagination,
   PaginationContent,
@@ -42,9 +24,11 @@ import {
   SelectGroup,
   SelectItem,
   SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 import {
   Table,
   TableBody,
@@ -56,14 +40,21 @@ import {
 import { getVisiblePages } from '@/lib/utils';
 import { ProductsData } from '@/types/product-schema';
 import { PaginationOptions } from '@/types/server-dto';
-import { Separator } from '@radix-ui/react-select';
 import {
+  ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  MoreHorizontal
+  ChevronsUpDownIcon,
+  ChevronUpIcon,
+  MoreHorizontalIcon,
+  SearchIcon
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
+import { useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
+import ProductDeleteAlert from './product-delete-alert';
+import ProductDetailsSheet from './product-details-sheet';
+import ProductEditDialog from './product-edit-dialog';
+import ProductRegisterDialog from './product-register-dialog';
 
 type ProductsTableProps = {
   products: ProductsData[];
@@ -71,42 +62,109 @@ type ProductsTableProps = {
   pageSize?: number;
 };
 
+const initialValues: ProductsData = {
+  id: 1,
+  code: '',
+  name: '',
+  quantity: 0,
+  price: 0,
+  stockMax: 0,
+  stockMin: 0,
+  unitMeasure: '',
+  stockLocation: {
+    id: 1,
+    name: ''
+  },
+  stockStatus: {
+    level: '',
+    message: ''
+  }
+};
+
 export function ProductsTable({
   products,
   paginationOptions
 }: ProductsTableProps) {
+  const { setUrlParam, params } = useUrlParams();
+  const [openDetails, setOpenDetails] = useState(false);
+  const [product, setProduct] = useState<ProductsData>(initialValues);
+
+  function handleSort(sort: string) {
+    const currentSort = params.get('sort');
+    const isSorted =
+      currentSort !== `${sort},asc` || currentSort !== `${sort},desc`;
+    if (isSorted) setUrlParam('sort', `${sort},asc`);
+
+    switch (currentSort) {
+      case `${sort},asc`:
+        setUrlParam('sort', `${sort},desc`);
+        break;
+      case `${sort},desc`:
+        setUrlParam('sort', '');
+        break;
+      case null:
+        setUrlParam('sort', `${sort},asc`);
+        break;
+    }
+  }
+
+  function getSortIcon(sort: string) {
+    const currentSort = params.get('sort');
+
+    switch (currentSort) {
+      case `${sort},asc`:
+        return <ChevronUpIcon />;
+      case `${sort},desc`:
+        return <ChevronDownIcon />;
+      default:
+        return <ChevronsUpDownIcon />;
+    }
+  }
+
   return (
     <>
-      <PageSizeFilter />
+      <div className='flex justify-between'>
+        <div className='flex gap-2.5'>
+          <SearchInput />
+          <PageSizeFilter />
+        </div>
+        <ProductRegisterDialog />
+      </div>
+      <Separator className='my-5' />
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className='w-[100px]'>ID</TableHead>
-            <TableHead>Produto</TableHead>
+            <TableHead className='w-[100px]'>Código</TableHead>
+            <TableHead
+              className='cursor-pointer flex items-center gap-1'
+              onClick={() => handleSort('name')}
+            >
+              Produto
+              {getSortIcon('name')}
+            </TableHead>
             <TableHead>Quantidade</TableHead>
-            <TableHead className='text-left'>Preço</TableHead>
-            <TableHead className='text-left'>Estoque Max</TableHead>
-            <TableHead className='text-left'>Estoque Min</TableHead>
             <TableHead className='text-left'>Unidade</TableHead>
-            <TableHead className='text-left'>Local</TableHead>
             <TableHead className='text-left'>Status</TableHead>
             <TableHead className='text-left'>Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {products.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell>{product.id}</TableCell>
+            <TableRow
+              key={product.id}
+              onDoubleClick={() => {
+                setOpenDetails(true);
+                setProduct(product);
+              }}
+              className='cursor-pointer'
+            >
+              <TableCell>{product.code}</TableCell>
               <TableCell>{product.name}</TableCell>
               <TableCell>{product.quantity}</TableCell>
-              <TableCell>{product.price}</TableCell>
-              <TableCell>{product.stockMax}</TableCell>
-              <TableCell>{product.stockMin}</TableCell>
               <TableCell>{product.unitMeasure}</TableCell>
-              <TableCell>{product.stockLocation.name}</TableCell>
               <TableCell>{product.stockStatus.message}</TableCell>
               <TableCell>
-                <ProductsDropdownMenu product={product} />
+                <ProductDropdownMenu product={product} />
               </TableCell>
             </TableRow>
           ))}
@@ -115,7 +173,35 @@ export function ProductsTable({
       {paginationOptions && (
         <PaginationTable paginationOptions={paginationOptions} />
       )}
+
+      <ProductDetailsSheet
+        product={product}
+        open={openDetails}
+        onOpenChange={setOpenDetails}
+      />
     </>
+  );
+}
+
+function SearchInput() {
+  const { setUrlParam } = useUrlParams();
+  const debouncedState = useDebouncedCallback((value: string) => {
+    setUrlParam('name', value);
+  }, 500);
+
+  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
+    debouncedState(e.target.value);
+  }
+
+  return (
+    <div className='relative'>
+      <SearchIcon className='absolute inset-y-0 left-0 flex place-self-center pointer-events-none pl-2' />
+      <Input
+        className='pl-7'
+        placeholder='Pesquisar'
+        onChange={handleSearch}
+      />
+    </div>
   );
 }
 
@@ -135,7 +221,7 @@ function PageSizeFilter() {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Opções</SelectLabel>
-          <Separator />
+          <SelectSeparator />
           <SelectItem value='5'>5</SelectItem>
           <SelectItem value='10'>10</SelectItem>
           <SelectItem value='15'>15</SelectItem>
@@ -205,75 +291,76 @@ function PaginationTable({ paginationOptions }: PaginationTableProps) {
   );
 }
 
-function ProductsDropdownMenu({ product }: { product: ProductsData }) {
+function ProductDropdownMenu({
+  product,
+  open,
+  onOpenChange
+}: {
+  product: ProductsData;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDeletAlert, setOpenDeletAlert] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant='ghost'
-          className='h-8 w-8 p-0'
+    <>
+      <DropdownMenu
+        open={open}
+        onOpenChange={onOpenChange}
+      >
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant='ghost'
+            className='h-8 w-8 p-0'
+          >
+            <MoreHorizontalIcon className='h-4 w-4' />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align='end'
+          className=''
         >
-          <MoreHorizontal className='h-4 w-4' />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(product.id.toString())}
-        >
-          Copiar ID
-        </DropdownMenuItem>
-        <EditProductDialog product={product} />
-        <DropdownMenuSeparator />
-        <DeleteProductAlert productId={product.id} />
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
+          <DropdownMenuLabel>Ações</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => setOpenDetails(true)}>
+            Detalhes
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => navigator.clipboard.writeText(product.code)}
+          >
+            Copiar Código
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenEditDialog(true)}>
+            Editar
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            variant='destructive'
+            onClick={() => setOpenDeletAlert(true)}
+          >
+            Excluir
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-function EditProductDialog({ product }: { product: ProductsData }) {
-  return (
-    <Dialog>
-      <DialogTrigger>Editar</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Editar Produto</DialogTitle>
-        </DialogHeader>
-        <ProductEditForm defaultValues={product} />
-      </DialogContent>
-    </Dialog>
-  );
-}
+      <ProductEditDialog
+        product={product}
+        open={openEditDialog}
+        onOpenChange={setOpenEditDialog}
+      />
 
-function DeleteProductAlert({ productId }: { productId: number }) {
-  const router = useRouter();
-  async function onDelete(id: number) {
-    const { success } = await softProductDelete(id);
+      <ProductDeleteAlert
+        product={product}
+        open={openDeletAlert}
+        onOpenChange={setOpenDeletAlert}
+      />
 
-    if (success) {
-      toast.success('Produto excluído com sucesso');
-      router.refresh();
-    }
-
-    if (!success) {
-      toast.error('Erro ao excluir produto');
-    }
-  }
-
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger>Excluir</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Tem certeza que deseja excluir?</AlertDialogTitle>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => onDelete(productId)}>
-            Continue
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      <ProductDetailsSheet
+        product={product}
+        open={openDetails}
+        onOpenChange={setOpenDetails}
+      />
+    </>
   );
 }

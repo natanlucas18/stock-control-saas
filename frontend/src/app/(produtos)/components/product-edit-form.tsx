@@ -56,125 +56,146 @@ export default function ProductEditForm({
   }
 
   return (
-    <div>
-      <Form {...hookForm}>
-        <form
-          onSubmit={hookForm.handleSubmit(onSubmit)}
-          className='space-y-8 border p-5 rounded-md'
+    <Form {...hookForm}>
+      <form
+        onSubmit={hookForm.handleSubmit(onSubmit)}
+        className='space-y-8 border p-5 rounded-md'
+        id='product-edit-form'
+      >
+        <FormField
+          control={hookForm.control}
+          name='code'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Código do Produto</FormLabel>
+              <FormControl>
+                <Input
+                  type='text'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={hookForm.control}
+          name='name'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome</FormLabel>
+              <FormControl>
+                <Input
+                  type='text'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={hookForm.control}
+          name='price'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Preço</FormLabel>
+              <FormControl>
+                <Input
+                  type='number'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={hookForm.control}
+          name='unitMeasure'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Unidade de Medida</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
+                  <SelectTrigger className='w-[180px]'>
+                    <SelectValue placeholder='Unidade de Medida' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='UN'>UN</SelectItem>
+                    <SelectItem value='KG'>KG</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={hookForm.control}
+          name='stockLocationId'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>ID Local do Estoque</FormLabel>
+              <FormControl>
+                <Input
+                  type='number'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={hookForm.control}
+          name='stockMin'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Quantidade Mínima</FormLabel>
+              <FormControl>
+                <Input
+                  type='number'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={hookForm.control}
+          name='stockMax'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Quantidade Máximo</FormLabel>
+              <FormControl>
+                <Input
+                  type='number'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          type='submit'
+          form='product-edit-form'
         >
-          <FormField
-            control={hookForm.control}
-            name='name'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome</FormLabel>
-                <FormControl>
-                  <Input
-                    type='text'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={hookForm.control}
-            name='price'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Preço</FormLabel>
-                <FormControl>
-                  <Input
-                    type='number'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={hookForm.control}
-            name='unitMeasure'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Unidade de Medida</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Unidade de Medida' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='UN'>UN</SelectItem>
-                      <SelectItem value='KG'>KG</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={hookForm.control}
-            name='stockLocationId'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>ID Local do Estoque</FormLabel>
-                <FormControl>
-                  <Input
-                    type='number'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={hookForm.control}
-            name='stockMin'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Quantidade Mínima</FormLabel>
-                <FormControl>
-                  <Input
-                    type='number'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={hookForm.control}
-            name='stockMax'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Quantidade Máximo</FormLabel>
-                <FormControl>
-                  <Input
-                    type='number'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button type='submit'>Salvar Alterações</Button>
-        </form>
-      </Form>
-    </div>
+          Salvar Alterações
+        </Button>
+      </form>
+    </Form>
   );
 }
