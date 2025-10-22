@@ -21,13 +21,24 @@ export default function ProductEditDialog({
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
 }) {
+  function handleStopPropagation(e: React.MouseEvent<HTMLDivElement>) {
+    e.stopPropagation();
+  }
+
   return (
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
     >
-      <DialogTrigger className='cursor-pointer'>{trigger}</DialogTrigger>
-      <DialogContent>
+      {trigger && (
+        <DialogTrigger
+          className='cursor-pointer'
+          asChild
+        >
+          {trigger}
+        </DialogTrigger>
+      )}
+      <DialogContent onDoubleClick={handleStopPropagation}>
         <DialogHeader>
           <DialogTitle>Editar Produto</DialogTitle>
         </DialogHeader>

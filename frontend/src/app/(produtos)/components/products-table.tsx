@@ -46,10 +46,9 @@ import {
   ChevronRightIcon,
   ChevronsUpDownIcon,
   ChevronUpIcon,
-  MoreHorizontal,
+  MoreHorizontalIcon,
   SearchIcon
 } from 'lucide-react';
-
 import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import ProductDeleteAlert from './product-delete-alert';
@@ -63,13 +62,32 @@ type ProductsTableProps = {
   pageSize?: number;
 };
 
+const initialValues: ProductsData = {
+  id: 1,
+  code: '',
+  name: '',
+  quantity: 0,
+  price: 0,
+  stockMax: 0,
+  stockMin: 0,
+  unitMeasure: '',
+  stockLocation: {
+    id: 1,
+    name: ''
+  },
+  stockStatus: {
+    level: '',
+    message: ''
+  }
+};
+
 export function ProductsTable({
   products,
   paginationOptions
 }: ProductsTableProps) {
   const { setUrlParam, params } = useUrlParams();
   const [openDetails, setOpenDetails] = useState(false);
-  const [product, setProduct] = useState<ProductsData>();
+  const [product, setProduct] = useState<ProductsData>(initialValues);
 
   function handleSort(sort: string) {
     const currentSort = params.get('sort');
@@ -146,7 +164,7 @@ export function ProductsTable({
               <TableCell>{product.unitMeasure}</TableCell>
               <TableCell>{product.stockStatus.message}</TableCell>
               <TableCell>
-                <ProductsDropdownMenu product={product} />
+                <ProductDropdownMenu product={product} />
               </TableCell>
             </TableRow>
           ))}
@@ -155,8 +173,9 @@ export function ProductsTable({
       {paginationOptions && (
         <PaginationTable paginationOptions={paginationOptions} />
       )}
+
       <ProductDetailsSheet
-        product={product!}
+        product={product}
         open={openDetails}
         onOpenChange={setOpenDetails}
       />
@@ -272,40 +291,64 @@ function PaginationTable({ paginationOptions }: PaginationTableProps) {
   );
 }
 
-function ProductsDropdownMenu({ product }: { product: ProductsData }) {
+function ProductDropdownMenu({
+  product,
+  open,
+  onOpenChange
+}: {
+  product: ProductsData;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeletAlert, setOpenDeletAlert] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu
+        open={open}
+        onOpenChange={onOpenChange}
+      >
         <DropdownMenuTrigger asChild>
           <Button
             variant='ghost'
             className='h-8 w-8 p-0'
           >
-            <MoreHorizontal className='h-4 w-4' />
+            <MoreHorizontalIcon className='h-4 w-4' />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align='end'>
+        <DropdownMenuContent
+          align='end'
+          className=''
+        >
           <DropdownMenuLabel>Ações</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => setOpenDetails(true)}>
+            Detalhes
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => navigator.clipboard.writeText(product.code)}
           >
             Copiar Código
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setOpenEditDialog(true)}>
+          <DropdownMenuItem onClick={() => setOpenEditDialog(true)}>
             Editar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             variant='destructive'
-            onSelect={() => setOpenDeletAlert(true)}
+            onClick={() => setOpenDeletAlert(true)}
           >
             Excluir
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <ProductEditDialog
+        product={product}
+        open={openEditDialog}
+        onOpenChange={setOpenEditDialog}
+      />
 
       <ProductDeleteAlert
         product={product}
@@ -313,10 +356,10 @@ function ProductsDropdownMenu({ product }: { product: ProductsData }) {
         onOpenChange={setOpenDeletAlert}
       />
 
-      <ProductEditDialog
+      <ProductDetailsSheet
         product={product}
-        open={openEditDialog}
-        onOpenChange={setOpenEditDialog}
+        open={openDetails}
+        onOpenChange={setOpenDetails}
       />
     </>
   );
