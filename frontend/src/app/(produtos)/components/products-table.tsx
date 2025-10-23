@@ -163,7 +163,11 @@ export function ProductsTable({
               <TableCell>{product.quantity}</TableCell>
               <TableCell>{product.unitMeasure}</TableCell>
               <TableCell>{product.stockStatus.message}</TableCell>
-              <TableCell>
+              <TableCell
+                onDoubleClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
                 <ProductDropdownMenu product={product} />
               </TableCell>
             </TableRow>
