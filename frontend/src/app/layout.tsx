@@ -1,4 +1,6 @@
 import AppSidebar from '@/components/app-sidebar';
+import { ThemeProvider } from '@/components/theme-provider';
+import { ToggleTheme } from '@/components/toggle-theme';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { getServerSession } from 'next-auth';
 import { Geist, Geist_Mono } from 'next/font/google';
@@ -24,21 +26,32 @@ export default async function RootLayout({
   const session = await getServerSession();
 
   return (
-    <html lang='pt-br'>
+    <html
+      lang='pt-br'
+      suppressHydrationWarning
+    >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SidebarProvider>
-          <AppSidebar />
-          <main className='flex-1 p-4'>
-            <div className='flex p-2 gap-2.5 justify-between items-center'>
-              <SidebarTrigger />
-              <h1>{session?.user?.name}</h1>
-            </div>
-            <ToastContainer />
-            {children}
-          </main>
-        </SidebarProvider>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SidebarProvider>
+            <AppSidebar />
+            <main className='flex-1 p-4'>
+              <div className='flex p-2 gap-2.5 justify-between items-center'>
+                <SidebarTrigger />
+                <ToggleTheme />
+                <h1>{session?.user?.name}</h1>
+              </div>
+              <ToastContainer />
+              {children}
+            </main>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
