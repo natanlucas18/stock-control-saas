@@ -190,6 +190,7 @@ export function ProductsTable({
 function SearchInput() {
   const { setUrlParam } = useUrlParams();
   const debouncedState = useDebouncedCallback((value: string) => {
+    setUrlParam('page', '1');
     setUrlParam('name', value);
   }, 500);
 
