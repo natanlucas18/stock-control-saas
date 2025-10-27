@@ -1,6 +1,5 @@
 'use client';
 
-import { updateStockLocation } from '@/app/services/stock-location-request';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -11,6 +10,7 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { updateStockLocation } from '@/services/stock-location-service';
 import {
   StockLocationsData,
   stockLocationsFormSchema,

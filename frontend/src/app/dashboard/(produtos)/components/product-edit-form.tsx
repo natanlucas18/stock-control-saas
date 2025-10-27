@@ -1,6 +1,5 @@
 'use client';
 
-import { editProduct } from '@/app/services/products-service';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -18,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { editProduct } from '@/services/products-service';
 import {
   productFormSchema,
   ProductFormType,

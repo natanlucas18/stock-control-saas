@@ -1,6 +1,5 @@
 'use client';
 
-import { createMovements } from '@/app/services/movements-service';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -18,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { createMovements } from '@/services/movements-service';
 import {
   movementsFormSchema,
   MovementsFormType

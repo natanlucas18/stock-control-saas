@@ -1,4 +1,4 @@
-import { login } from '@/app/services/login-request';
+import { login } from '@/services/login-service';
 import { PathLinks } from '@/types/path-links';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 
 const handler = NextAuth({
   pages: {
-    signIn: PathLinks.LOGIN
+    signIn: PathLinks.SIGN_IN
   },
   providers: [
     CredentialsProvider({

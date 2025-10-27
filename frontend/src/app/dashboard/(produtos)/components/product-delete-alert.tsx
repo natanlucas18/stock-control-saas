@@ -1,6 +1,5 @@
 'use client';
 
-import { softProductDelete } from '@/app/services/products-service';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,6 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
+import { softProductDelete } from '@/services/products-service';
 import { ProductsData } from '@/types/product-schema';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
