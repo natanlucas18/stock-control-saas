@@ -13,7 +13,7 @@ export default async function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <div className='p-4 w-full'>
+      <div className='p-4 w-full space-y-4'>
         <header className='flex items-center justify-between gap-4'>
           <SidebarTrigger />
           <h1>{session?.user?.name}</h1>

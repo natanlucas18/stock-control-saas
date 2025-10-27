@@ -1,6 +1,5 @@
 'use client';
 
-import ProductEditForm from '@/app/(produtos)/components/product-edit-form';
 import {
   Dialog,
   DialogContent,
@@ -9,6 +8,7 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog';
 import { ProductsData } from '@/types/product-schema';
+import ProductEditForm from './product-edit-form';
 
 export default function ProductEditDialog({
   product,
