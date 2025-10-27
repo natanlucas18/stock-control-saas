@@ -3,7 +3,7 @@
 import { ProductParams, ProductsData } from '@/types/product-schema';
 import { PaginationOptions } from '@/types/server-dto';
 import { useEffect, useState } from 'react';
-import { getAllProducts } from '../services/products-service';
+import { getAllProducts } from '../app/services/products-service';
 
 export function useProducts(params?: ProductParams) {
   const [products, setProducts] = useState<ProductsData[]>([]);

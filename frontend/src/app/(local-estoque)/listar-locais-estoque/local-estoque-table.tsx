@@ -1,6 +1,5 @@
 'use client';
 
-import { useUrlParams } from '@/app/hooks/use-url-params';
 import { deleteStockLocation } from '@/app/services/stock-location-request';
 import {
   AlertDialog,
@@ -52,6 +51,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
+import { useUrlParams } from '@/hooks/use-url-params';
 import { getVisiblePages } from '@/lib/utils';
 import { PaginationOptions } from '@/types/server-dto';
 import { StockLocationsData } from '@/types/stock-location-schema';

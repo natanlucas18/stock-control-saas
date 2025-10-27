@@ -1,6 +1,5 @@
 'use client';
 
-import { useProducts } from '@/app/hooks/use-products';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -22,6 +21,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
+import { useProducts } from '@/hooks/use-products';
 import { getVisiblePages } from '@/lib/utils';
 import { ProductsData } from '@/types/product-schema';
 import { PaginationOptions } from '@/types/server-dto';
