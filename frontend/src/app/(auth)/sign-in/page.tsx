@@ -11,7 +11,7 @@ const schema = z.object({
   password: z.string().min(1, 'Insira sua senha')
 });
 
-export default function Login() {
+export default function SignInPage() {
   const {
     register,
     handleSubmit,

@@ -5,8 +5,8 @@ export enum PathLinks {
   CREATE_PRODUCT = '/criar-produto',
   LIST_STOCK_LOCATIONS = '/listar-locais-estoque',
   CREATE_STOCK_LOCATION = '/criar-local-estoque',
-  LOGIN = '/login',
-  REGISTER = '/register',
+  SIGN_IN = '/sign-in',
+  SIGN_UP = '/sign-up',
   MOVEMENTS = '/movimentacoes',
   REPORTS = '/relatorios',
   USERS = '/usuarios'

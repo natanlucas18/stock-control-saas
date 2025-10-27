@@ -114,7 +114,7 @@ export default function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link
-                    href={PathLinks.REGISTER}
+                    href={PathLinks.SIGN_UP}
                     className='flex items-center gap-2'
                   >
                     <BarChart />
