@@ -1,6 +1,5 @@
 'use client';
 
-import { ProductsPopover } from '@/app/(produtos)/components/products-popover';
 import { createMovements } from '@/app/services/movements-service';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +26,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { ProductsPopover } from '../../(produtos)/components/products-popover';
 
 export default function MovementsForm() {
   const router = useRouter();
