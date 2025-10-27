@@ -16,7 +16,6 @@ import { getCookie } from 'cookies-next/client';
 import {
   Activity,
   BarChart,
-  Home,
   LayoutDashboardIcon,
   MapPinHouse,
   Package
@@ -36,18 +35,6 @@ export default function AppSidebar() {
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    href={PathLinks.HOME}
-                    className='flex items-center gap-2'
-                  >
-                    <Home />
-                    <span>Inicio</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link
