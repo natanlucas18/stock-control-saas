@@ -1,4 +1,3 @@
-import StockLocationEditForm from '@/app/(local-estoque)/components/stock-location-edit-form';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +27,7 @@ import {
 import { StockLocationsData } from '@/types/stock-location-schema';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
+import StockLocationEditForm from '../components/stock-location-edit-form';
 
 export const columns: ColumnDef<StockLocationsData>[] = [
   {
