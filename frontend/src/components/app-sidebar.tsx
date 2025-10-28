@@ -15,18 +15,29 @@ import { PathLinks } from '@/types/path-links';
 import { getCookie } from 'cookies-next/client';
 import {
   Activity,
-  BarChart,
+  ClipboardListIcon,
   LayoutDashboardIcon,
+  LogOutIcon,
   MapPinHouse,
-  Package
+  Package,
+  UserPlus2Icon
 } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { Button } from './ui/button';
 
 export default function AppSidebar() {
   const userRoles = getCookie('userRoles');
-  const isAdmin = userRoles?.includes('ROLE_ADMIN');
-  const isDev = userRoles?.includes('ROLE_DEV');
-  const token = getCookie('accessToken');
+  const [isAdmin, setIsAdmin] = useState(true);
+  const [isDev, setIsDev] = useState(true);
+
+  useEffect(() => {
+    if (userRoles) {
+      setIsAdmin(userRoles.includes('ROLE_ADMIN'));
+      setIsDev(userRoles.includes('ROLE_DEV'));
+    }
+  }, [userRoles]);
 
   return (
     <Sidebar collapsible='icon'>
@@ -83,49 +94,41 @@ export default function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
-              {/* {isAdmin && ( */}
-              <SidebarMenuItem>
+              <SidebarMenuItem hidden={isAdmin}>
                 <SidebarMenuButton asChild>
                   <Link
                     href={PathLinks.REPORTS}
                     className='flex items-center gap-2'
                   >
-                    <BarChart />
+                    <ClipboardListIcon />
                     <span>Relatórios</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {/* )} */}
 
-              {/* {isDev && ( */}
-              <SidebarMenuItem>
+              <SidebarMenuItem hidden={isDev}>
                 <SidebarMenuButton asChild>
                   <Link
                     href={PathLinks.SIGN_UP}
                     className='flex items-center gap-2'
                   >
-                    <BarChart />
+                    <UserPlus2Icon />
                     <span>Registro</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {/* )} */}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        {/* {token ? (
-          <Button
-            onClick={() => {
-              signOut({ callbackUrl: '/login' });
-            }}
-          >
-            Sair
-          </Button>
-        ) : (
-          <Button onClick={() => redirect('/login')}>Entrar</Button>
-        )} */}
+        <Button
+          onClick={() => {
+            signOut({ callbackUrl: PathLinks.SIGN_IN });
+          }}
+        >
+          <LogOutIcon />
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
