@@ -1,5 +1,16 @@
 'use client';
-import { updateStockLocation } from '@/app/services/stock-location-request';
+
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { updateStockLocation } from '@/services/stock-location-service';
 import {
   StockLocationsData,
   stockLocationsFormSchema,
@@ -9,16 +20,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { Button } from '../../../components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '../../../components/ui/form';
-import { Input } from '../../../components/ui/input';
 
 export default function StockLocationEditForm({
   defaultValues

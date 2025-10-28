@@ -1,7 +1,5 @@
 'use client';
 
-import { useUrlParams } from '@/app/hooks/use-url-params';
-import { deleteStockLocation } from '@/app/services/stock-location-request';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,7 +50,9 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
+import { useUrlParams } from '@/hooks/use-url-params';
 import { getVisiblePages } from '@/lib/utils';
+import { deleteStockLocation } from '@/services/stock-location-service';
 import { PaginationOptions } from '@/types/server-dto';
 import { StockLocationsData } from '@/types/stock-location-schema';
 import { Separator } from '@radix-ui/react-select';

@@ -1,6 +1,5 @@
 'use client';
 
-import { createProduct } from '@/app/services/products-service';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -18,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { createProduct } from '@/services/products-service';
 import { productFormSchema, ProductFormType } from '@/types/product-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';

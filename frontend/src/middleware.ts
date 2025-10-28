@@ -11,7 +11,7 @@ const protectedRoutes = [
   PathLinks.LIST_STOCK_LOCATIONS,
   PathLinks.MOVEMENTS,
   PathLinks.REPORTS,
-  PathLinks.REGISTER
+  PathLinks.SIGN_UP
 ];
 
 // const secret = process.env.NEXTAUTH_SECRET;
@@ -31,27 +31,27 @@ export async function middleware(req: NextRequest) {
     .split(',');
 
   if (!token) {
-    const loginUrl = new URL(PathLinks.LOGIN, req.url);
+    const loginUrl = new URL(PathLinks.SIGN_IN, req.url);
     loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  const reportsRouter = ['/relatorios', '/resgister'];
+  const reportsRouter = ['/relatorios', '/sign-up'];
   const isAdmin = userRoles.includes('ROLE_ADMIN');
   const isDev = userRoles.includes('ROLE_DEV');
 
   if (
     reportsRouter.includes(pathname) &&
-    pathname === '/relatorios' &&
+    pathname === PathLinks.REPORTS &&
     !isAdmin
   ) {
-    return NextResponse.redirect(new URL('/home', req.url));
+    return NextResponse.redirect(new URL(PathLinks.DASHBOARD, req.url));
   } else if (
     reportsRouter.includes(pathname) &&
-    pathname === '/resgister' &&
+    pathname === PathLinks.SIGN_UP &&
     !isDev
   ) {
-    return NextResponse.redirect(new URL('/home', req.url));
+    return NextResponse.redirect(new URL(PathLinks.DASHBOARD, req.url));
   }
 
   return NextResponse.next();
@@ -66,6 +66,6 @@ export const config = {
     `${PathLinks.LIST_STOCK_LOCATIONS}/:path*`,
     `${PathLinks.MOVEMENTS}/:path*`,
     `${PathLinks.REPORTS}/:path*`,
-    `${PathLinks.REGISTER}/:path*`
+    `${PathLinks.SIGN_UP}/:path*`
   ]
 };

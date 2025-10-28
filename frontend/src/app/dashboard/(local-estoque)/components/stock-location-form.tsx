@@ -1,14 +1,6 @@
 'use client';
 
-import { createStockLocations } from '@/app/services/stock-location-request';
-import {
-  stockLocationsFormSchema,
-  StockLocationsFormType
-} from '@/types/stock-location-schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import { Button } from '../../../components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -16,8 +8,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from '../../../components/ui/form';
-import { Input } from '../../../components/ui/input';
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { createStockLocations } from '@/services/stock-location-service';
+import {
+  stockLocationsFormSchema,
+  StockLocationsFormType
+} from '@/types/stock-location-schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 export default function StockLocationForm() {
   const hookForm = useForm<StockLocationsFormType>({

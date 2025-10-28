@@ -1,13 +1,13 @@
 export enum PathLinks {
   HOME = '/',
   DASHBOARD = '/dashboard',
-  LIST_PRODUCTS = '/listar-produtos',
-  CREATE_PRODUCT = '/criar-produto',
-  LIST_STOCK_LOCATIONS = '/listar-locais-estoque',
-  CREATE_STOCK_LOCATION = '/criar-local-estoque',
-  LOGIN = '/login',
-  REGISTER = '/register',
-  MOVEMENTS = '/movimentacoes',
-  REPORTS = '/relatorios',
+  LIST_PRODUCTS = '/dashboard/listar-produtos',
+  CREATE_PRODUCT = '/dashboard/criar-produto',
+  LIST_STOCK_LOCATIONS = '/dashboard/listar-locais-estoque',
+  CREATE_STOCK_LOCATION = '/dashboard/criar-local-estoque',
+  SIGN_IN = '/sign-in',
+  SIGN_UP = '/sign-up',
+  MOVEMENTS = '/dashboard/movimentacoes',
+  REPORTS = '/dashboard/relatorios',
   USERS = '/usuarios'
 }

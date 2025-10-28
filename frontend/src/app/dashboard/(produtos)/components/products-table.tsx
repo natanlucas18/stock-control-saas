@@ -1,6 +1,5 @@
 'use client';
 
-import { useUrlParams } from '@/app/hooks/use-url-params';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -37,6 +36,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
+import { useUrlParams } from '@/hooks/use-url-params';
 import { getVisiblePages } from '@/lib/utils';
 import { ProductsData } from '@/types/product-schema';
 import { PaginationOptions } from '@/types/server-dto';
