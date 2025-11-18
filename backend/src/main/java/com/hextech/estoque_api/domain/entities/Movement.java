@@ -17,6 +17,7 @@ public class Movement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING)
     private MovementType type;
     private BigDecimal quantity;
     private LocalDateTime moment;

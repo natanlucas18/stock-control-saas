@@ -9,17 +9,17 @@ import java.time.format.DateTimeParseException;
 
 public class ReportPeriodFactory {
 
-    public static ReportPeriod fromStrings(String startDate, String endDate) {
+    public static ReportPeriod fromDates(LocalDate startDate, LocalDate endDate) {
         LocalDate now = LocalDate.now();
 
         try {
-            LocalDate end = (endDate == null || endDate.isBlank()) ? now : LocalDate.parse(endDate);
-            LocalDate start = (startDate == null || startDate.isBlank()) ?
-                    LocalDate.of(end.getYear(), end.getMonth().minus(1), end.getDayOfMonth()) : LocalDate.parse(startDate);
+            LocalDate end = (endDate == null) ? now : endDate;
+            LocalDate start = (startDate == null) ?
+                    LocalDate.of(end.getYear(), end.getMonth().minus(1), end.getDayOfMonth()) : startDate;
 
             return new ReportPeriod(
-                    LocalDateTime.of(start, start.atStartOfDay(ZoneId.systemDefault()).toLocalTime()),
-                    LocalDateTime.of(end, end.atStartOfDay(ZoneId.systemDefault()).toLocalTime())
+                    LocalDateTime.of(start.getYear(), start.getMonth(), start.getDayOfMonth(), 0, 0),
+                    LocalDateTime.of(end.getYear(), end.getMonth(), end.getDayOfMonth(), 23, 59)
             );
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Datas inválidas.");
