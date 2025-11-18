@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.domain.entities.product;
 
-import com.hextech.estoque_api.domain.entities.Company;
-import com.hextech.estoque_api.domain.entities.StockLocation;
+import com.hextech.estoque_api.domain.entities.company.Company;
+import com.hextech.estoque_api.domain.entities.stockLocation.StockLocation;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

@@ -1,9 +1,6 @@
 package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.tests.*;
-import com.hextech.estoque_api.domain.entities.Movement;
-import com.hextech.estoque_api.domain.entities.MovementType;
-import com.hextech.estoque_api.domain.entities.StockLocation;
 import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.exceptions.InvalidMovementTypeException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
@@ -17,13 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

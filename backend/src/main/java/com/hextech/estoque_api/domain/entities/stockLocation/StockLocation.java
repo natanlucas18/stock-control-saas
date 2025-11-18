@@ -1,5 +1,6 @@
-package com.hextech.estoque_api.domain.entities;
+package com.hextech.estoque_api.domain.entities.stockLocation;
 
+import com.hextech.estoque_api.domain.entities.company.Company;
 import com.hextech.estoque_api.domain.entities.product.Product;
 import jakarta.persistence.*;
 

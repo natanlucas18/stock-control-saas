@@ -1,6 +1,6 @@
 package com.hextech.estoque_api.interfaces.dtos.users;
 
-import com.hextech.estoque_api.domain.entities.User;
+import com.hextech.estoque_api.domain.entities.user.User;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.tests.CompanyFactory;
 import com.hextech.estoque_api.application.tests.UserFactory;
-import com.hextech.estoque_api.domain.entities.User;
+import com.hextech.estoque_api.domain.entities.user.User;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.domain.exceptions.UserAlreadyExistsException;
 import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

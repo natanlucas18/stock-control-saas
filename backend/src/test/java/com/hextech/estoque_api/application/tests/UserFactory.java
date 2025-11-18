@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.application.tests;
 
-import com.hextech.estoque_api.domain.entities.Role;
-import com.hextech.estoque_api.domain.entities.User;
+import com.hextech.estoque_api.domain.entities.role.Role;
+import com.hextech.estoque_api.domain.entities.user.User;
 import com.hextech.estoque_api.interfaces.dtos.users.UserRequestDTO;
 
 import java.util.List;

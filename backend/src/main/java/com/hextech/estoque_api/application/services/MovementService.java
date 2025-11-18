@@ -1,7 +1,11 @@
 package com.hextech.estoque_api.application.services;
 
-import com.hextech.estoque_api.domain.entities.*;
+import com.hextech.estoque_api.domain.entities.company.Company;
+import com.hextech.estoque_api.domain.entities.movement.Movement;
+import com.hextech.estoque_api.domain.entities.movement.MovementType;
 import com.hextech.estoque_api.domain.entities.product.Product;
+import com.hextech.estoque_api.domain.entities.stockLocation.StockLocation;
+import com.hextech.estoque_api.domain.entities.user.User;
 import com.hextech.estoque_api.domain.exceptions.InvalidMovementTypeException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.domain.services.StockMovementDomainService;

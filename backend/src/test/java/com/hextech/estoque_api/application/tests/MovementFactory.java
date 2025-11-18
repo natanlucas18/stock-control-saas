@@ -1,7 +1,11 @@
 package com.hextech.estoque_api.application.tests;
 
-import com.hextech.estoque_api.domain.entities.*;
+import com.hextech.estoque_api.domain.entities.company.Company;
+import com.hextech.estoque_api.domain.entities.movement.Movement;
+import com.hextech.estoque_api.domain.entities.movement.MovementType;
 import com.hextech.estoque_api.domain.entities.product.Product;
+import com.hextech.estoque_api.domain.entities.stockLocation.StockLocation;
+import com.hextech.estoque_api.domain.entities.user.User;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementRequestDTO;
 
 import java.math.BigDecimal;

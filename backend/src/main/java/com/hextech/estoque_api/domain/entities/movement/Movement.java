@@ -1,14 +1,17 @@
-package com.hextech.estoque_api.domain.entities;
+package com.hextech.estoque_api.domain.entities.movement;
 
+import com.hextech.estoque_api.domain.entities.user.User;
+import com.hextech.estoque_api.domain.entities.company.Company;
 import com.hextech.estoque_api.domain.entities.product.Product;
+import com.hextech.estoque_api.domain.entities.stockLocation.StockLocation;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static com.hextech.estoque_api.domain.entities.MovementType.ENTRADA;
-import static com.hextech.estoque_api.domain.entities.MovementType.SAIDA;
+import static com.hextech.estoque_api.domain.entities.movement.MovementType.ENTRADA;
+import static com.hextech.estoque_api.domain.entities.movement.MovementType.SAIDA;
 
 @Entity
 @Table(name = "movements")

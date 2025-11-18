@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.factories.ReportPeriodFactory;
-import com.hextech.estoque_api.domain.entities.Movement;
+import com.hextech.estoque_api.domain.entities.movement.Movement;
 import com.hextech.estoque_api.domain.entities.ReportPeriod;
 import com.hextech.estoque_api.infrastructure.repositories.MovementRepository;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementFilterDTO;

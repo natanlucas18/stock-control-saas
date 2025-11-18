@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.interfaces.dtos.movements;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hextech.estoque_api.domain.entities.Movement;
+import com.hextech.estoque_api.domain.entities.movement.Movement;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductMinDTO;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import com.hextech.estoque_api.interfaces.dtos.users.UserMinDTO;
