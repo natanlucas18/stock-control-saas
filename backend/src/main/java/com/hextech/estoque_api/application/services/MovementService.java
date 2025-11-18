@@ -1,6 +1,5 @@
 package com.hextech.estoque_api.application.services;
 
-import com.hextech.estoque_api.application.factories.ReportPeriodFactory;
 import com.hextech.estoque_api.domain.entities.*;
 import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.exceptions.InvalidMovementTypeException;
@@ -10,8 +9,6 @@ import com.hextech.estoque_api.infrastructure.repositories.*;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,13 +55,5 @@ public class MovementService {
         productRepository.save(product);
         repository.save(entity);
         return new MovementResponseDTO(entity);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<MovementResponseDTO> getMovementsReport(String startDate, String endDate, Long companyId, Pageable pageable) {
-        ReportPeriod period = ReportPeriodFactory.fromStrings(startDate, endDate);
-
-        Page<Movement> movements = repository.searchAllByCompanyIdAndDate(companyId, period.getStartDate(), period.getEndDate(), pageable);
-        return movements.map(MovementResponseDTO::new);
     }
 }
