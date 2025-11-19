@@ -45,7 +45,7 @@ class MovementServiceTest {
 
     @Test
     @DisplayName("Should create and process an entry movement successfully")
-    void createAndProcessMovementCase1() {
+    void createEntryMovementCase1() {
         Long companyId = 1L;
         Long userId = 1L;
         MovementRequestDTO requestDTO = MovementFactory.createMovementRequestDTO();
@@ -55,17 +55,17 @@ class MovementServiceTest {
         when(userRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(UserFactory.createUser(userId)));
         when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(StockLocationFactory.createStockLocation(requestDTO.getStockLocationId())));
         when(productRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(product));
-        when(domainService.processMovement(any(), any(), anyString(), any(), any(), any(), any())).thenReturn(MovementFactory.createEntryMovement());
+        when(domainService.processEntryMovement(any(), any(), anyString(), any(), any(), any(), any())).thenReturn(MovementFactory.createEntryMovement());
         when(productRepository.save(any())).thenReturn(product);
         when(repository.save(any())).thenReturn(MovementFactory.createEntryMovement());
 
-        MovementResponseDTO responseDTO = movementService.createAndProcessMovement(requestDTO, companyId, userId);
+        MovementResponseDTO responseDTO = movementService.createEntryMovement(requestDTO, companyId, userId);
 
         verify(companyRepository, times(1)).findById(anyLong());
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(1)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(1)).processEntryMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(1)).save(any());
         verify(repository, times(1)).save(any());
 
@@ -74,7 +74,7 @@ class MovementServiceTest {
 
     @Test
     @DisplayName("Should propagate exception when company not found")
-    void createAndProcessMovementCase2() {
+    void createEntryMovementCase2() {
         Long companyId = 1L;
         Long userId = 1L;
         MovementRequestDTO requestDTO = MovementFactory.createMovementRequestDTO();
@@ -82,14 +82,14 @@ class MovementServiceTest {
         when(companyRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         Exception thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            movementService.createAndProcessMovement(requestDTO, companyId, userId);
+            movementService.createEntryMovement(requestDTO, companyId, userId);
         });
 
         verify(companyRepository, times(1)).findById(anyLong());
         verify(userRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(0)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(0)).processEntryMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Empresa não encontrada.");
@@ -97,7 +97,7 @@ class MovementServiceTest {
 
     @Test
     @DisplayName("Should propagate exception when user not found")
-    void createAndProcessMovementCase3() {
+    void createEntryMovementCase3() {
         Long companyId = 1L;
         Long userId = 1L;
         MovementRequestDTO requestDTO = MovementFactory.createMovementRequestDTO();
@@ -106,14 +106,14 @@ class MovementServiceTest {
         when(userRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
         Exception thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            movementService.createAndProcessMovement(requestDTO, companyId, userId);
+            movementService.createEntryMovement(requestDTO, companyId, userId);
         });
 
         verify(companyRepository, times(1)).findById(anyLong());
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(0)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(0)).processEntryMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Usuário não encontrado.");
@@ -121,7 +121,7 @@ class MovementServiceTest {
 
     @Test
     @DisplayName("Should propagate exception when stock location not found")
-    void createAndProcessMovementCase4() {
+    void createEntryMovementCase4() {
         Long companyId = 1L;
         Long userId = 1L;
         MovementRequestDTO requestDTO = MovementFactory.createMovementRequestDTO();
@@ -131,13 +131,13 @@ class MovementServiceTest {
         when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
         Exception thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            movementService.createAndProcessMovement(requestDTO, companyId, userId);
+            movementService.createEntryMovement(requestDTO, companyId, userId);
         });
         verify(companyRepository, times(1)).findById(anyLong());
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(0)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(0)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(0)).processEntryMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Local de estoque não encontrado.");
@@ -145,7 +145,7 @@ class MovementServiceTest {
 
     @Test
     @DisplayName("Should propagate exception when product not found")
-    void createAndProcessMovementCase5() {
+    void createEntryMovementCase5() {
         Long companyId = 1L;
         Long userId = 1L;
         MovementRequestDTO requestDTO = MovementFactory.createMovementRequestDTO();
@@ -156,14 +156,14 @@ class MovementServiceTest {
         when(productRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
         Exception thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            movementService.createAndProcessMovement(requestDTO, companyId, userId);
+            movementService.createEntryMovement(requestDTO, companyId, userId);
         });
 
         verify(companyRepository, times(1)).findById(anyLong());
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(0)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(0)).processEntryMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Produto não encontrado.");
@@ -171,7 +171,7 @@ class MovementServiceTest {
 
     @Test
     @DisplayName("Should propagate exception when movement type is invalid")
-    void createAndProcessMovementCase6() {
+    void createEntryMovementCase6() {
         Long companyId = 1L;
         Long userId = 1L;
         MovementRequestDTO requestDTO = MovementFactory.createMovementRequestDTO();
@@ -183,14 +183,14 @@ class MovementServiceTest {
         when(productRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(ProductFactory.createProduct(requestDTO.getProductId())));
 
         Exception thrown = assertThrows(InvalidMovementTypeException.class, () -> {
-            movementService.createAndProcessMovement(requestDTO, companyId, userId);
+            movementService.createEntryMovement(requestDTO, companyId, userId);
         });
 
         verify(companyRepository, times(1)).findById(anyLong());
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(0)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(0)).processEntryMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Tipo de movimentação inválida.");
@@ -198,7 +198,7 @@ class MovementServiceTest {
 
     @Test
     @DisplayName("Should propagate exception when domain not process movement")
-    void createAndProcessMovementCase7() {
+    void createEntryMovementCase7() {
         Long companyId = 1L;
         Long userId = 1L;
         MovementRequestDTO requestDTO = MovementFactory.createMovementRequestDTO();
@@ -206,17 +206,17 @@ class MovementServiceTest {
         when(userRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(UserFactory.createUser(userId)));
         when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(StockLocationFactory.createStockLocation(requestDTO.getStockLocationId())));
         when(productRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(ProductFactory.createProduct(requestDTO.getProductId())));
-        when(domainService.processMovement(any(), any(), anyString(), any(), any(), any(), any())).thenThrow(new InvalidMovementTypeException("Tipo de movimentação inválida."));
+        when(domainService.processEntryMovement(any(), any(), anyString(), any(), any(), any(), any())).thenThrow(new InvalidMovementTypeException("Tipo de movimentação inválida."));
 
         Exception thrown = assertThrows(InvalidMovementTypeException.class, () -> {
-            movementService.createAndProcessMovement(requestDTO, companyId, userId);
+            movementService.createEntryMovement(requestDTO, companyId, userId);
         });
 
         verify(companyRepository, times(1)).findById(anyLong());
         verify(userRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(stockLocationRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         verify(productRepository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(domainService, times(1)).processMovement(any(), any(), anyString(), any(), any(), any(), any());
+        verify(domainService, times(1)).processEntryMovement(any(), any(), anyString(), any(), any(), any(), any());
         verify(productRepository, times(0)).save(any());
         verify(repository, times(0)).save(any());
         assert thrown.getMessage().equals("Tipo de movimentação inválida.");

@@ -2,35 +2,36 @@ package com.hextech.estoque_api.interfaces.dtos.products;
 
 import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.product.StockStatus;
-import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
+import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockQuantityDTO;
 
 import java.math.BigDecimal;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProductResponseDTO {
 
     private Long id;
     private String name;
     private BigDecimal price;
-    private BigDecimal quantity;
+    private BigDecimal total_quantity;
     private BigDecimal stockMax;
     private BigDecimal stockMin;
     private String unitMeasure;
-    private StockLocationDTO stockLocation;
     private StockStatus stockStatus;
+    private Set<StockQuantityDTO> stockLocations;
 
     public ProductResponseDTO() {
     }
 
-    public ProductResponseDTO(Long id, String name, BigDecimal price, BigDecimal quantity, BigDecimal stockMax,
-                              BigDecimal stockMin, String unitMeasure, StockLocationDTO stockLocation, StockStatus stockStatus) {
+    public ProductResponseDTO(Long id, String name, BigDecimal price, BigDecimal total_quantity, BigDecimal stockMax,
+                              BigDecimal stockMin, String unitMeasure, StockStatus stockStatus) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.quantity = quantity;
+        this.total_quantity = total_quantity;
         this.stockMax = stockMax;
         this.stockMin = stockMin;
         this.unitMeasure = unitMeasure;
-        this.stockLocation = stockLocation;
         this.stockStatus = stockStatus;
     }
 
@@ -38,11 +39,12 @@ public class ProductResponseDTO {
         this.id = entity.getId();
         this.name = entity.getName();
         this.price = entity.getPrice();
-        this.quantity = entity.getQuantity();
+        this.total_quantity = entity.getTotalQuantity();
         this.stockMax = entity.getStockMax();
         this.stockMin = entity.getStockMin();
         this.unitMeasure = entity.getUnitMeasure().toString();
-        this.stockLocation = new StockLocationDTO(entity.getStockLocation());
+        this.stockLocations = entity.getStocks().stream().map(
+                stockProduct -> new StockQuantityDTO(stockProduct.getStockLocation(), stockProduct.getQuantity())).collect(Collectors.toSet());
         this.stockStatus = entity.checkStockStatus();
     }
 
@@ -70,12 +72,12 @@ public class ProductResponseDTO {
         this.price = price;
     }
 
-    public BigDecimal getQuantity() {
-        return quantity;
+    public BigDecimal getTotal_quantity() {
+        return total_quantity;
     }
 
-    public void setQuantity(BigDecimal quantity) {
-        this.quantity = quantity;
+    public void setTotal_quantity(BigDecimal total_quantity) {
+        this.total_quantity = total_quantity;
     }
 
     public BigDecimal getStockMax() {
@@ -102,12 +104,12 @@ public class ProductResponseDTO {
         this.unitMeasure = unitMeasure;
     }
 
-    public StockLocationDTO getStockLocation() {
-        return stockLocation;
+    public Set<StockQuantityDTO> getStockLocations() {
+        return stockLocations;
     }
 
-    public void setStockLocation(StockLocationDTO stockLocation) {
-        this.stockLocation = stockLocation;
+    public void setStockLocations(Set<StockQuantityDTO> stockLocations) {
+        this.stockLocations = stockLocations;
     }
 
     public StockStatus getStockStatus() {

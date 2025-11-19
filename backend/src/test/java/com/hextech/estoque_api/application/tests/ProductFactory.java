@@ -10,7 +10,7 @@ public class ProductFactory {
 
     public static Product createProduct(Long id) {
         return Product.createNewProduct("Test Product " + id, new BigDecimal("100.00"), new BigDecimal(100), new BigDecimal(10),
-                UnitMeasure.UN, CompanyFactory.createCompany(1L), StockLocationFactory.createStockLocation(1L));
+                UnitMeasure.UN, CompanyFactory.createCompany(1L));
     }
 
     public static ProductRequestDTO createProductRequestDTO() {
@@ -21,7 +21,6 @@ public class ProductFactory {
         dto.setStockMax(product.getStockMax());
         dto.setStockMin(product.getStockMin());
         dto.setUnitMeasure(product.getUnitMeasure().toString());
-        dto.setStockLocationId(product.getStockLocation().getId());
         return dto;
     }
 }

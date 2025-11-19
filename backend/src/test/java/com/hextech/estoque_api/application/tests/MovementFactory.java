@@ -17,16 +17,16 @@ public class MovementFactory {
         Product product = ProductFactory.createProduct(1L);
         User user = UserFactory.createUser(1L);
         Company company = CompanyFactory.createCompany(1L);
-        StockLocation stockLocation = StockLocationFactory.createStockLocation(1L);
-        return Movement.createNewMovement(MovementType.ENTRADA, new BigDecimal(10), LocalDateTime.now(), "Entrada de teste", product, user, company, stockLocation);
+        StockLocation toStockLocation = StockLocationFactory.createStockLocation(1L);
+        return Movement.createNewMovement(MovementType.ENTRADA, new BigDecimal(10), LocalDateTime.now(), "Entrada de teste", product, user, company, null, toStockLocation);
     }
 
     public static Movement createExitMovement() {
         Product product = ProductFactory.createProduct(1L);
         User user = UserFactory.createUser(1L);
         Company company = CompanyFactory.createCompany(1L);
-        StockLocation stockLocation = StockLocationFactory.createStockLocation(1L);
-        return Movement.createNewMovement(MovementType.SAIDA, new BigDecimal(5), LocalDateTime.now(), "Saída de teste", product, user, company, stockLocation);
+        StockLocation fromStockLocation = StockLocationFactory.createStockLocation(1L);
+        return Movement.createNewMovement(MovementType.SAIDA, new BigDecimal(5), LocalDateTime.now(), "Saída de teste", product, user, company, fromStockLocation, null);
     }
 
     public static MovementRequestDTO createMovementRequestDTO() {
@@ -35,7 +35,8 @@ public class MovementFactory {
         dto.setQuantity(new BigDecimal(10));
         dto.setNote("Entrada de teste");
         dto.setProductId(1L);
-        dto.setStockLocationId(1L);
+        dto.setFromStockLocationId(1L);
+        dto.setToStockLocationId(2L);
         return dto;
     }
 }

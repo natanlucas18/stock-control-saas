@@ -22,9 +22,42 @@ public class MovementController implements MovementControllerDocs {
     @Autowired
     private AuthContext auth;
 
-    @PostMapping
-    public ResponseEntity<StandardResponse<?>> createMovement(@RequestBody MovementRequestDTO requestDTO) {
-        MovementResponseDTO response = service.createAndProcessMovement(requestDTO, auth.getCurrentCompanyId(), auth.getCurrentUserId());
+    @GetMapping("/{id}")
+    public ResponseEntity<StandardResponse<?>> findById(@PathVariable Long id) {
+        MovementResponseDTO response = service.findById(id);
+        return ResponseEntity.ok(new StandardResponse<>(true, response));
+    }
+
+    @PostMapping(value = "/entry")
+    public ResponseEntity<StandardResponse<?>> createEntryMovement(@RequestBody MovementRequestDTO requestDTO) {
+        MovementResponseDTO response = service.createEntryMovement(requestDTO, auth.getCurrentCompanyId(), auth.getCurrentUserId());
+
+        URI uri = URI.create("/api/movements/" + response.getId());
+
+        return ResponseEntity.created(uri).body(new StandardResponse<>(true, response));
+    }
+
+    @PostMapping("/exit")
+    public ResponseEntity<StandardResponse<?>> createExitMovement(@RequestBody MovementRequestDTO requestDTO) {
+        MovementResponseDTO response = service.createExitMovement(requestDTO, auth.getCurrentCompanyId(), auth.getCurrentUserId());
+
+        URI uri = URI.create("/api/movements/" + response.getId());
+
+        return ResponseEntity.created(uri).body(new StandardResponse<>(true, response));
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<StandardResponse<?>> createTransferMovement(@RequestBody MovementRequestDTO requestDTO) {
+        MovementResponseDTO response = service.createTransferMovement(requestDTO, auth.getCurrentCompanyId(), auth.getCurrentUserId());
+
+        URI uri = URI.create("/api/movements/" + response.getId());
+
+        return ResponseEntity.created(uri).body(new StandardResponse<>(true, response));
+    }
+
+    @PostMapping("/return")
+    public ResponseEntity<StandardResponse<?>> createReturnMovement(@RequestBody MovementRequestDTO requestDTO) {
+        MovementResponseDTO response = service.createReturnMovement(requestDTO, auth.getCurrentCompanyId(), auth.getCurrentUserId());
 
         URI uri = URI.create("/api/movements/" + response.getId());
 

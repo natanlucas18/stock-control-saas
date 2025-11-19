@@ -3,10 +3,13 @@ package com.hextech.estoque_api.infrastructure.repositories;
 import com.hextech.estoque_api.domain.entities.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Repository
@@ -19,5 +22,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             """)
     Page<Product> findAllByNameAndCompanyId(String name, Long companyId, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"stocks"})
     Optional<Product> findByIdAndCompanyId(Long id, Long companyId);
+
+    @Modifying
+    @Query("""
+            UPDATE Product p
+            SET p.totalQuantity = :quantity
+            WHERE p.id = :productId
+            """)
+    void updateTotalQuantity(Long productId, BigDecimal quantity);
 }

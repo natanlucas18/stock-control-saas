@@ -9,18 +9,16 @@ public class ProductRequestDTO {
     private BigDecimal stockMax;
     private BigDecimal stockMin;
     private String unitMeasure;
-    private Long stockLocationId;
 
     public ProductRequestDTO() {
     }
 
-    public ProductRequestDTO(String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, String unitMeasure, Long stockLocationId) {
+    public ProductRequestDTO(String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, String unitMeasure) {
         this.name = name;
         this.price = price;
         this.stockMax = stockMax;
         this.stockMin = stockMin;
         this.unitMeasure = unitMeasure;
-        this.stockLocationId = stockLocationId;
     }
 
     public String getName() {
@@ -61,13 +59,5 @@ public class ProductRequestDTO {
 
     public void setUnitMeasure(String unitMeasure) {
         this.unitMeasure = unitMeasure;
-    }
-
-    public Long getStockLocationId() {
-        return stockLocationId;
-    }
-
-    public void setStockLocationId(Long stockLocationId) {
-        this.stockLocationId = stockLocationId;
     }
 }
