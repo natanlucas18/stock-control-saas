@@ -1,4 +1,12 @@
 import z from 'zod';
+
+export type StockLocationParams = {
+  pageSize?: string;
+  pageNumber?: string;
+  search?: string;
+  sort?: string;
+};
+
 export type StockLocationsData = {
   id: number,
   name: string,
