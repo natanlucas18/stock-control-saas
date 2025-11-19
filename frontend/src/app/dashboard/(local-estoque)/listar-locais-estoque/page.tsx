@@ -1,5 +1,5 @@
 import { getAllStockLocations } from '@/services/stock-location-service';
-import { StockLocationsTable } from './local-estoque-table';
+import {StockLocationsTable} from '../components/stock-locations-table';
 
 export default async function StockLocationsListPage({
   searchParams
