@@ -8,6 +8,7 @@ import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PaginatedRespon
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
+import com.hextech.estoque_api.interfaces.dtos.products.ProductResumeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,12 +34,12 @@ public class ProductController implements ProductControllerDocs {
     public ResponseEntity<StandardResponse<?>> findAllPaged(@RequestParam(value = "name", defaultValue = "") String name, Pageable pageable) {
         int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
         Pageable adjustedPageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
-        Page<ProductResponseDTO> response = service.findAllByCompanyId(name, authContext.getCurrentCompanyId(), adjustedPageable);
+        Page<ProductResumeDTO> response = service.findAllByCompanyId(name, authContext.getCurrentCompanyId(), adjustedPageable);
 
-        List<ProductResponseDTO> content = response.getContent();
+        List<ProductResumeDTO> content = response.getContent();
         PageMetadata pageMetadata = new PageMetadata(response);
 
-        PaginatedResponse<ProductResponseDTO> paginatedResponse = new PaginatedResponse<ProductResponseDTO>(content, pageMetadata);
+        PaginatedResponse<?> paginatedResponse = new PaginatedResponse<>(content, pageMetadata);
         return ResponseEntity.ok(new StandardResponse<>(true, paginatedResponse));
     }
 
