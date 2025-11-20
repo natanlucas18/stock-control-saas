@@ -68,4 +68,10 @@ public class ProductController implements ProductControllerDocs {
         service.deleteByIdAndCompanyId(id, authContext.getCurrentCompanyId());
         return ResponseEntity.ok(new StandardResponse<>(true, null));
     }
+
+    @PostMapping(value = "/check-code")
+    public ResponseEntity<StandardResponse<Void>> checkProductCode(@RequestParam String code) {
+        service.checkProductCode(code, authContext.getCurrentCompanyId());
+        return ResponseEntity.ok(new StandardResponse<>(true, null));
+    }
 }

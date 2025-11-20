@@ -32,4 +32,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             WHERE p.id = :productId
             """)
     void updateTotalQuantity(Long productId, BigDecimal quantity);
+
+    boolean existsByCodeAndCompanyId(String code, Long companyId);
 }

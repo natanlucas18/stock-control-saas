@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.domain.entities.product;
 
-import com.hextech.estoque_api.domain.entities.stockProduct.StockProduct;
 import com.hextech.estoque_api.domain.entities.company.Company;
+import com.hextech.estoque_api.domain.entities.stockProduct.StockProduct;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -16,6 +16,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String code;
     private String name;
     private BigDecimal price;
     private BigDecimal totalQuantity;
@@ -33,7 +34,8 @@ public class Product {
     public Product() {
     }
 
-    private Product(String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure, Company company) {
+    private Product(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure, Company company) {
+        this.code = code;
         this.name = name;
         this.price = price;
         this.stockMax = stockMax;
@@ -43,25 +45,28 @@ public class Product {
         this.company = company;
     }
 
-    public static Product createNewProduct(String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure, Company company) {
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome do produto não pode ser nulo ou vazio.");
-        if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Preço do produto não pode ser nulo, zero ou negativo.");
-        if (stockMax.compareTo(stockMin) <= 0) throw new IllegalArgumentException("Estoque máximo não pode ser menor ou igual que o estoque mínimo.");
-        if (unitMeasure == null) throw new IllegalArgumentException("Unidade de medida do produto não pode ser nula.");
+    public static Product createNewProduct(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure, Company company) {
+        validateAttribute(code, name, price, stockMax, stockMin, unitMeasure);
         if (company == null) throw new IllegalArgumentException("Empresa do produto não pode ser nula.");
-        return new Product(name, price, stockMax, stockMin, unitMeasure, company);
+        return new Product(code, name, price, stockMax, stockMin, unitMeasure, company);
     }
 
-    public void updateProduct(String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure) {
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome do produto não pode ser nulo ou vazio.");
-        if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Preço do produto não pode ser nulo, zero ou negativo.");
-        if (stockMax.compareTo(stockMin) <= 0) throw new IllegalArgumentException("Estoque máximo não pode ser menor ou igual ao estoque mínimo.");
-        if (unitMeasure == null) throw new IllegalArgumentException("Unidade de medida do produto não pode ser nula.");
+    public void updateProduct(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure) {
+        validateAttribute(code, name, price, stockMax, stockMin, unitMeasure);
+        this.code = code;
         this.name = name;
         this.price = price;
         this.stockMax = stockMax;
         this.stockMin = stockMin;
         this.unitMeasure = unitMeasure;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Long getId() {
@@ -136,6 +141,14 @@ public class Product {
         this.stocks = stocks;
     }
 
+    private static void validateAttribute(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure) {
+        if (code == null || code.isBlank() || code.length() > 10) throw new IllegalArgumentException("Código do produto não pode ser nulo, vazio ou maior que 10 caracteres.");
+        if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome do produto não pode ser nulo ou vazio.");
+        if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Preço do produto não pode ser nulo, zero ou negativo.");
+        if (stockMax.compareTo(stockMin) <= 0) throw new IllegalArgumentException("Estoque máximo não pode ser menor ou igual ao estoque mínimo.");
+        if (unitMeasure == null) throw new IllegalArgumentException("Unidade de medida do produto não pode ser nula.");
+    }
+
     public StockStatus checkStockStatus() {
         if (totalQuantity.compareTo(stockMin) < 0)
             return StockStatus.LOW;
@@ -149,11 +162,11 @@ public class Product {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(totalQuantity, product.totalQuantity) && unitMeasure == product.unitMeasure;
+        return Objects.equals(id, product.id) && Objects.equals(code, product.code) && Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(totalQuantity, product.totalQuantity) && Objects.equals(stockMax, product.stockMax) && Objects.equals(stockMin, product.stockMin) && unitMeasure == product.unitMeasure && Objects.equals(company, product.company);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, totalQuantity, unitMeasure);
+        return Objects.hash(id, code, name, price, totalQuantity, stockMax, stockMin, unitMeasure, company);
     }
 }

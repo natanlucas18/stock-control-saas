@@ -5,6 +5,7 @@ import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.product.UnitMeasure;
 import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.domain.exceptions.InvalidUnitMeasureException;
+import com.hextech.estoque_api.domain.exceptions.ProductCodeAlreadyExistsException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
 import com.hextech.estoque_api.infrastructure.repositories.ProductRepository;
@@ -46,9 +47,12 @@ public class ProductService {
         return new ProductResponseDTO(entity);
     }
 
+    @Transactional
     public ProductResponseDTO insert(ProductRequestDTO requestDTO, Long currentCompanyId) {
         Company company = companyRepository.findById(currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
+
+        validProductCode(requestDTO.getCode(), company.getId());
 
         UnitMeasure unitMeasure;
         try {
@@ -57,18 +61,21 @@ public class ProductService {
             throw new InvalidUnitMeasureException("Tipo de unidade de medida inválida.");
         }
 
-        Product entity = Product.createNewProduct(requestDTO.getName(), requestDTO.getPrice(), requestDTO.getStockMax(),
+        Product entity = Product.createNewProduct(requestDTO.getCode(), requestDTO.getName(), requestDTO.getPrice(), requestDTO.getStockMax(),
                 requestDTO.getStockMin(), unitMeasure, company);
 
         entity = repository.save(entity);
         return new ProductResponseDTO(entity);
     }
 
+    @Transactional
     public ProductResponseDTO update(Long id, ProductRequestDTO requestDTO, Long currentCompanyId) {
         companyRepository.findById(currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
         Product entity = repository.findByIdAndCompanyId(id, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
+
+        validProductCode(requestDTO.getCode(), currentCompanyId);
 
         UnitMeasure unitMeasure;
         try {
@@ -77,7 +84,7 @@ public class ProductService {
             throw new InvalidUnitMeasureException("Tipo de unidade de medida inválida.");
         }
 
-        entity.updateProduct(requestDTO.getName(), requestDTO.getPrice(), requestDTO.getStockMax(),
+        entity.updateProduct(requestDTO.getCode(), requestDTO.getName(), requestDTO.getPrice(), requestDTO.getStockMax(),
                 requestDTO.getStockMin(), unitMeasure);
 
         entity = repository.save(entity);
@@ -94,10 +101,19 @@ public class ProductService {
         }
     }
 
+    public void checkProductCode(String code, Long companyId) {
+        validProductCode(code, companyId);
+    }
+
     @Transactional
     public void updateTotalQuantity(Long productId) {
         BigDecimal quantity = stockProductRepository.sumByProductId(productId);
         repository.updateTotalQuantity(productId, quantity);
+    }
+
+    private void validProductCode(String code, Long companyId) {
+        if (repository.existsByCodeAndCompanyId(code, companyId))
+            throw new ProductCodeAlreadyExistsException("Código de produto já existente.");
     }
 }
 
