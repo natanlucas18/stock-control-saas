@@ -2,7 +2,7 @@ package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.tests.CompanyFactory;
 import com.hextech.estoque_api.application.tests.StockLocationFactory;
-import com.hextech.estoque_api.domain.entities.StockLocation;
+import com.hextech.estoque_api.domain.entities.stockLocation.StockLocation;
 import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;

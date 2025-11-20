@@ -8,17 +8,19 @@ public class MovementRequestDTO {
     private BigDecimal quantity;
     private String note;
     private Long productId;
-    private Long stockLocationId;
+    private Long fromStockLocationId;
+    private Long toStockLocationId;
 
     public MovementRequestDTO() {
     }
 
-    public MovementRequestDTO(String type, BigDecimal quantity, String note, Long productId, Long stockLocationId) {
+    public MovementRequestDTO(String type, BigDecimal quantity, String note, Long productId, Long fromStockLocationId, Long toStockLocationId) {
         this.type = type;
         this.quantity = quantity;
         this.note = note;
         this.productId = productId;
-        this.stockLocationId = stockLocationId;
+        this.fromStockLocationId = fromStockLocationId;
+        this.toStockLocationId = toStockLocationId;
     }
 
     public String getType() {
@@ -53,11 +55,19 @@ public class MovementRequestDTO {
         this.productId = productId;
     }
 
-    public Long getStockLocationId() {
-        return stockLocationId;
+    public Long getFromStockLocationId() {
+        return fromStockLocationId;
     }
 
-    public void setStockLocationId(Long stockLocationId) {
-        this.stockLocationId = stockLocationId;
+    public void setFromStockLocationId(Long fromStockLocationId) {
+        this.fromStockLocationId = fromStockLocationId;
+    }
+
+    public Long getToStockLocationId() {
+        return toStockLocationId;
+    }
+
+    public void setToStockLocationId(Long toStockLocationId) {
+        this.toStockLocationId = toStockLocationId;
     }
 }

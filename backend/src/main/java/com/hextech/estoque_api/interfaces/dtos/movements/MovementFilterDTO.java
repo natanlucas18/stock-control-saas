@@ -1,6 +1,6 @@
 package com.hextech.estoque_api.interfaces.dtos.movements;
 
-import com.hextech.estoque_api.domain.entities.MovementType;
+import com.hextech.estoque_api.domain.entities.movement.MovementType;
 import jakarta.validation.constraints.Positive;
 import org.springframework.format.annotation.DateTimeFormat;
 

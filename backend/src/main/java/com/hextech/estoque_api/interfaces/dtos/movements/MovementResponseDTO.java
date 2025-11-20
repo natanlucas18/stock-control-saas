@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.interfaces.dtos.movements;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hextech.estoque_api.domain.entities.Movement;
+import com.hextech.estoque_api.domain.entities.movement.Movement;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductMinDTO;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import com.hextech.estoque_api.interfaces.dtos.users.UserMinDTO;
@@ -19,7 +19,8 @@ public class MovementResponseDTO {
     private String note;
     private ProductMinDTO product;
     private UserMinDTO user;
-    private StockLocationDTO stockLocation;
+    private StockLocationDTO fromStockLocation;
+    private StockLocationDTO toStockLocation;
 
     public MovementResponseDTO() {
     }
@@ -32,7 +33,8 @@ public class MovementResponseDTO {
         this.note = entity.getNote();
         this.product = new ProductMinDTO(entity.getProduct());
         this.user = new UserMinDTO(entity.getUser().getId(), entity.getUser().getName());
-        this.stockLocation = new StockLocationDTO(entity.getStockLocation().getId(), entity.getStockLocation().getName());
+        this.fromStockLocation = (entity.getFromStockLocation() == null) ? null : new StockLocationDTO(entity.getFromStockLocation().getId(), entity.getFromStockLocation().getName());
+        this.toStockLocation = (entity.getToStockLocation() == null) ? null : new StockLocationDTO(entity.getToStockLocation().getId(), entity.getToStockLocation().getName());
     }
 
     public Long getId() {
@@ -91,11 +93,19 @@ public class MovementResponseDTO {
         this.user = user;
     }
 
-    public StockLocationDTO getStockLocation() {
-        return stockLocation;
+    public StockLocationDTO getFromStockLocation() {
+        return fromStockLocation;
     }
 
-    public void setStockLocation(StockLocationDTO stockLocation) {
-        this.stockLocation = stockLocation;
+    public void setFromStockLocation(StockLocationDTO fromStockLocation) {
+        this.fromStockLocation = fromStockLocation;
+    }
+
+    public StockLocationDTO getToStockLocation() {
+        return toStockLocation;
+    }
+
+    public void setToStockLocation(StockLocationDTO toStockLocation) {
+        this.toStockLocation = toStockLocation;
     }
 }

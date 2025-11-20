@@ -1,10 +1,12 @@
-package com.hextech.estoque_api.domain.entities;
+package com.hextech.estoque_api.domain.entities.stockLocation;
 
-import com.hextech.estoque_api.domain.entities.product.Product;
+import com.hextech.estoque_api.domain.entities.stockProduct.StockProduct;
+import com.hextech.estoque_api.domain.entities.company.Company;
 import jakarta.persistence.*;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "stock_locations")
@@ -20,7 +22,7 @@ public class StockLocation {
     private Company company;
 
     @OneToMany(mappedBy = "stockLocation")
-    private List<Product> products;
+    private Set<StockProduct> products = new HashSet<>();
 
     public StockLocation() {
     }
@@ -65,11 +67,11 @@ public class StockLocation {
         this.company = company;
     }
 
-    public List<Product> getProducts() {
+    public Set<StockProduct> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(Set<StockProduct> products) {
         this.products = products;
     }
 

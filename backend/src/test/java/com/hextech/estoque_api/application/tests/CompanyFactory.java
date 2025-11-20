@@ -1,6 +1,6 @@
 package com.hextech.estoque_api.application.tests;
 
-import com.hextech.estoque_api.domain.entities.Company;
+import com.hextech.estoque_api.domain.entities.company.Company;
 
 public class CompanyFactory {
 

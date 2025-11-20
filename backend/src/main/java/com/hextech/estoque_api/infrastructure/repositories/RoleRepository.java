@@ -1,6 +1,6 @@
 package com.hextech.estoque_api.infrastructure.repositories;
 
-import com.hextech.estoque_api.domain.entities.Role;
+import com.hextech.estoque_api.domain.entities.role.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

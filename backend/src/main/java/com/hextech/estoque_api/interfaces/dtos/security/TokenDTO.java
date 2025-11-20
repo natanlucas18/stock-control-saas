@@ -1,8 +1,7 @@
 package com.hextech.estoque_api.interfaces.dtos.security;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hextech.estoque_api.domain.entities.User;
+import com.hextech.estoque_api.domain.entities.user.User;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

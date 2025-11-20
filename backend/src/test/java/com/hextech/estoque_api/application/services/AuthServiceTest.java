@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.tests.UserFactory;
-import com.hextech.estoque_api.domain.entities.User;
+import com.hextech.estoque_api.domain.entities.user.User;
 import com.hextech.estoque_api.infrastructure.repositories.UserRepository;
 import com.hextech.estoque_api.infrastructure.security.jwt.JwtTokenProvider;
 import com.hextech.estoque_api.interfaces.dtos.security.AccountCredentialsDTO;

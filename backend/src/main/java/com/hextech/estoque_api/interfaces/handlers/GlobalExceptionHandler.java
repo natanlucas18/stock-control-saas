@@ -56,4 +56,11 @@ public class GlobalExceptionHandler {
         CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
     }
+
+    @ExceptionHandler(ProductCodeAlreadyExistsException.class)
+    public ResponseEntity<StandardResponse<?>> handleProductCodeAlreadyExists(ProductCodeAlreadyExistsException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
+    }
 }

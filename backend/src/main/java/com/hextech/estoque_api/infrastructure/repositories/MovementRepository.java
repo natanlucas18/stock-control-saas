@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.infrastructure.repositories;
 
-import com.hextech.estoque_api.domain.entities.Movement;
-import com.hextech.estoque_api.domain.entities.MovementType;
+import com.hextech.estoque_api.domain.entities.movement.Movement;
+import com.hextech.estoque_api.domain.entities.movement.MovementType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

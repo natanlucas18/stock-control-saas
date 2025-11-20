@@ -1,5 +1,7 @@
-package com.hextech.estoque_api.domain.entities;
+package com.hextech.estoque_api.domain.entities.user;
 
+import com.hextech.estoque_api.domain.entities.role.Role;
+import com.hextech.estoque_api.domain.entities.company.Company;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
