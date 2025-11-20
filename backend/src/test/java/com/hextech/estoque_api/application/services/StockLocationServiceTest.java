@@ -44,17 +44,18 @@ class StockLocationServiceTest {
     @DisplayName("Should return all stock locations paged for the current company")
     void findAllByCompanyIdPagedCase1() {
         Long companyId = 1L;
+        String stockLocationName = "Stock Location 1";
         Long stockLocationId = 1L;
         long totalElements = 1;
 
         Pageable pageable = PageRequest.of(0, 8);
         Page<StockLocation> page = new PageImpl<>(List.of(StockLocationFactory.createStockLocation(stockLocationId)), pageable, totalElements);
 
-        when(repository.findByCompanyId(anyLong(), any())).thenReturn(page);
+        when(repository.findAllByNameAndCompanyId(anyString(), anyLong(), any())).thenReturn(page);
 
-        Page<StockLocationDTO> result = service.findAllByCompanyId(companyId, pageable);
+        Page<StockLocationDTO> result = service.findAllByCompanyId(stockLocationName, companyId, pageable);
 
-        verify(repository, times(1)).findByCompanyId(anyLong(), any());
+        verify(repository, times(1)).findAllByNameAndCompanyId(anyString(), anyLong(), any());
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
         assertEquals(1, result.getContent().size());
