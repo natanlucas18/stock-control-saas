@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public class ProductFactory {
 
     public static Product createProduct(Long id) {
-        return Product.createNewProduct("Test Product " + id, new BigDecimal("100.00"), new BigDecimal(100), new BigDecimal(10),
+        return Product.createNewProduct("PRODTEST" + id, "Test Product " + id, new BigDecimal("100.00"), new BigDecimal(100), new BigDecimal(10),
                 UnitMeasure.UN, CompanyFactory.createCompany(1L));
     }
 
