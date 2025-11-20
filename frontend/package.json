@@ -13,7 +13,8 @@
     "services:up": "docker compose -f ../backend/docker-compose.yml up -d",
     "services:stop": "docker compose -f ../backend/docker-compose.yml stop",
     "services:down": "docker compose -f ../backend/docker-compose.yml down",
-    "services:build": "docker compose -f ../backend/docker-compose.yml up --build -d"
+    "services:build": "docker compose -f ../backend/docker-compose.yml up --build -d",
+    "services:rvolume": "docker compose -f ../backend/docker-compose.yml down -v"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
