@@ -30,10 +30,10 @@ public class StockLocationController implements StockLocationControllerDocs {
     private AuthContext authContext;
 
     @GetMapping
-    public ResponseEntity<StandardResponse<?>> findAllByCompanyPaged(Pageable pageable) {
+    public ResponseEntity<StandardResponse<?>> findAllByCompanyPaged(@RequestParam(value = "name", defaultValue = "") String name, Pageable pageable) {
         int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
         Pageable adjustedPageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
-        Page<StockLocationDTO> response = service.findAllByCompanyId(authContext.getCurrentCompanyId(), adjustedPageable);
+        Page<StockLocationDTO> response = service.findAllByCompanyId(name, authContext.getCurrentCompanyId(), adjustedPageable);
 
         List<StockLocationDTO> content = response.getContent();
         PageMetadata pageMetadata = new PageMetadata(response);
