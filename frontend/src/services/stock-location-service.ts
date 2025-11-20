@@ -36,9 +36,9 @@ export async function getAllStockLocations(
       next: { tags: ['locations'], revalidate: 60 }
     }
     if (params) {
-      const {pageNumber, pageSize, search = '', sort = ''} = params;
+      const {sort = '', pageNumber, pageSize, search = ''} = params;
   const response = await fetch(
-    `http://localhost:8080/api/stock-locations?size=${pageSize}&page=${pageNumber}&sort=${sort}&name=${search}`, init);
+    `http://localhost:8080/api/stock-locations?sort=${sort}&size=${pageSize}&page=${pageNumber}&name=${search}`, init);
   const responseData = await response.json();
 
   return responseData as ServerDTOArray<StockLocationsData>;
