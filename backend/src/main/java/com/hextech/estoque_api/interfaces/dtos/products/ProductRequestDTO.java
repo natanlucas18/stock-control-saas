@@ -1,73 +1,32 @@
 package com.hextech.estoque_api.interfaces.dtos.products;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductRequestDTO {
 
+    @NotBlank(message = "Código do produto não pode ser nulo ou vazio.")
+    @Size(min = 1, max = 10, message = "Código do produto deve ter no máximo 10 caracteres.")
     private String code;
+    @NotBlank(message = "Nome do produto não pode ser nulo ou vazio.")
+    @Size(min = 2, message = "Nome do produto deve ter no mínimo 2 caracteres.")
     private String name;
+    @NotNull(message = "Preço do produto não pode ser nulo.")
     private BigDecimal price;
+    @NotNull(message = "Estoque máximo do produto não pode ser nulo.")
     private BigDecimal stockMax;
+    @NotNull(message = "Estoque mínimo do produto não pode ser nulo.")
     private BigDecimal stockMin;
+    @NotBlank(message = "Tipo de unidade de medida do produto não pode ser nulo ou vazio.")
+    @Size(min = 2, max = 2, message = "Tipo de unidade de medida do produto deve ter 2 caracteres.")
     private String unitMeasure;
-
-    public ProductRequestDTO() {
-    }
-
-    public ProductRequestDTO(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, String unitMeasure) {
-        this.code = code;
-        this.name = name;
-        this.price = price;
-        this.stockMax = stockMax;
-        this.stockMin = stockMin;
-        this.unitMeasure = unitMeasure;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public BigDecimal getStockMax() {
-        return stockMax;
-    }
-
-    public void setStockMax(BigDecimal stockMax) {
-        this.stockMax = stockMax;
-    }
-
-    public BigDecimal getStockMin() {
-        return stockMin;
-    }
-
-    public void setStockMin(BigDecimal stockMin) {
-        this.stockMin = stockMin;
-    }
-
-    public String getUnitMeasure() {
-        return unitMeasure;
-    }
-
-    public void setUnitMeasure(String unitMeasure) {
-        this.unitMeasure = unitMeasure;
-    }
 }

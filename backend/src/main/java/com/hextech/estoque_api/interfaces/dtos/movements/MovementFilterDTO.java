@@ -1,53 +1,23 @@
 package com.hextech.estoque_api.interfaces.dtos.movements;
 
 import com.hextech.estoque_api.domain.entities.movement.MovementType;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PastOrPresent;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
+@Data
+@NoArgsConstructor
 public class MovementFilterDTO {
 
+    @PastOrPresent(message = "Data inicial não pode ser futura.")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @PastOrPresent(message = "Data final não pode ser futura.")
     private LocalDate endDate;
     private MovementType type;
-    @Positive
     private Long productId;
-
-    public MovementFilterDTO() {
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public MovementType getType() {
-        return type;
-    }
-
-    public void setType(MovementType type) {
-        this.type = type;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
 }

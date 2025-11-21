@@ -4,6 +4,7 @@ import com.hextech.estoque_api.application.services.AuthService;
 import com.hextech.estoque_api.interfaces.controllers.docs.AuthControllerDocs;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
 import com.hextech.estoque_api.interfaces.dtos.security.AccountCredentialsDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class AuthController implements AuthControllerDocs {
     private AuthService service;
 
     @PostMapping("/login")
-    public ResponseEntity<StandardResponse<?>> login(@RequestBody AccountCredentialsDTO credentials) {
+    public ResponseEntity<StandardResponse<?>> login(@RequestBody @Valid AccountCredentialsDTO credentials) {
         var token = service.login(credentials);
         return ResponseEntity.ok().body(new StandardResponse<>(true, token));
     }

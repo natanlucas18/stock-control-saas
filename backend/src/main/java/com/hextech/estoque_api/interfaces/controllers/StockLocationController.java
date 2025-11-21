@@ -8,6 +8,7 @@ import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PaginatedRespon
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,7 +50,7 @@ public class StockLocationController implements StockLocationControllerDocs {
     }
 
     @PostMapping
-    public ResponseEntity<StandardResponse<?>> insert(@RequestBody StockLocationDTO requestDTO) {
+    public ResponseEntity<StandardResponse<?>> insert(@RequestBody @Valid StockLocationDTO requestDTO) {
         StockLocationDTO response = service.insert(requestDTO, authContext.getCurrentCompanyId());
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(response.id()).toUri();
@@ -58,7 +59,7 @@ public class StockLocationController implements StockLocationControllerDocs {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<StandardResponse<?>> update(@PathVariable Long id, @RequestBody StockLocationDTO requestDTO) {
+    public ResponseEntity<StandardResponse<?>> update(@PathVariable Long id, @RequestBody @Valid StockLocationDTO requestDTO) {
         StockLocationDTO response = service.update(id, requestDTO, authContext.getCurrentCompanyId());
 
         return ResponseEntity.ok(new StandardResponse<>(true, response));
