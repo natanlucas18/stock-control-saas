@@ -32,10 +32,10 @@ public class ProductController implements ProductControllerDocs {
     private ProductService service;
 
     @GetMapping
-    public ResponseEntity<StandardResponse<?>> findAllPaged(@RequestParam(value = "name", defaultValue = "") String name, Pageable pageable) {
+    public ResponseEntity<StandardResponse<?>> findAllPaged(@RequestParam(value = "query", defaultValue = "") String query, Pageable pageable) {
         int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
         Pageable adjustedPageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
-        Page<ProductResumeDTO> response = service.findAllByCompanyId(name, authContext.getCurrentCompanyId(), adjustedPageable);
+        Page<ProductResumeDTO> response = service.findAllByCompanyId(query, authContext.getCurrentCompanyId(), adjustedPageable);
 
         List<ProductResumeDTO> content = response.getContent();
         PageMetadata pageMetadata = new PageMetadata(response);

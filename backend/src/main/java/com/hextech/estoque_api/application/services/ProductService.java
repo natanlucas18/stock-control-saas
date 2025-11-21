@@ -36,8 +36,8 @@ public class ProductService {
     private StockProductRepository stockProductRepository;
 
     @Transactional(readOnly = true)
-    public Page<ProductResumeDTO> findAllByCompanyId(String name, Long currentCompanyId, Pageable pageable) {
-        Page<Product> products = repository.findAllByNameAndCompanyId(name, currentCompanyId, pageable);
+    public Page<ProductResumeDTO> findAllByCompanyId(String query, Long currentCompanyId, Pageable pageable) {
+        Page<Product> products = repository.findAllByNameAndCompanyId(query, currentCompanyId, pageable);
         return products.map(ProductResumeDTO::new);
     }
 
