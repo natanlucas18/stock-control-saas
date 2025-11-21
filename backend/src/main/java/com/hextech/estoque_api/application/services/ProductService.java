@@ -76,7 +76,8 @@ public class ProductService {
         Product entity = repository.findByIdAndCompanyId(id, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
 
-        validProductCode(requestDTO.getCode(), currentCompanyId);
+        if (!entity.isCodeEqual(requestDTO.getCode()))
+            validProductCode(requestDTO.getCode(), currentCompanyId);
 
         UnitMeasure unitMeasure;
         try {
