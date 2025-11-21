@@ -30,7 +30,7 @@ public class MovementReportController implements MovementReportControllerDocs {
 
     @GetMapping
     public ResponseEntity<StandardResponse<?>> reportMovements(
-            @ModelAttribute @Valid MovementFilterDTO filter,
+            @ModelAttribute MovementFilterDTO filter,
             Pageable pageable
     ) {
         int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
