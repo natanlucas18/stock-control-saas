@@ -23,8 +23,8 @@ public class StockLocationService {
     private CompanyRepository companyRepository;
 
     @Transactional(readOnly = true)
-    public Page<StockLocationDTO> findAllByCompanyId(Long companyId, Pageable pageable) {
-        Page<StockLocation> result = repository.findByCompanyId(companyId, pageable);
+    public Page<StockLocationDTO> findAllByCompanyId(String name, Long companyId, Pageable pageable) {
+        Page<StockLocation> result = repository.findAllByNameAndCompanyId(name, companyId, pageable);
         return result.map(StockLocationDTO::new);
     }
 

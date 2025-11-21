@@ -13,6 +13,7 @@ import com.hextech.estoque_api.infrastructure.repositories.StockLocationReposito
 import com.hextech.estoque_api.infrastructure.repositories.StockProductRepository;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
+import com.hextech.estoque_api.interfaces.dtos.products.ProductResumeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -35,9 +36,9 @@ public class ProductService {
     private StockProductRepository stockProductRepository;
 
     @Transactional(readOnly = true)
-    public Page<ProductResponseDTO> findAllByCompanyId(String name, Long currentCompanyId, Pageable pageable) {
+    public Page<ProductResumeDTO> findAllByCompanyId(String name, Long currentCompanyId, Pageable pageable) {
         Page<Product> products = repository.findAllByNameAndCompanyId(name, currentCompanyId, pageable);
-        return products.map(ProductResponseDTO::new);
+        return products.map(ProductResumeDTO::new);
     }
 
     @Transactional(readOnly = true)
@@ -75,7 +76,8 @@ public class ProductService {
         Product entity = repository.findByIdAndCompanyId(id, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
 
-        validProductCode(requestDTO.getCode(), currentCompanyId);
+        if (!entity.isCodeEqual(requestDTO.getCode()))
+            validProductCode(requestDTO.getCode(), currentCompanyId);
 
         UnitMeasure unitMeasure;
         try {

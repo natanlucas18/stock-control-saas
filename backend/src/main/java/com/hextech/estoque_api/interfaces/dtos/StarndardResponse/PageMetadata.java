@@ -1,7 +1,11 @@
 package com.hextech.estoque_api.interfaces.dtos.StarndardResponse;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
+@Data
+@NoArgsConstructor
 public class PageMetadata {
 
     private int pageNumber;
@@ -18,53 +22,5 @@ public class PageMetadata {
         this.totalPages = page.getTotalPages();
         this.isLast = page.isLast();
         this.isFirst = page.isFirst();
-    }
-
-    public int getPageNumber() {
-        return pageNumber;
-    }
-
-    public void setPageNumber(int pageNumber) {
-        this.pageNumber = (pageNumber > 0) ? pageNumber + 1:1;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public long getTotalElements() {
-        return totalElements;
-    }
-
-    public void setTotalElements(long totalElements) {
-        this.totalElements = totalElements;
-    }
-
-    public int getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    public boolean isLast() {
-        return isLast;
-    }
-
-    public void setLast(boolean last) {
-        isLast = last;
-    }
-
-    public boolean isFirst() {
-        return isFirst;
-    }
-
-    public void setFirst(boolean first) {
-        isFirst = first;
     }
 }

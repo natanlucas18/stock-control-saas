@@ -1,73 +1,27 @@
 package com.hextech.estoque_api.interfaces.dtos.movements;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MovementRequestDTO {
 
+    @NotBlank(message = "Tipo de movimentação não pode ser nulo ou vazio.")
     private String type;
+    @NotNull(message = "Quantidade não pode ser nula.")
+    @DecimalMin(value = "0.001", message = "Quantidade deve ser maior que zero.")
     private BigDecimal quantity;
     private String note;
+    @NotNull(message = "Produto não pode ser nulo.")
     private Long productId;
     private Long fromStockLocationId;
     private Long toStockLocationId;
-
-    public MovementRequestDTO() {
-    }
-
-    public MovementRequestDTO(String type, BigDecimal quantity, String note, Long productId, Long fromStockLocationId, Long toStockLocationId) {
-        this.type = type;
-        this.quantity = quantity;
-        this.note = note;
-        this.productId = productId;
-        this.fromStockLocationId = fromStockLocationId;
-        this.toStockLocationId = toStockLocationId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public BigDecimal getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(BigDecimal quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public Long getFromStockLocationId() {
-        return fromStockLocationId;
-    }
-
-    public void setFromStockLocationId(Long fromStockLocationId) {
-        this.fromStockLocationId = fromStockLocationId;
-    }
-
-    public Long getToStockLocationId() {
-        return toStockLocationId;
-    }
-
-    public void setToStockLocationId(Long toStockLocationId) {
-        this.toStockLocationId = toStockLocationId;
-    }
 }

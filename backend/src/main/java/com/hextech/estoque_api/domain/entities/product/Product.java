@@ -3,14 +3,19 @@ package com.hextech.estoque_api.domain.entities.product;
 import com.hextech.estoque_api.domain.entities.company.Company;
 import com.hextech.estoque_api.domain.entities.stockProduct.StockProduct;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "products")
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Product {
 
     @Id
@@ -23,16 +28,11 @@ public class Product {
     private BigDecimal stockMax;
     private BigDecimal stockMin;
     private UnitMeasure unitMeasure;
-
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
-
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<StockProduct> stocks = new HashSet<>();
-
-    public Product() {
-    }
 
     private Product(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure, Company company) {
         this.code = code;
@@ -61,84 +61,8 @@ public class Product {
         this.unitMeasure = unitMeasure;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public BigDecimal getTotalQuantity() {
-        return totalQuantity;
-    }
-
-    public void setTotalQuantity(BigDecimal totalQuantity) {
-        this.totalQuantity = totalQuantity;
-    }
-
-    public BigDecimal getStockMax() {
-        return stockMax;
-    }
-
-    public void setStockMax(BigDecimal stockMax) {
-        this.stockMax = stockMax;
-    }
-
-    public BigDecimal getStockMin() {
-        return stockMin;
-    }
-
-    public void setStockMin(BigDecimal stockMin) {
-        this.stockMin = stockMin;
-    }
-
-    public UnitMeasure getUnitMeasure() {
-        return unitMeasure;
-    }
-
-    public void setUnitMeasure(UnitMeasure unitMeasure) {
-        this.unitMeasure = unitMeasure;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public Set<StockProduct> getStocks() {
-        return stocks;
-    }
-
-    public void setStocks(Set<StockProduct> stocks) {
-        this.stocks = stocks;
+    public boolean isCodeEqual(String code) {
+        return this.code.equals(code);
     }
 
     private static void validateAttribute(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure) {
@@ -156,17 +80,5 @@ public class Product {
             return StockStatus.HIGH;
         else
             return StockStatus.NORMAL;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Objects.equals(id, product.id) && Objects.equals(code, product.code) && Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(totalQuantity, product.totalQuantity) && Objects.equals(stockMax, product.stockMax) && Objects.equals(stockMin, product.stockMin) && unitMeasure == product.unitMeasure && Objects.equals(company, product.company);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, code, name, price, totalQuantity, stockMax, stockMin, unitMeasure, company);
     }
 }

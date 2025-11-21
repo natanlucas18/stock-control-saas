@@ -20,7 +20,7 @@ public interface StockLocationControllerDocs {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
     })
-    ResponseEntity<StandardResponse<?>> findAllByCompanyPaged(Pageable pageable);
+    ResponseEntity<StandardResponse<?>> findAllByCompanyPaged(String name, Pageable pageable);
 
     @Operation(summary = "Busca um local de armazenamento pelo ID")
     @ApiResponses(value = {

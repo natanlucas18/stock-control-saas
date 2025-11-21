@@ -8,6 +8,7 @@ import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PaginatedRespon
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,10 +31,10 @@ public class StockLocationController implements StockLocationControllerDocs {
     private AuthContext authContext;
 
     @GetMapping
-    public ResponseEntity<StandardResponse<?>> findAllByCompanyPaged(Pageable pageable) {
+    public ResponseEntity<StandardResponse<?>> findAllByCompanyPaged(@RequestParam(value = "name", defaultValue = "") String name, Pageable pageable) {
         int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
         Pageable adjustedPageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
-        Page<StockLocationDTO> response = service.findAllByCompanyId(authContext.getCurrentCompanyId(), adjustedPageable);
+        Page<StockLocationDTO> response = service.findAllByCompanyId(name, authContext.getCurrentCompanyId(), adjustedPageable);
 
         List<StockLocationDTO> content = response.getContent();
         PageMetadata pageMetadata = new PageMetadata(response);
@@ -49,7 +50,7 @@ public class StockLocationController implements StockLocationControllerDocs {
     }
 
     @PostMapping
-    public ResponseEntity<StandardResponse<?>> insert(@RequestBody StockLocationDTO requestDTO) {
+    public ResponseEntity<StandardResponse<?>> insert(@RequestBody @Valid StockLocationDTO requestDTO) {
         StockLocationDTO response = service.insert(requestDTO, authContext.getCurrentCompanyId());
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(response.id()).toUri();
@@ -58,7 +59,7 @@ public class StockLocationController implements StockLocationControllerDocs {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<StandardResponse<?>> update(@PathVariable Long id, @RequestBody StockLocationDTO requestDTO) {
+    public ResponseEntity<StandardResponse<?>> update(@PathVariable Long id, @RequestBody @Valid StockLocationDTO requestDTO) {
         StockLocationDTO response = service.update(id, requestDTO, authContext.getCurrentCompanyId());
 
         return ResponseEntity.ok(new StandardResponse<>(true, response));

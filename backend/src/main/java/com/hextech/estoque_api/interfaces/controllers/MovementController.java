@@ -6,6 +6,7 @@ import com.hextech.estoque_api.interfaces.controllers.docs.MovementControllerDoc
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.movements.MovementResponseDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class MovementController implements MovementControllerDocs {
     }
 
     @PostMapping(value = "/entry")
-    public ResponseEntity<StandardResponse<?>> createEntryMovement(@RequestBody MovementRequestDTO requestDTO) {
+    public ResponseEntity<StandardResponse<?>> createEntryMovement(@RequestBody @Valid MovementRequestDTO requestDTO) {
         MovementResponseDTO response = service.createEntryMovement(requestDTO, auth.getCurrentCompanyId(), auth.getCurrentUserId());
 
         URI uri = URI.create("/api/movements/" + response.getId());
@@ -38,7 +39,7 @@ public class MovementController implements MovementControllerDocs {
     }
 
     @PostMapping("/exit")
-    public ResponseEntity<StandardResponse<?>> createExitMovement(@RequestBody MovementRequestDTO requestDTO) {
+    public ResponseEntity<StandardResponse<?>> createExitMovement(@RequestBody @Valid MovementRequestDTO requestDTO) {
         MovementResponseDTO response = service.createExitMovement(requestDTO, auth.getCurrentCompanyId(), auth.getCurrentUserId());
 
         URI uri = URI.create("/api/movements/" + response.getId());
@@ -47,7 +48,7 @@ public class MovementController implements MovementControllerDocs {
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<StandardResponse<?>> createTransferMovement(@RequestBody MovementRequestDTO requestDTO) {
+    public ResponseEntity<StandardResponse<?>> createTransferMovement(@RequestBody @Valid MovementRequestDTO requestDTO) {
         MovementResponseDTO response = service.createTransferMovement(requestDTO, auth.getCurrentCompanyId(), auth.getCurrentUserId());
 
         URI uri = URI.create("/api/movements/" + response.getId());
@@ -56,7 +57,7 @@ public class MovementController implements MovementControllerDocs {
     }
 
     @PostMapping("/return")
-    public ResponseEntity<StandardResponse<?>> createReturnMovement(@RequestBody MovementRequestDTO requestDTO) {
+    public ResponseEntity<StandardResponse<?>> createReturnMovement(@RequestBody @Valid MovementRequestDTO requestDTO) {
         MovementResponseDTO response = service.createReturnMovement(requestDTO, auth.getCurrentCompanyId(), auth.getCurrentUserId());
 
         URI uri = URI.create("/api/movements/" + response.getId());
