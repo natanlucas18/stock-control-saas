@@ -22,7 +22,7 @@ export default async function ProductsListPage({ searchParams }: UrlParams) {
 
   return (
     <ProductsTable
-      products={products}
+      productsMin={products}
       paginationOptions={pagination}
     />
   );

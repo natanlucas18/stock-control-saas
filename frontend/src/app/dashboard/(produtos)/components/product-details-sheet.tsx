@@ -13,26 +13,37 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
-  SheetTitle
+  SheetTitle,
+  SheetTrigger
 } from '@/components/ui/sheet';
-import { ProductsData } from '@/types/product-schema';
+import { Product } from '@/types/product-schema';
 
 type ProductDetailsSheetProps = {
-  product: ProductsData;
+  product?: Product;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  trigger?: React.ReactNode;
 };
 
 export default function ProductDetailsSheet({
   product,
   open,
-  onOpenChange
+  onOpenChange,
+  trigger
 }: ProductDetailsSheetProps) {
   return (
     <Sheet
       open={open}
       onOpenChange={onOpenChange}
     >
+      {trigger && (
+        <SheetTrigger
+          className='cursor-pointer'
+          asChild
+        >
+          {trigger}
+        </SheetTrigger>
+      )}
       <SheetContent className='px-4'>
         <SheetHeader>
           <SheetTitle>Detalhes do Produto</SheetTitle>
@@ -51,7 +62,7 @@ export default function ProductDetailsSheet({
               height={400}
             />
             <p>Preço: {product?.price}</p>
-            <p>Quatidade: {product?.quantity}</p>
+            <p>Quatidade: {product?.totalQuantity}</p>
           </CardContent>
           <CardFooter>
             <p>Card Footer</p>

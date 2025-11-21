@@ -19,9 +19,9 @@ import {
 } from '@/components/ui/select';
 import { editProduct } from '@/services/products-service';
 import {
+  Product,
   productFormSchema,
-  ProductFormType,
-  ProductsData
+  ProductFormType
 } from '@/types/product-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -31,20 +31,17 @@ import { toast } from 'react-toastify';
 export default function ProductEditForm({
   defaultValues
 }: {
-  defaultValues: ProductsData;
+  defaultValues: Product;
 }) {
   const router = useRouter();
   const hookForm = useForm<ProductFormType>({
     resolver: zodResolver(productFormSchema),
-    defaultValues: {
-      ...defaultValues,
-      stockLocationId: defaultValues.stockLocation.id
-    }
+    defaultValues
   });
   const productId = defaultValues.id;
 
-  async function onSubmit(data: ProductFormType) {
-    const { success } = await editProduct(data, productId);
+  async function onSubmit(formData: ProductFormType) {
+    const { success } = await editProduct(formData, productId);
 
     if (success) {
       toast.success('Produto editado com sucesso!');
@@ -132,23 +129,6 @@ export default function ProductEditForm({
                     <SelectItem value='KG'>KG</SelectItem>
                   </SelectContent>
                 </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={hookForm.control}
-          name='stockLocationId'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>ID Local do Estoque</FormLabel>
-              <FormControl>
-                <Input
-                  type='number'
-                  {...field}
-                />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -11,21 +11,23 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import { softProductDelete } from '@/services/products-service';
-import { ProductsData } from '@/types/product-schema';
+import { ProductMin } from '@/types/product-schema';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+
+type ProductDeleteAlertProps = {
+  product?: Pick<ProductMin, 'id' | 'name'>;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  trigger?: React.ReactNode;
+};
 
 export default function ProductDeleteAlert({
   product,
   open,
   onOpenChange,
   trigger
-}: {
-  product: Pick<ProductsData, 'id' | 'name'>;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  trigger?: React.ReactNode;
-}) {
+}: ProductDeleteAlertProps) {
   const router = useRouter();
   async function onDelete(id: number) {
     const { success } = await softProductDelete(id);
@@ -52,12 +54,16 @@ export default function ProductDeleteAlert({
         <AlertDialogHeader>
           <AlertDialogTitle>
             Tem certeza que deseja excluir o produto{' '}
-            <span className='text-yellow-400'>{product.name}</span>?
+            <span className='text-yellow-400'>{product?.name}</span>?
           </AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => onDelete(product.id)}>
+          <AlertDialogAction
+            onClick={() => {
+              if (product) onDelete(product.id);
+            }}
+          >
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>

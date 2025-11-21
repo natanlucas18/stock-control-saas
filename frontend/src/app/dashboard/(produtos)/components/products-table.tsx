@@ -38,7 +38,8 @@ import {
 } from '@/components/ui/table';
 import { useUrlParams } from '@/hooks/use-url-params';
 import { getVisiblePages } from '@/lib/utils';
-import { ProductsData } from '@/types/product-schema';
+import { getProductById } from '@/services/products-service';
+import { Product, ProductMin } from '@/types/product-schema';
 import { PaginationOptions } from '@/types/server-dto';
 import {
   ChevronDownIcon,
@@ -57,37 +58,23 @@ import ProductEditDialog from './product-edit-dialog';
 import ProductRegisterDialog from './product-register-dialog';
 
 type ProductsTableProps = {
-  products: ProductsData[];
+  productsMin: ProductMin[];
   paginationOptions?: PaginationOptions;
   pageSize?: number;
 };
 
-const initialValues: ProductsData = {
-  id: 1,
-  code: '',
-  name: '',
-  quantity: 0,
-  price: 0,
-  stockMax: 0,
-  stockMin: 0,
-  unitMeasure: '',
-  stockLocation: {
-    id: 1,
-    name: ''
-  },
-  stockStatus: {
-    level: '',
-    message: ''
-  }
-};
-
 export function ProductsTable({
-  products,
+  productsMin,
   paginationOptions
 }: ProductsTableProps) {
   const { setUrlParam, params } = useUrlParams();
   const [openDetails, setOpenDetails] = useState(false);
-  const [product, setProduct] = useState<ProductsData>(initialValues);
+  const [product, setProduct] = useState<Product>();
+
+  async function getOneProduct(id: number) {
+    const { data } = await getProductById(id);
+    setProduct(data);
+  }
 
   function handleSort(sort: string) {
     const currentSort = params.get('sort');
@@ -149,29 +136,42 @@ export function ProductsTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.map((product) => (
-            <TableRow
-              key={product.id}
-              onDoubleClick={() => {
-                setOpenDetails(true);
-                setProduct(product);
-              }}
-              className='cursor-pointer'
-            >
-              <TableCell>{product.code}</TableCell>
-              <TableCell>{product.name}</TableCell>
-              <TableCell>{product.quantity}</TableCell>
-              <TableCell>{product.unitMeasure}</TableCell>
-              <TableCell>{product.stockStatus.message}</TableCell>
-              <TableCell
-                onDoubleClick={(e) => {
-                  e.stopPropagation();
+          {productsMin.length === 0 ? (
+            <>
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className='text-center py-4 text-muted-foreground'
+                >
+                  Nenhum produto encontrado
+                </TableCell>
+              </TableRow>
+            </>
+          ) : (
+            productsMin.map((productMin) => (
+              <TableRow
+                key={productMin.id}
+                onDoubleClick={async () => {
+                  await getOneProduct(productMin.id);
+                  setOpenDetails(true);
                 }}
+                className='cursor-pointer'
               >
-                <ProductDropdownMenu product={product} />
-              </TableCell>
-            </TableRow>
-          ))}
+                <TableCell>{productMin.code}</TableCell>
+                <TableCell>{productMin.name}</TableCell>
+                <TableCell>{productMin.totalQuantity}</TableCell>
+                <TableCell>{productMin.unitMeasure}</TableCell>
+                <TableCell>{productMin.stockStatus}</TableCell>
+                <TableCell
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <ProductDropdownMenu productMin={productMin} />
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
       {paginationOptions && (
@@ -296,18 +296,26 @@ function PaginationTable({ paginationOptions }: PaginationTableProps) {
   );
 }
 
-function ProductDropdownMenu({
-  product,
-  open,
-  onOpenChange
-}: {
-  product: ProductsData;
+type DropdownMenuProps = {
+  productMin?: ProductMin;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-}) {
+};
+
+function ProductDropdownMenu({
+  productMin,
+  open,
+  onOpenChange
+}: DropdownMenuProps) {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeletAlert, setOpenDeletAlert] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
+  const [product, setProduct] = useState<Product>();
+
+  async function getOneProduct(id: number) {
+    const { data } = await getProductById(id);
+    setProduct(data);
+  }
 
   return (
     <>
@@ -328,15 +336,27 @@ function ProductDropdownMenu({
           className=''
         >
           <DropdownMenuLabel>Ações</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => setOpenDetails(true)}>
-            Detalhes
-          </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(product.code)}
+            onClick={() =>
+              navigator.clipboard.writeText(productMin?.code || '')
+            }
           >
             Copiar Código
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpenEditDialog(true)}>
+          <DropdownMenuItem
+            onClick={async () => {
+              if (productMin) await getOneProduct(productMin.id);
+              setOpenDetails(true);
+            }}
+          >
+            Detalhes
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={async () => {
+              if (productMin) await getOneProduct(productMin.id);
+              setOpenEditDialog(true);
+            }}
+          >
             Editar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -350,13 +370,13 @@ function ProductDropdownMenu({
       </DropdownMenu>
 
       <ProductEditDialog
-        product={product}
+        product={product!}
         open={openEditDialog}
         onOpenChange={setOpenEditDialog}
       />
 
       <ProductDeleteAlert
-        product={product}
+        product={productMin}
         open={openDeletAlert}
         onOpenChange={setOpenDeletAlert}
       />

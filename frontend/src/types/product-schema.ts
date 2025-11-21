@@ -8,20 +8,22 @@ export type ProductParams = {
   sort?: string;
 };
 
-export type ProductsData = {
+export type ProductMin = Pick<
+  Product,
+  'id' | 'code' | 'name' | 'totalQuantity' | 'unitMeasure' | 'stockStatus'
+>;
+
+export type Product = {
   id: number;
   code: string;
   name: string;
-  quantity: number;
   price: number;
+  totalQuantity: number;
   stockMax: number;
   stockMin: number;
   unitMeasure: string;
-  stockLocation: StockLocationsData;
-  stockStatus: {
-    level: string;
-    message: string;
-  };
+  stockStatus: string;
+  stockLocations: StockLocationsData[];
 };
 
 export const productFormSchema = z.object({
@@ -34,10 +36,7 @@ export const productFormSchema = z.object({
   stockMax: z.coerce
     .number<number>()
     .min(1, 'Insira uma quantidade máxima para o produto!'),
-  unitMeasure: z.string().min(1, 'Insira a unidade de medida do produto!'),
-  stockLocationId: z.coerce
-    .number<number>()
-    .min(1, 'Insira o local de estoque do produto!')
+  unitMeasure: z.string().min(1, 'Insira a unidade de medida do produto!')
 });
 
 export type ProductFormType = z.infer<typeof productFormSchema>;

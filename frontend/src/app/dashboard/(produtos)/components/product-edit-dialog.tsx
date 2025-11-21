@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
-import { ProductsData } from '@/types/product-schema';
+import { Product } from '@/types/product-schema';
 import ProductEditForm from './product-edit-form';
 
 export default function ProductEditDialog({
@@ -16,7 +16,7 @@ export default function ProductEditDialog({
   onOpenChange,
   trigger
 }: {
-  product: ProductsData;
+  product: Product;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
