@@ -191,7 +191,7 @@ function SearchInput() {
   const { setUrlParam } = useUrlParams();
   const debouncedState = useDebouncedCallback((value: string) => {
     setUrlParam('page', '1');
-    setUrlParam('name', value);
+    setUrlParam('query', value);
   }, 500);
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {

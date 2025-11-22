@@ -64,9 +64,9 @@ export async function getAllProducts(
   };
 
   if (params) {
-    const { sort = '', pageSize, pageNumber, search = '' } = params;
+    const { sort = 'code', pageSize, pageNumber, search = '' } = params;
     const response = await fetch(
-      `http://localhost:8080/api/products?sort=${sort}&size=${pageSize}&page=${pageNumber}&name=${search}`,
+      `http://localhost:8080/api/products?sort=${sort}&size=${pageSize}&page=${pageNumber}&query=${search}`,
       init
     );
     const responseData = await response.json();
