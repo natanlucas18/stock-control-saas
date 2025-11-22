@@ -29,9 +29,14 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 export default function ProductEditForm({
-  defaultValues
+  defaultValues,
+  onOpenChange
 }: {
-  defaultValues: Product;
+  defaultValues: Pick<
+    Product,
+    'id' | 'code' | 'name' | 'price' | 'unitMeasure' | 'stockMin' | 'stockMax'
+  >;
+  onOpenChange?: (open: boolean) => void;
 }) {
   const router = useRouter();
   const hookForm = useForm<ProductFormType>({
@@ -47,6 +52,7 @@ export default function ProductEditForm({
       toast.success('Produto editado com sucesso!');
       hookForm.reset();
       router.refresh();
+      if (onOpenChange) onOpenChange(false);
     }
 
     if (!success) toast.error('Erro ao editar produto!');

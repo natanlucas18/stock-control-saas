@@ -10,17 +10,19 @@ import {
 import { Product } from '@/types/product-schema';
 import ProductEditForm from './product-edit-form';
 
+type ProductEditDialogProps = {
+  product: Product;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  trigger?: React.ReactNode;
+};
+
 export default function ProductEditDialog({
   product,
   open,
   onOpenChange,
   trigger
-}: {
-  product: Product;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  trigger?: React.ReactNode;
-}) {
+}: ProductEditDialogProps) {
   return (
     <Dialog
       open={open}
@@ -38,7 +40,10 @@ export default function ProductEditDialog({
         <DialogHeader>
           <DialogTitle>Editar Produto</DialogTitle>
         </DialogHeader>
-        <ProductEditForm defaultValues={product} />
+        <ProductEditForm
+          defaultValues={product}
+          onOpenChange={onOpenChange}
+        />
       </DialogContent>
     </Dialog>
   );
