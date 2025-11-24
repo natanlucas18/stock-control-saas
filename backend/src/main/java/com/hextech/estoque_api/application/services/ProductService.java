@@ -7,10 +7,7 @@ import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.domain.exceptions.InvalidUnitMeasureException;
 import com.hextech.estoque_api.domain.exceptions.ProductCodeAlreadyExistsException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
-import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
-import com.hextech.estoque_api.infrastructure.repositories.ProductRepository;
-import com.hextech.estoque_api.infrastructure.repositories.StockLocationRepository;
-import com.hextech.estoque_api.infrastructure.repositories.StockProductRepository;
+import com.hextech.estoque_api.infrastructure.repositories.*;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResumeDTO;
@@ -30,6 +27,8 @@ public class ProductService {
     private ProductRepository repository;
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private MovementRepository movementRepository;
     @Autowired
     private StockLocationRepository stockLocationRepository;
     @Autowired
@@ -93,14 +92,15 @@ public class ProductService {
         return new ProductResponseDTO(entity);
     }
 
+    @Transactional
     public void deleteByIdAndCompanyId(Long id, Long currentCompanyId) {
         Product entity = repository.findByIdAndCompanyId(id, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
-        try {
-            repository.delete(entity);
-        } catch (DataIntegrityViolationException e) {
-            throw new DeletionConflictException("Falha na Integridade referencial.");
-        }
+
+        if (movementRepository.existsMovementByProductId(entity.getId()))
+            throw new DeletionConflictException("O produto possui movimentações e não pode ser deletado.");
+
+        repository.delete(entity);
     }
 
     public void checkProductCode(String code, Long companyId) {
