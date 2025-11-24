@@ -3,10 +3,7 @@ package com.hextech.estoque_api.application.services;
 import com.hextech.estoque_api.domain.entities.company.Company;
 import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.product.UnitMeasure;
-import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
-import com.hextech.estoque_api.domain.exceptions.InvalidUnitMeasureException;
-import com.hextech.estoque_api.domain.exceptions.ProductCodeAlreadyExistsException;
-import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
+import com.hextech.estoque_api.domain.exceptions.*;
 import com.hextech.estoque_api.infrastructure.repositories.*;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
@@ -83,6 +80,11 @@ public class ProductService {
             unitMeasure = UnitMeasure.valueOf(requestDTO.getUnitMeasure());
         } catch (IllegalArgumentException e) {
             throw new InvalidUnitMeasureException("Tipo de unidade de medida inválida.");
+        }
+
+        if (!unitMeasure.equals(entity.getUnitMeasure())) {
+            if (movementRepository.existsMovementByProductId(entity.getId()))
+                throw new BusinessException("Não é permitido alterar a U.M., produto possui movimentações.");
         }
 
         entity.updateProduct(requestDTO.getCode(), requestDTO.getName(), requestDTO.getPrice(), requestDTO.getStockMax(),
