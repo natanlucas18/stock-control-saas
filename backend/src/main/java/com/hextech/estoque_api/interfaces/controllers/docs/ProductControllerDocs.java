@@ -60,4 +60,13 @@ public interface ProductControllerDocs {
             @ApiResponse(responseCode = "409", description = "Conflict", content = @Content)
     })
     ResponseEntity<StandardResponse<Void>> deleteById(Long id);
+
+    @Operation(summary = "Verifica se o código do produto já existe")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = StandardResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content)
+    })
+    ResponseEntity<StandardResponse<Void>> checkProductCode(String code);
 }
