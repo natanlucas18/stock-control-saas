@@ -34,4 +34,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     void updateTotalQuantity(Long productId, BigDecimal quantity);
 
     boolean existsByCodeAndCompanyId(String code, Long companyId);
+
+    @Query(value = """
+            SELECT p FROM Product p
+            WHERE (:id IS NULL OR p.id = :id)
+            AND p.company.id = :companyId
+            """)
+    Page<Product> searchAllProducts(Long id, Long companyId, Pageable pageable);
 }
