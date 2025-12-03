@@ -37,6 +37,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { useUrlParams } from '@/hooks/use-url-params';
+import { returnBadgeComponent } from '@/lib/return-component';
 import { getVisiblePages } from '@/lib/utils';
 import { getProductById } from '@/services/products-service';
 import { Product, ProductMin } from '@/types/product-schema';
@@ -161,7 +162,9 @@ export function ProductsTable({
                 <TableCell>{productMin.name}</TableCell>
                 <TableCell>{productMin.totalQuantity}</TableCell>
                 <TableCell>{productMin.unitMeasure}</TableCell>
-                <TableCell>{productMin.stockStatus}</TableCell>
+                <TableCell>
+                  {returnBadgeComponent(productMin.stockStatus)}
+                </TableCell>
                 <TableCell
                   onDoubleClick={(e) => {
                     e.stopPropagation();
