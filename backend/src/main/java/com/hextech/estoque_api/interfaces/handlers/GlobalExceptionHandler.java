@@ -66,6 +66,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
     }
 
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<StandardResponse<?>> handleBusinessException(BusinessException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardResponse<?>> handleFieldError(MethodArgumentNotValidException ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;

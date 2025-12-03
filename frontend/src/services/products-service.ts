@@ -2,16 +2,17 @@
 
 import { getCookie } from '@/lib/get-token';
 import {
+  Product,
   ProductFormType,
-  ProductParams,
-  ProductsData
+  ProductMin,
+  ProductParams
 } from '@/types/product-schema';
 import { ServerDTO, ServerDTOArray } from '@/types/server-dto';
 import { revalidateTag } from 'next/cache';
 
 export async function createProduct(
   data: ProductFormType
-): Promise<ServerDTO<ProductsData>> {
+): Promise<ServerDTO<ProductMin>> {
   const response = await fetch('http://localhost:8080/api/products', {
     method: 'POST',
     headers: {
@@ -31,7 +32,7 @@ export async function createProduct(
 export async function editProduct(
   data: ProductFormType,
   productId: number
-): Promise<ServerDTO<ProductsData>> {
+): Promise<ServerDTO<ProductMin>> {
   const response = await fetch(
     `http://localhost:8080/api/products/${productId}`,
     {
@@ -53,7 +54,7 @@ export async function editProduct(
 
 export async function getAllProducts(
   params?: ProductParams
-): Promise<ServerDTOArray<ProductsData>> {
+): Promise<ServerDTOArray<ProductMin>> {
   const init: RequestInit = {
     cache: 'force-cache',
     headers: {
@@ -63,9 +64,9 @@ export async function getAllProducts(
   };
 
   if (params) {
-    const { sort = '', pageSize, pageNumber, search = '' } = params;
+    const { sort = 'code', pageSize, pageNumber, search = '' } = params;
     const response = await fetch(
-      `http://localhost:8080/api/products?sort=${sort}&size=${pageSize}&page=${pageNumber}&name=${search}`,
+      `http://localhost:8080/api/products?sort=${sort}&size=${pageSize}&page=${pageNumber}&query=${search}`,
       init
     );
     const responseData = await response.json();
@@ -81,9 +82,27 @@ export async function getAllProducts(
   }
 }
 
+export async function getProductById(id: number): Promise<ServerDTO<Product>> {
+  const init: RequestInit = {
+    cache: 'force-cache',
+    headers: {
+      Authorization: `Bearer ${await getCookie('accessToken')}`
+    },
+    next: { tags: ['products'], revalidate: 60 }
+  };
+
+  const response = await fetch(
+    `http://localhost:8080/api/products/${id}`,
+    init
+  );
+  const responseData = await response.json();
+
+  return responseData;
+}
+
 export async function softProductDelete(
   id: number
-): Promise<ServerDTO<ProductsData>> {
+): Promise<ServerDTO<ProductMin>> {
   const response = await fetch(`http://localhost:8080/api/products/${id}`, {
     method: 'DELETE',
     headers: {
@@ -95,5 +114,5 @@ export async function softProductDelete(
 
   const responseData = await response.json();
 
-  return responseData as ServerDTO<ProductsData>;
+  return responseData as ServerDTO<ProductMin>;
 }

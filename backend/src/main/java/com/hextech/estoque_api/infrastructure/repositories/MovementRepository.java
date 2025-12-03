@@ -35,4 +35,23 @@ public interface MovementRepository extends JpaRepository<Movement, Long> {
                                       @Param("productId") Long productId,
                                       @Param("companyId") Long companyId,
                                       Pageable pageable);
+    Page<Movement> searchAllTest(@Param("startDate") LocalDateTime startDate,
+                                 @Param("endDate") LocalDateTime endDate,
+                                 @Param("type") MovementType type,
+                                 @Param("productId") Long productId,
+                                 @Param("companyId") Long companyId,
+                                 Pageable pageable);
+
+    @Query("""
+            SELECT COUNT(m) > 0 FROM Movement m
+            WHERE m.product.id = :productId
+            """)
+    boolean existsMovementByProductId(Long productId);
+
+    @Query("""
+            SELECT COUNT(m) > 0 FROM Movement m
+            WHERE m.fromStockLocation.id = :stockLocationId
+            OR m.toStockLocation.id = :stockLocationId
+            """)
+    boolean existsMovementByStockLocationId(Long stockLocationId);
 }
