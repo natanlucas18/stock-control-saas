@@ -13,7 +13,8 @@
     "services:up": "docker compose -f ../backend/docker-compose.yml up -d",
     "services:stop": "docker compose -f ../backend/docker-compose.yml stop",
     "services:down": "docker compose -f ../backend/docker-compose.yml down",
-    "services:build": "docker compose -f ../backend/docker-compose.yml up --build -d"
+    "services:build": "docker compose -f ../backend/docker-compose.yml up --build -d",
+    "services:rvolume": "docker compose -f ../backend/docker-compose.yml down -v"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -26,7 +27,7 @@
     "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.7",
-    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tanstack/react-table": "^8.21.3",
     "bootstrap": "^5.3.7",

@@ -6,7 +6,7 @@ type UrlParams = {
     sort?: string;
     size?: number;
     page?: number;
-    name?: string;
+    query?: string;
   }>;
 };
 
@@ -15,14 +15,14 @@ export default async function ProductsListPage({ searchParams }: UrlParams) {
   const { data } = await getAllProducts({
     pageSize: params?.size,
     pageNumber: params?.page,
-    search: params?.name,
+    search: params?.query,
     sort: params?.sort
   });
   const { content: products, pagination } = data;
 
   return (
     <ProductsTable
-      products={products}
+      productsMin={products}
       paginationOptions={pagination}
     />
   );

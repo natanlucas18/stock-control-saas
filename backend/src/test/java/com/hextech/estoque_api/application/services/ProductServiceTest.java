@@ -10,6 +10,7 @@ import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
 import com.hextech.estoque_api.infrastructure.repositories.ProductRepository;
 import com.hextech.estoque_api.infrastructure.repositories.StockLocationRepository;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
+import com.hextech.estoque_api.interfaces.dtos.products.ProductResumeDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,7 @@ class ProductServiceTest {
 
         when(repository.findAllByNameAndCompanyId(any(), anyLong(), any())).thenReturn(page);
 
-        Page<ProductResponseDTO> result = service.findAllByCompanyId(productName, companyId, pageable);
+        Page<ProductResumeDTO> result = service.findAllByCompanyId(productName, companyId, pageable);
 
         verify(repository, times(1)).findAllByNameAndCompanyId(any(), anyLong(), any());
         assertNotNull(result);
