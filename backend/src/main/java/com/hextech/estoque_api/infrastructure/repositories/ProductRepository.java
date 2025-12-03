@@ -17,10 +17,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query(value = """
             SELECT p FROM Product p
-            WHERE UPPER(p.name) LIKE UPPER(CONCAT('%', :name, '%'))
+            WHERE UPPER(p.name) LIKE UPPER(CONCAT('%', :query, '%'))
+            OR UPPER(p.code) LIKE UPPER(CONCAT('%', :query, '%'))
             AND p.company.id = :companyId
             """)
-    Page<Product> findAllByNameAndCompanyId(String name, Long companyId, Pageable pageable);
+    Page<Product> findAllByNameAndCompanyId(String query, Long companyId, Pageable pageable);
 
     @EntityGraph(attributePaths = {"stocks"})
     Optional<Product> findByIdAndCompanyId(Long id, Long companyId);

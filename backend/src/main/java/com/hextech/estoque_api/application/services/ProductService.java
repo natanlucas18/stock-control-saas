@@ -3,16 +3,11 @@ package com.hextech.estoque_api.application.services;
 import com.hextech.estoque_api.domain.entities.company.Company;
 import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.product.UnitMeasure;
-import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
-import com.hextech.estoque_api.domain.exceptions.InvalidUnitMeasureException;
-import com.hextech.estoque_api.domain.exceptions.ProductCodeAlreadyExistsException;
-import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
-import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
-import com.hextech.estoque_api.infrastructure.repositories.ProductRepository;
-import com.hextech.estoque_api.infrastructure.repositories.StockLocationRepository;
-import com.hextech.estoque_api.infrastructure.repositories.StockProductRepository;
+import com.hextech.estoque_api.domain.exceptions.*;
+import com.hextech.estoque_api.infrastructure.repositories.*;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
+import com.hextech.estoque_api.interfaces.dtos.products.ProductResumeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -30,14 +25,16 @@ public class ProductService {
     @Autowired
     private CompanyRepository companyRepository;
     @Autowired
+    private MovementRepository movementRepository;
+    @Autowired
     private StockLocationRepository stockLocationRepository;
     @Autowired
     private StockProductRepository stockProductRepository;
 
     @Transactional(readOnly = true)
-    public Page<ProductResponseDTO> findAllByCompanyId(String name, Long currentCompanyId, Pageable pageable) {
-        Page<Product> products = repository.findAllByNameAndCompanyId(name, currentCompanyId, pageable);
-        return products.map(ProductResponseDTO::new);
+    public Page<ProductResumeDTO> findAllByCompanyId(String query, Long currentCompanyId, Pageable pageable) {
+        Page<Product> products = repository.findAllByNameAndCompanyId(query, currentCompanyId, pageable);
+        return products.map(ProductResumeDTO::new);
     }
 
     @Transactional(readOnly = true)
@@ -75,13 +72,19 @@ public class ProductService {
         Product entity = repository.findByIdAndCompanyId(id, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
 
-        validProductCode(requestDTO.getCode(), currentCompanyId);
+        if (!entity.isCodeEqual(requestDTO.getCode()))
+            validProductCode(requestDTO.getCode(), currentCompanyId);
 
         UnitMeasure unitMeasure;
         try {
             unitMeasure = UnitMeasure.valueOf(requestDTO.getUnitMeasure());
         } catch (IllegalArgumentException e) {
             throw new InvalidUnitMeasureException("Tipo de unidade de medida inválida.");
+        }
+
+        if (!unitMeasure.equals(entity.getUnitMeasure())) {
+            if (movementRepository.existsMovementByProductId(entity.getId()))
+                throw new BusinessException("Não é permitido alterar a U.M., produto possui movimentações.");
         }
 
         entity.updateProduct(requestDTO.getCode(), requestDTO.getName(), requestDTO.getPrice(), requestDTO.getStockMax(),
@@ -91,14 +94,15 @@ public class ProductService {
         return new ProductResponseDTO(entity);
     }
 
+    @Transactional
     public void deleteByIdAndCompanyId(Long id, Long currentCompanyId) {
         Product entity = repository.findByIdAndCompanyId(id, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
-        try {
-            repository.delete(entity);
-        } catch (DataIntegrityViolationException e) {
-            throw new DeletionConflictException("Falha na Integridade referencial.");
-        }
+
+        if (movementRepository.existsMovementByProductId(entity.getId()))
+            throw new DeletionConflictException("O produto possui movimentações e não pode ser deletado.");
+
+        repository.delete(entity);
     }
 
     public void checkProductCode(String code, Long companyId) {

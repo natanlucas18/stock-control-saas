@@ -61,6 +61,10 @@ public class Product {
         this.unitMeasure = unitMeasure;
     }
 
+    public boolean isCodeEqual(String code) {
+        return this.code.equals(code);
+    }
+
     private static void validateAttribute(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure) {
         if (code == null || code.isBlank() || code.length() > 10) throw new IllegalArgumentException("Código do produto não pode ser nulo, vazio ou maior que 10 caracteres.");
         if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome do produto não pode ser nulo ou vazio.");

@@ -8,14 +8,13 @@ export type StockLocationParams = {
 };
 
 export type StockLocationsData = {
-  id: number,
-  name: string,
+  id: number;
+  name: string;
+  quantity: number;
 };
 
-
 export const stockLocationsFormSchema = z.object({
-  name: z.string().min(1, 'Insira um nome para o local de estoque!'),
-})
+  name: z.string().min(1, 'Insira um nome para o local de estoque!')
+});
 
 export type StockLocationsFormType = z.infer<typeof stockLocationsFormSchema>;
-
