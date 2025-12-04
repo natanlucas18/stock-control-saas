@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/lib/post-dev.js"
+    "infra/post-dev.js"
   ],
   "exclude": ["node_modules"]
 }
