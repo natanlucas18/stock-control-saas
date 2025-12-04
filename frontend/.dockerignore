@@ -1,3 +1,5 @@
 node_modules/
 .next/
 .env
+docker-compose.yml
+Dockerfile
