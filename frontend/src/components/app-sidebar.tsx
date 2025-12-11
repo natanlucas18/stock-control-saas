@@ -14,7 +14,7 @@ import {
 import { PathLinks } from '@/types/path-links';
 import { getCookie } from 'cookies-next/client';
 import {
-  Activity,
+  ActivityIcon,
   ClipboardListIcon,
   LayoutDashboardIcon,
   LogOutIcon,
@@ -34,8 +34,8 @@ export default function AppSidebar() {
 
   useEffect(() => {
     if (userRoles) {
-      setIsAdmin(userRoles.includes('ROLE_ADMIN'));
-      setIsDev(userRoles.includes('ROLE_DEV'));
+      setIsAdmin(!userRoles.includes('ROLE_ADMIN'));
+      setIsDev(!userRoles.includes('ROLE_DEV'));
     }
   }, [userRoles]);
 
@@ -88,7 +88,7 @@ export default function AppSidebar() {
                     href={PathLinks.MOVEMENTS}
                     className='flex items-center gap-2'
                   >
-                    <Activity />
+                    <ActivityIcon />
                     <span>Movimentações</span>
                   </Link>
                 </SidebarMenuButton>
@@ -96,13 +96,10 @@ export default function AppSidebar() {
 
               <SidebarMenuItem hidden={isAdmin}>
                 <SidebarMenuButton asChild>
-                  <Link
-                    href={PathLinks.REPORTS}
-                    className='flex items-center gap-2'
-                  >
+                  <div className='flex items-center gap-2 cursor-pointer'>
                     <ClipboardListIcon />
                     <span>Relatórios</span>
-                  </Link>
+                  </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
