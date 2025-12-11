@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -17,57 +18,23 @@ import java.util.List;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<StandardResponse<?>> handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
+    @ExceptionHandler({ResourceNotFoundException.class, NoResourceFoundException.class})
+    public ResponseEntity<StandardResponse<?>> handleResourceNotFound(Exception ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<StandardResponse<?>> handleIllegalArgument(IllegalArgumentException ex, HttpServletRequest request) {
+    @ExceptionHandler({IllegalArgumentException.class, InvalidMovementTypeException.class, InvalidUnitMeasureException.class})
+    public ResponseEntity<StandardResponse<?>> handleIllegalArgument(Exception ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
     }
 
-    @ExceptionHandler(InvalidMovementTypeException.class)
-    public ResponseEntity<StandardResponse<?>> handleInvalidMovementType(InvalidMovementTypeException ex, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
-    }
-
-    @ExceptionHandler(DeletionConflictException.class)
-    public ResponseEntity<StandardResponse<?>> handleDeletionConflict(DeletionConflictException ex, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.CONFLICT;
-        CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
-    }
-
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<StandardResponse<?>> handleUserAlreadyExists(UserAlreadyExistsException ex, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.CONFLICT;
-        CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
-    }
-
-    @ExceptionHandler(InvalidUnitMeasureException.class)
-    public ResponseEntity<StandardResponse<?>> handleInvalidUnitMeasure(InvalidUnitMeasureException ex, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
-    }
-
-    @ExceptionHandler(ProductCodeAlreadyExistsException.class)
-    public ResponseEntity<StandardResponse<?>> handleProductCodeAlreadyExists(ProductCodeAlreadyExistsException ex, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.CONFLICT;
-        CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
-    }
-
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<StandardResponse<?>> handleBusinessException(BusinessException ex, HttpServletRequest request) {
+    @ExceptionHandler({DeletionConflictException.class, UserAlreadyExistsException.class,
+            ProductCodeAlreadyExistsException.class, BusinessException.class})
+    public ResponseEntity<StandardResponse<?>> handleDeletionConflict(Exception ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.CONFLICT;
         CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));

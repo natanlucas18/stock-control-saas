@@ -23,7 +23,8 @@ import {
 } from '@/components/ui/popover';
 import { useProducts } from '@/hooks/use-products';
 import { getVisiblePages } from '@/lib/utils';
-import { ProductsData } from '@/types/product-schema';
+import { Product } from '@/types/product-schema';
+
 import { PaginationOptions } from '@/types/server-dto';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -35,8 +36,8 @@ type ProductsPopoverProps = {
 
 export function ProductsPopover({ onChange }: ProductsPopoverProps) {
   const [selectedProduct, setSelectedProduct] = useState<Pick<
-    ProductsData,
-    'id' | 'name' | 'quantity'
+    Product,
+    'id' | 'name' | 'totalQuantity'
   > | null>(null);
   const [open, setOpen] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
@@ -90,7 +91,7 @@ export function ProductsPopover({ onChange }: ProductsPopoverProps) {
                     }}
                   >
                     <div className='w-24'>{product.name}</div>
-                    <div className='w-24'>{product.quantity}</div>
+                    <div className='w-24'>{product.totalQuantity}</div>
                   </CommandItem>
                 ))}
               </CommandGroup>
