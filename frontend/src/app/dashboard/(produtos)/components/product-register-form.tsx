@@ -34,8 +34,7 @@ export default function ProductRegisterForm() {
       price: 0,
       stockMin: 0,
       stockMax: 0,
-      unitMeasure: '',
-      stockLocationId: 0
+      unitMeasure: ''
     }
   });
 
@@ -129,23 +128,6 @@ export default function ProductRegisterForm() {
                       <SelectItem value='KG'>KG</SelectItem>
                     </SelectContent>
                   </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={hookForm.control}
-            name='stockLocationId'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>ID Local do Estoque</FormLabel>
-                <FormControl>
-                  <Input
-                    type='number'
-                    {...field}
-                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
