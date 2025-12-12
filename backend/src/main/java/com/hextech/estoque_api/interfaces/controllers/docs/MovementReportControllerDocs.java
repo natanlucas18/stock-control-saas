@@ -1,7 +1,6 @@
 package com.hextech.estoque_api.interfaces.controllers.docs;
 
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
-import com.hextech.estoque_api.interfaces.dtos.movements.MovementFilterDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,5 +20,5 @@ public interface MovementReportControllerDocs {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
     })
-    ResponseEntity<StandardResponse<?>> reportMovements(MovementFilterDTO filter, Pageable pageable);
+    ResponseEntity<StandardResponse<?>> reportMovements(String startDate, String endDate, String type, Long productId, Pageable pageable);
 }

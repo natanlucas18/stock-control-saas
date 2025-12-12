@@ -20,7 +20,7 @@ public class StockMovementDomainService {
 
     public Movement processEntryMovement(String type, BigDecimal quantity, String note,
                                          Product product, User user, Company company, StockLocation toStockLocation, StockProduct stockProduct) {
-        MovementType checkedType = checkMovementType(type);
+        MovementType checkedType = MovementType.checkMovementType(type);
         if (checkedType.equals(MovementType.ENTRADA)) {
             increaseQuantity(quantity, stockProduct);
         } else {
@@ -32,7 +32,7 @@ public class StockMovementDomainService {
 
     public Movement processExitMovement(String type, BigDecimal quantity, String note,
                                          Product product, User user, Company company, StockLocation fromStockLocation, StockProduct stockProduct) {
-        MovementType checkedType = checkMovementType(type);
+        MovementType checkedType = MovementType.checkMovementType(type);
         if (checkedType.equals(MovementType.SAIDA)) {
             decreaseQuantity(quantity, stockProduct);
         } else {
@@ -45,7 +45,7 @@ public class StockMovementDomainService {
     public Movement processTransferMovement(String type, BigDecimal quantity, String note,
                                          Product product, User user, Company company, StockLocation fromStockLocation,
                                             StockLocation toStockLocation, StockProduct fromStockProduct, StockProduct toStockProduct) {
-        MovementType checkedType = checkMovementType(type);
+        MovementType checkedType = MovementType.checkMovementType(type);
         if (checkedType.equals(MovementType.TRANSFERENCIA)) {
             decreaseQuantity(quantity, fromStockProduct);
             increaseQuantity(quantity, toStockProduct);
@@ -58,7 +58,7 @@ public class StockMovementDomainService {
 
     public Movement processReturnMovement(String type, BigDecimal quantity, String note,
                                          Product product, User user, Company company, StockLocation toStockLocation, StockProduct stockProduct) {
-        MovementType checkedType = checkMovementType(type);
+        MovementType checkedType = MovementType.checkMovementType(type);
         if (checkedType.equals(MovementType.DEVOLUCAO)) {
             increaseQuantity(quantity, stockProduct);
         } else {
@@ -77,15 +77,5 @@ public class StockMovementDomainService {
         if (quantity.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Quantidade deve ser maior que zero.");
         if (stockProduct.getQuantity().compareTo(quantity) < 0) throw new InsufficientQuantityException("Quantidade insuficiente em estoque.");
         stockProduct.setQuantity(stockProduct.getQuantity().subtract(quantity));
-    }
-
-    private MovementType checkMovementType(String type) {
-        MovementType validType;
-        try {
-            validType = MovementType.valueOf(type);
-            return validType;
-        } catch (IllegalArgumentException e) {
-            throw new InvalidMovementTypeException("Tipo de movimentação inválida.");
-        }
     }
 }
