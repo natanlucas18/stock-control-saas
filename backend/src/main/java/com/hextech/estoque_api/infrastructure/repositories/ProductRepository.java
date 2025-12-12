@@ -38,8 +38,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query(value = """
             SELECT p FROM Product p
-            WHERE (:id IS NULL OR p.id = :id)
-            AND p.company.id = :companyId
+            WHERE p.company.id = :companyId
             """)
-    Page<Product> searchAllProducts(Long id, Long companyId, Pageable pageable);
+    Page<Product> searchAllProducts(Long companyId, Pageable pageable);
 }

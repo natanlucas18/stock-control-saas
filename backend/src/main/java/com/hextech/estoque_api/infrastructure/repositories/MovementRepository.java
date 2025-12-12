@@ -29,12 +29,12 @@ public interface MovementRepository extends JpaRepository<Movement, Long> {
             AND ((:type IS NULL) OR (m.type = :type))
             AND ((:productId IS NULL) OR (m.product.id = :productId))
             """)
-    Page<Movement> searchAllTest(@Param("startDate") LocalDateTime startDate,
-                                 @Param("endDate") LocalDateTime endDate,
-                                 @Param("type") MovementType type,
-                                 @Param("productId") Long productId,
-                                 @Param("companyId") Long companyId,
-                                 Pageable pageable);
+    Page<Movement> searchAllMovements(@Param("startDate") LocalDateTime startDate,
+                                      @Param("endDate") LocalDateTime endDate,
+                                      @Param("type") MovementType type,
+                                      @Param("productId") Long productId,
+                                      @Param("companyId") Long companyId,
+                                      Pageable pageable);
 
     @Query("""
             SELECT COUNT(m) > 0 FROM Movement m
