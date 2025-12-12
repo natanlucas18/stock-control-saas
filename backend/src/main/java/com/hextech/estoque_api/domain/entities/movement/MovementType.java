@@ -11,7 +11,7 @@ public enum MovementType {
     public static MovementType checkMovementType(String type) {
         MovementType validType;
         try {
-            validType = MovementType.valueOf(type);
+            validType = MovementType.valueOf(type.toUpperCase());
             return validType;
         } catch (IllegalArgumentException e) {
             throw new InvalidMovementTypeException("Tipo de movimentação inválida.");
