@@ -8,21 +8,21 @@ import {
   SheetTitle,
   SheetTrigger
 } from '@/components/ui/sheet';
-import { MovimentsReport } from '@/types/moviments-report-schema';
+import { MovementsReport } from '@/types/movements-report-schema';
 
-type MovimentsReportDetailsSheetProps = {
-  report?: MovimentsReport;
+type MovementsReportDetailsSheetProps = {
+  report?: MovementsReport;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
 };
 
-export default function MovimentsReportDetailsSheet({
+export default function MovementsReportDetailsSheet({
   report,
   open,
   onOpenChange,
   trigger
-}: MovimentsReportDetailsSheetProps) {
+}: MovementsReportDetailsSheetProps) {
   return (
     <Sheet
       open={open}

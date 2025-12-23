@@ -2,22 +2,24 @@ import { Product } from './product-schema';
 import { StockLocationsData } from './stock-location-schema';
 import { User } from './user-schema';
 
-export type MovimentsReportParams = {
+export type MovementsReportParams = {
+  search: string;
   startDate?: string;
   endDate?: string;
   productId?: number;
   page?: number;
   size?: number;
   sort?: 'moment' | 'desc';
-  type?: 'ENTRADA' | 'SAIDA';
+  type?: 'ENTRADA' | 'SAIDA' | 'DEVOLUCAO' | 'TRANSFERENCIA';
 };
 
-export type MovimentsReport = {
+export type MovementsReport = {
   id: number;
   type: string;
   quantity: number;
-  moment: string;
+  unitMeasure: string;
   note: string;
+  moment: string;
   product: Pick<Product, 'id' | 'code' | 'name' | 'unitMeasure'>;
   user: Pick<User, 'id' | 'name'>;
   fromStockLocation: StockLocationsData | null;

@@ -34,3 +34,20 @@ export function getVisiblePages(current: number, total: number, delta = 2) {
 
   return pages;
 }
+
+type Primitive = string | number | boolean | Date;
+type FormDataValue = Primitive | File | Blob | null | undefined;
+
+export function objectToFormData<T extends Record<string, FormDataValue>>(
+  object: T
+) {
+  const formData = new FormData();
+
+  Object.entries(object).forEach(([key, value]) => {
+    if (value) {
+      formData.append(key, String(value));
+    }
+  });
+
+  return formData;
+}

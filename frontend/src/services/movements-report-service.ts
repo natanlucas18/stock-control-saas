@@ -2,14 +2,14 @@
 
 import { getCookie } from '@/lib/get-token';
 import {
-  MovimentsReport,
-  MovimentsReportParams
-} from '@/types/moviments-report-schema';
+  MovementsReport,
+  MovementsReportParams
+} from '@/types/movements-report-schema';
 import { ServerDTOArray } from '@/types/server-dto';
 
-export async function getMovementsReportService(
-  params?: MovimentsReportParams
-): Promise<ServerDTOArray<MovimentsReport>> {
+export async function movementsReportFilterService(
+  params?: MovementsReportParams
+): Promise<ServerDTOArray<MovementsReport>> {
   const init: RequestInit = {
     cache: 'force-cache',
     headers: {
@@ -20,15 +20,7 @@ export async function getMovementsReportService(
   const url = new URL('http://localhost:8080/api/reports/movements');
 
   if (params) {
-    const {
-      startDate = '2025-08-01',
-      endDate = '2025-09-30',
-      productId,
-      page,
-      size,
-      sort,
-      type
-    } = params;
+    const { startDate, endDate, productId, page, size, sort, type } = params;
 
     if (startDate) url.searchParams.set('startDate', startDate.toString());
     if (endDate) url.searchParams.set('endDate', endDate.toString());

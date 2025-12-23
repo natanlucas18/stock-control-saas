@@ -1,5 +1,6 @@
 'use client';
 
+import CustomTooltip from '@/components/custom-tooltip';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -8,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Pagination,
   PaginationContent,
@@ -37,7 +38,7 @@ import {
 } from '@/components/ui/table';
 import { useUrlParams } from '@/hooks/use-url-params';
 import { getVisiblePages } from '@/lib/utils';
-import { MovimentsReport } from '@/types/moviments-report-schema';
+import { MovementsReport } from '@/types/movements-report-schema';
 import { PaginationOptions } from '@/types/server-dto';
 import {
   ChevronDownIcon,
@@ -45,15 +46,15 @@ import {
   ChevronRightIcon,
   ChevronsUpDownIcon,
   ChevronUpIcon,
-  MoreHorizontalIcon,
-  SearchIcon
+  FileTextIcon,
+  MoreHorizontalIcon
 } from 'lucide-react';
 import { useState } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
-import { default as MovimentsReportDetailsSheet } from './moviments-report-details-sheet';
+import FilterForm from './filter-form';
+import { default as MovementsReportDetailsSheet } from './movements-report-details-sheet';
 
 type MovementsReportTableProps = {
-  repots: MovimentsReport[];
+  repots: MovementsReport[];
   paginationOptions?: PaginationOptions;
   pageSize?: number;
 };
@@ -64,7 +65,7 @@ export function MovementsReportTable({
 }: MovementsReportTableProps) {
   const { setUrlParam, params } = useUrlParams();
   const [openDetails, setOpenDetails] = useState(false);
-  const [report, setReport] = useState<MovimentsReport>();
+  const [report, setReport] = useState<MovementsReport>();
   // const [report, setProduct] = useState<Product>();
 
   // async function getOneProduct(id: number) {
@@ -106,12 +107,16 @@ export function MovementsReportTable({
 
   return (
     <>
-      <div className='flex justify-between'>
-        <div className='flex gap-2.5'>
-          <SearchInput />
+      <div className='flex justify-center'>
+        <div className='flex gap-2.5 items-end flex-wrap'>
           <PageSizeFilter />
+          <FilterForm />
+          <CustomTooltip content='Gerar Relatório'>
+            <Button>
+              <FileTextIcon />
+            </Button>
+          </CustomTooltip>
         </div>
-        <Button>Criar Relatório</Button>
       </div>
       <Separator className='my-5' />
       <Table>
@@ -119,14 +124,18 @@ export function MovementsReportTable({
           <TableRow>
             <TableHead className='w-[100px]'>Código</TableHead>
             <TableHead className='text-left'>Tipo</TableHead>
-            <TableHead>Quantidade</TableHead>
+            <CustomTooltip content='Quantidade'>
+              <TableHead>Qtd.</TableHead>
+            </CustomTooltip>
+            <CustomTooltip content='Unidade de Medida'>
+              <TableHead className='text-left'>U.M.</TableHead>
+            </CustomTooltip>
             <TableHead
               className='text-left cursor-pointer flex items-center gap-1'
               onClick={() => handleSort('moment')}
             >
-              Momento {getSortIcon('moment')}
+              Data {getSortIcon('moment')}
             </TableHead>
-            <TableHead className='text-left'>Nota</TableHead>
             <TableHead className='text-left'>Produto</TableHead>
             <TableHead className='text-left'>Usuário</TableHead>
           </TableRow>
@@ -155,8 +164,8 @@ export function MovementsReportTable({
                 <TableCell>{report.id}</TableCell>
                 <TableCell>{report.type}</TableCell>
                 <TableCell>{report.quantity}</TableCell>
+                <TableCell>{report.unitMeasure}</TableCell>
                 <TableCell>{report.moment}</TableCell>
-                <TableCell>{report.note}</TableCell>
                 <TableCell>{report.product.name}</TableCell>
                 <TableCell>{report.user.name}</TableCell>
                 <TableCell
@@ -175,35 +184,12 @@ export function MovementsReportTable({
         <PaginationTable paginationOptions={paginationOptions} />
       )}
 
-      <MovimentsReportDetailsSheet
+      <MovementsReportDetailsSheet
         report={report}
         open={openDetails}
         onOpenChange={setOpenDetails}
       />
     </>
-  );
-}
-
-function SearchInput() {
-  const { setUrlParam } = useUrlParams();
-  const debouncedState = useDebouncedCallback((value: string) => {
-    setUrlParam('page', '1');
-    setUrlParam('query', value);
-  }, 500);
-
-  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
-    debouncedState(e.target.value);
-  }
-
-  return (
-    <div className='relative'>
-      <SearchIcon className='absolute inset-y-0 left-0 flex place-self-center pointer-events-none pl-2' />
-      <Input
-        className='pl-7'
-        placeholder='Pesquisar'
-        onChange={handleSearch}
-      />
-    </div>
   );
 }
 
@@ -217,9 +203,12 @@ function PageSizeFilter() {
 
   return (
     <Select onValueChange={handlePageSizeChange}>
-      <SelectTrigger className='w-[180px]'>
-        <SelectValue placeholder='Quantidade por Página' />
-      </SelectTrigger>
+      <div className='grid gap-2'>
+        <Label>Itens por Página</Label>
+        <SelectTrigger className='max-w-36'>
+          <SelectValue />
+        </SelectTrigger>
+      </div>
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Opções</SelectLabel>
@@ -294,7 +283,7 @@ function PaginationTable({ paginationOptions }: PaginationTableProps) {
 }
 
 type DropdownMenuProps = {
-  report?: MovimentsReport;
+  report?: MovementsReport;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
@@ -348,7 +337,7 @@ function MovementsDropdownMenu({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <MovimentsReportDetailsSheet
+      <MovementsReportDetailsSheet
         report={report}
         open={openDetails}
         onOpenChange={setOpenDetails}
