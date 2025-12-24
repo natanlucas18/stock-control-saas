@@ -32,6 +32,6 @@ public class ProductReportDTO {
         this.stockMax = entity.getStockMax();
         this.stockMin = entity.getStockMin();
         this.unitMeasure = entity.getUnitMeasure().toString();
-        this.stockStatus = entity.checkStockStatus();
+        this.stockStatus = entity.getStockStatusEnum();
     }
 }
