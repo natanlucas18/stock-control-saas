@@ -23,13 +23,15 @@ import { objectToFormData } from '@/lib/utils';
 import { filterFormSchema, FilterFormType } from '@/types/filter-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EraserIcon, SlidersHorizontalIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { startTransition, useActionState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ProductsPopover } from '../../(produtos)/components/products-popover';
 import { filterFormValidationAction } from '../actions';
 
 export default function FilterForm() {
-  const { setUrlParam } = useUrlParams();
+  const { replace } = useRouter();
+  const { setUrlParam, params } = useUrlParams();
   const [state, filterAction] = useActionState(filterFormValidationAction, {});
   const hookForm = useForm<FilterFormType>({
     resolver: zodResolver(filterFormSchema),
@@ -62,11 +64,17 @@ export default function FilterForm() {
     }
 
     if (state.success && state.data) {
+      const urlParams = new URLSearchParams();
+
       Object.entries(state.data).forEach(([key, value]) => {
-        if (value) {
-          setUrlParam(key, value);
+        if (value !== 'null' && value !== undefined && value !== null) {
+          urlParams.set(key, value);
+        } else {
+          urlParams.delete(key);
         }
       });
+
+      replace(`?${urlParams.toString()}`, { scroll: false });
     }
   }, [state]);
 
