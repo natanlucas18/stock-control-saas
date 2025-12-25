@@ -18,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { useUrlParams } from '@/hooks/use-url-params';
 import { objectToFormData } from '@/lib/utils';
 import { filterFormSchema, FilterFormType } from '@/types/filter-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,7 +30,6 @@ import { filterFormValidationAction } from '../actions';
 
 export default function FilterForm() {
   const { replace } = useRouter();
-  const { setUrlParam, params } = useUrlParams();
   const [state, filterAction] = useActionState(filterFormValidationAction, {});
   const hookForm = useForm<FilterFormType>({
     resolver: zodResolver(filterFormSchema),
