@@ -37,7 +37,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { useUrlParams } from '@/hooks/use-url-params';
-import { getVisiblePages } from '@/lib/utils';
+import { cn, getVisiblePages } from '@/lib/utils';
 import { MovementsReport } from '@/types/movements-report-schema';
 import { PaginationOptions } from '@/types/server-dto';
 import {
@@ -107,9 +107,8 @@ export function MovementsReportTable({
 
   return (
     <>
-      <div className='flex justify-center'>
-        <div className='flex gap-2.5 items-end flex-wrap'>
-          <PageSizeFilter />
+      <div>
+        <div className='flex gap-2.5 items-end flex-wrap justify-between'>
           <FilterForm />
           <CustomTooltip content='Gerar Relatório'>
             <Button>
@@ -180,9 +179,12 @@ export function MovementsReportTable({
           )}
         </TableBody>
       </Table>
-      {paginationOptions && (
-        <PaginationTable paginationOptions={paginationOptions} />
-      )}
+      <div className='grid grid-cols-3 gap-2.5 mt-5 items-end'>
+        <PageSizeFilter />
+        {paginationOptions && (
+          <PaginationTable paginationOptions={paginationOptions} />
+        )}
+      </div>
 
       <MovementsReportDetailsSheet
         report={report}
@@ -193,7 +195,9 @@ export function MovementsReportTable({
   );
 }
 
-function PageSizeFilter() {
+function PageSizeFilter({
+  className
+}: React.InputHTMLAttributes<HTMLDivElement>) {
   const { setUrlParam } = useUrlParams();
 
   function handlePageSizeChange(pageSizeValue: string) {
@@ -203,9 +207,9 @@ function PageSizeFilter() {
 
   return (
     <Select onValueChange={handlePageSizeChange}>
-      <div className='grid gap-2'>
+      <div className={cn(`grid gap-2 items-end ${className}`)}>
         <Label>Itens por Página</Label>
-        <SelectTrigger className='max-w-36'>
+        <SelectTrigger className='w-auto max-w-36'>
           <SelectValue />
         </SelectTrigger>
       </div>

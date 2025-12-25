@@ -80,7 +80,7 @@ export default function FilterForm() {
     <div>
       <Form {...hookForm}>
         <form onSubmit={hookForm.handleSubmit(onSubmit)}>
-          <div className='flex gap-2.5 items-end flex-wrap'>
+          <div className='grid grid-cols-6 gap-2.5 items-end'>
             <FormField
               control={hookForm.control}
               name='search'
@@ -89,7 +89,6 @@ export default function FilterForm() {
                   <FormLabel>Cód. Movimentação</FormLabel>
                   <FormControl>
                     <Input
-                      className='max-w-36'
                       type='text'
                       {...field}
                     />
@@ -122,7 +121,7 @@ export default function FilterForm() {
                       onValueChange={field.onChange}
                       value={field.value}
                     >
-                      <SelectTrigger className='max-w-36'>
+                      <SelectTrigger className='w-full'>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -147,7 +146,6 @@ export default function FilterForm() {
                   <FormLabel>Data Inicial</FormLabel>
                   <FormControl>
                     <Input
-                      className='max-w-36'
                       type='date'
                       {...field}
                     />
@@ -164,7 +162,6 @@ export default function FilterForm() {
                   <FormLabel>Data Final</FormLabel>
                   <FormControl>
                     <Input
-                      className='max-w-36'
                       type='date'
                       {...field}
                     />
@@ -173,19 +170,22 @@ export default function FilterForm() {
                 </FormItem>
               )}
             />
-            <CustomTooltip content='Limpar Filtro'>
-              <Button
-                type='button'
-                onClick={hookForm.reset}
-              >
-                <EraserIcon />
-              </Button>
-            </CustomTooltip>
-            <CustomTooltip content='Aplicar Filtro'>
-              <Button>
-                <SlidersHorizontalIcon />
-              </Button>
-            </CustomTooltip>
+            <div className='space-x-2.5'>
+              <CustomTooltip content='Limpar Filtro'>
+                <Button
+                  type='button'
+                  onClick={hookForm.reset}
+                  className='max-w-10'
+                >
+                  <EraserIcon />
+                </Button>
+              </CustomTooltip>
+              <CustomTooltip content='Aplicar Filtro'>
+                <Button className='max-w-10'>
+                  <SlidersHorizontalIcon />
+                </Button>
+              </CustomTooltip>
+            </div>
           </div>
         </form>
       </Form>
