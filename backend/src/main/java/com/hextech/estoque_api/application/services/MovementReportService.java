@@ -23,7 +23,7 @@ public class MovementReportService {
         System.out.println(period.getStartDate());
         System.out.println(period.getEndDate());
 
-        Page<Movement> movements = repository.searchAllTest(period.getStartDate(), period.getEndDate(), filter.getType(),
+        Page<Movement> movements = repository.searchAllMovements(period.getStartDate(), period.getEndDate(), filter.getType(),
                 filter.getProductId(), companyId, pageable);
         return movements.map(MovementResponseDTO::new);
     }

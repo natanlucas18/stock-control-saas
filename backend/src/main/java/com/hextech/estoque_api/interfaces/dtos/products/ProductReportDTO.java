@@ -2,17 +2,16 @@ package com.hextech.estoque_api.interfaces.dtos.products;
 
 import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.product.StockStatus;
-import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockQuantityDTO;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class ProductResponseDTO {
+@AllArgsConstructor
+public class ProductReportDTO {
 
     private Long id;
     private String code;
@@ -23,9 +22,8 @@ public class ProductResponseDTO {
     private BigDecimal stockMin;
     private String unitMeasure;
     private StockStatus stockStatus;
-    private Set<StockQuantityDTO> stockLocations;
 
-    public ProductResponseDTO(Product entity) {
+    public ProductReportDTO(Product entity) {
         this.id = entity.getId();
         this.code = entity.getCode();
         this.name = entity.getName();
@@ -34,8 +32,6 @@ public class ProductResponseDTO {
         this.stockMax = entity.getStockMax();
         this.stockMin = entity.getStockMin();
         this.unitMeasure = entity.getUnitMeasure().toString();
-        this.stockLocations = entity.getStocks().stream().map(
-                stockProduct -> new StockQuantityDTO(stockProduct.getStockLocation(), stockProduct.getQuantity())).collect(Collectors.toSet());
         this.stockStatus = entity.getStockStatusEnum();
     }
 }

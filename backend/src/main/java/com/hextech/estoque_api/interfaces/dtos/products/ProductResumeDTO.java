@@ -23,7 +23,7 @@ public class ProductResumeDTO {
         this.name = entity.getName();
         this.totalQuantity = entity.getTotalQuantity();
         this.unitMeasure = entity.getUnitMeasure().toString();
-        this.stockStatus = entity.checkStockStatus();
+        this.stockStatus = entity.getStockStatusEnum();
     }
 
     public Long getId() {
