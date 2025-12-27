@@ -1,7 +1,7 @@
 export type User = {
-  id: string;
-  name: string;
-  roles: [];
+  userId: string;
+  userName: string;
+  userRoles: [];
   accessToken: string;
   createdAt: string;
   expiresAt: string;
