@@ -1,8 +1,8 @@
 import z from 'zod';
 
 export type StockLocationParams = {
-  pageSize?: string;
-  pageNumber?: string;
+  pageSize?: number;
+  pageNumber?: number;
   search?: string;
   sort?: string;
 };
@@ -10,7 +10,6 @@ export type StockLocationParams = {
 export type StockLocationsData = {
   id: number;
   name: string;
-  quantity: number;
 };
 
 export const stockLocationsFormSchema = z.object({
