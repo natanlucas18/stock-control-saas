@@ -12,7 +12,7 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar';
 import { PathLinks } from '@/types/path-links';
-import { getCookie } from 'cookies-next/client';
+import { deleteCookie, getCookie } from 'cookies-next/client';
 import {
   ActivityIcon,
   ClipboardListIcon,
@@ -22,10 +22,11 @@ import {
   Package,
   UserPlus2Icon
 } from 'lucide-react';
-import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
+import { signOut } from 'next-auth/react';
+import { toast } from 'react-toastify';
 
 export default function AppSidebar() {
   const userRoles = getCookie('userRoles');
@@ -38,6 +39,20 @@ export default function AppSidebar() {
       setIsDev(!userRoles.includes('ROLE_DEV'));
     }
   }, [userRoles]);
+
+
+  const handleLogout = async () => {
+    try {
+      deleteCookie('accessToken');
+
+      await signOut({
+        redirect: true,
+        callbackUrl: PathLinks.SIGN_IN
+      });
+    } catch {
+      toast.error('Erro ao fazer logout');
+    }
+  };
 
   return (
     <Sidebar collapsible='icon'>
@@ -120,9 +135,7 @@ export default function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <Button
-          onClick={() => {
-            signOut({ callbackUrl: PathLinks.SIGN_IN });
-          }}
+          onClick={handleLogout}
         >
           <LogOutIcon />
         </Button>
