@@ -1,5 +1,5 @@
 import z from 'zod';
-import { ProductsData } from './product-schema';
+import { Product } from './product-schema';
 import { StockLocationsData } from './stock-location-schema';
 import { User } from './user-schema';
 
@@ -9,8 +9,8 @@ export type MovementsData = {
   quantity: number;
   moment: string;
   note: string;
-  product: ProductsData;
-  user: Pick<User, 'userId' | 'userName'>;
+  product: Product;
+  user: Pick<User, 'id' | 'name'>;
   stockLocation: StockLocationsData;
 };
 

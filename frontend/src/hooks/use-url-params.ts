@@ -6,8 +6,8 @@ export function useUrlParams() {
   const { replace } = useRouter();
   const params = new URLSearchParams(searchParams);
 
-  function setUrlParam(key: string, value: string) {
-    if (value) {
+  function setUrlParam(key: string, value: string | undefined | null) {
+    if (value !== 'null' && value !== undefined && value !== null) {
       params.set(key, value);
     } else {
       params.delete(key);

@@ -56,10 +56,13 @@ export function ProductsPopover({ onChange }: ProductsPopoverProps) {
         open={open}
         onOpenChange={setOpen}
       >
-        <PopoverTrigger asChild>
+        <PopoverTrigger
+          asChild
+          className='w-full'
+        >
           <Button
             variant='outline'
-            className='w-[150px] justify-start'
+            className='justify-start'
           >
             {selectedProduct ? <>{selectedProduct.name}</> : <>Selecione</>}
           </Button>
