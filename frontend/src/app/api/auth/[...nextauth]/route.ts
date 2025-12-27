@@ -32,7 +32,9 @@ const handler = NextAuth({
 
           return {
             id: data.userId,
-            name: data.userName
+            name: data.userName,
+            accessToken: data.accessToken,
+            userRoles: data.userRoles
           };
         } catch {
           return null;
