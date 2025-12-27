@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -28,6 +29,16 @@ public class Product {
     private BigDecimal stockMax;
     private BigDecimal stockMin;
     private UnitMeasure unitMeasure;
+
+    @Formula("""
+            CASE
+                WHEN total_quantity > stock_max THEN 'HIGH'
+                WHEN total_quantity < stock_min THEN 'LOW'
+                ELSE 'NORMAL'
+            END
+            """)
+    private String stockStatus;
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
@@ -73,12 +84,8 @@ public class Product {
         if (unitMeasure == null) throw new IllegalArgumentException("Unidade de medida do produto não pode ser nula.");
     }
 
-    public StockStatus checkStockStatus() {
-        if (totalQuantity.compareTo(stockMin) < 0)
-            return StockStatus.LOW;
-        else if (totalQuantity.compareTo(stockMax) > 0)
-            return StockStatus.HIGH;
-        else
-            return StockStatus.NORMAL;
+    @Transient
+    public StockStatus getStockStatusEnum() {
+        return StockStatus.valueOf(stockStatus.toUpperCase());
     }
 }
