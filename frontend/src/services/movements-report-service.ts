@@ -1,11 +1,14 @@
 'use server';
 
+import { getApiUrl } from '@/lib/api-url';
 import { getCookie } from '@/lib/get-token';
 import {
   MovementsReport,
   MovementsReportParams
 } from '@/types/movements-report-schema';
 import { ServerDTOArray } from '@/types/server-dto';
+
+const localhost = getApiUrl();
 
 export async function movementsReportFilterService(
   params?: MovementsReportParams
@@ -17,7 +20,7 @@ export async function movementsReportFilterService(
     },
     next: { tags: ['movementsReport'], revalidate: 60 }
   };
-  const url = new URL('http://localhost:8080/api/reports/movements');
+  const url = new URL(`${localhost}/api/reports/movements`);
 
   if (params) {
     const { startDate, endDate, productId, page, size, sort, type } = params;
