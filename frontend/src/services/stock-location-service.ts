@@ -1,5 +1,6 @@
 'use server';
 
+import { getApiUrl } from '@/lib/api-url';
 import { getCookie } from '@/lib/get-token';
 import { ServerDTO, ServerDTOArray } from '@/types/server-dto';
 import {
@@ -8,8 +9,11 @@ import {
   StockLocationsFormType
 } from '@/types/stock-location-schema';
 import { revalidateTag } from 'next/cache';
+
+const localhost = getApiUrl();
+
 export async function createStockLocations(data: StockLocationsFormType) {
-  const response = await fetch('http://localhost:8080/api/stock-locations', {
+  const response = await fetch(`${localhost}/api/stock-locations`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -25,31 +29,30 @@ export async function createStockLocations(data: StockLocationsFormType) {
   return responseData as ServerDTO<StockLocationsData>;
 }
 
+export async function getAllStockLocations(params?: StockLocationParams) {
+  const init: RequestInit = {
+    cache: 'force-cache',
+    headers: {
+      Authorization: `Bearer ${await getCookie('accessToken')}`
+    },
+    next: { tags: ['locations'], revalidate: 60 }
+  };
+  if (params) {
+    const { sort = '', pageNumber, pageSize, search = '' } = params;
+    const response = await fetch(
+      `${localhost}/api/stock-locations?sort=${sort}&size=${pageSize}&page=${pageNumber}&name=${search}`,
+      init
+    );
+    const responseData = await response.json();
 
-export async function getAllStockLocations(
-  params?: StockLocationParams) {
-    const init: RequestInit = {
-      cache: 'force-cache',
-      headers: {
-        Authorization: `Bearer ${await getCookie('accessToken')}`
-      },
-      next: { tags: ['locations'], revalidate: 60 }
-    }
-    if (params) {
-      const {sort = '', pageNumber, pageSize, search = ''} = params;
-  const response = await fetch(
-    `http://localhost:8080/api/stock-locations?sort=${sort}&size=${pageSize}&page=${pageNumber}&name=${search}`, init);
-  const responseData = await response.json();
-
-  return responseData as ServerDTOArray<StockLocationsData>;
+    return responseData as ServerDTOArray<StockLocationsData>;
   } else {
     {
-      const response = await fetch(
-    `http://localhost:8080/api/stock-locations`, init);
-  const responseData = await response.json();
+      const response = await fetch(`${localhost}/api/stock-locations`, init);
+      const responseData = await response.json();
 
-  return responseData as ServerDTOArray<StockLocationsData>;
-  }
+      return responseData as ServerDTOArray<StockLocationsData>;
+    }
   }
 }
 
@@ -57,17 +60,14 @@ export async function updateStockLocation(
   id: number,
   data: StockLocationsFormType
 ) {
-  const response = await fetch(
-    `http://localhost:8080/api/stock-locations/${id}`,
-    {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${await getCookie('accessToken')}`,
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    }
-  );
+  const response = await fetch(`${localhost}/api/stock-locations/${id}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${await getCookie('accessToken')}`,
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
   revalidateTag('locations');
 
   const responseData = await response.json();
@@ -76,15 +76,12 @@ export async function updateStockLocation(
 }
 
 export async function deleteStockLocation(id: number) {
-  const response = await fetch(
-    `http://localhost:8080/api/stock-locations/${id}`,
-    {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${await getCookie('accessToken')}`
-      }
+  const response = await fetch(`${localhost}/api/stock-locations/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${await getCookie('accessToken')}`
     }
-  );
+  });
   revalidateTag('locations');
   const responseData = await response.json();
 

@@ -1,14 +1,17 @@
 'use server';
 
+import { getApiUrl } from '@/lib/api-url';
 import { getCookie } from '@/lib/get-token';
 import { MovementsData, MovementsFormType } from '@/types/movements-schema';
 import { ServerDTO } from '@/types/server-dto';
 import { revalidateTag } from 'next/cache';
 
+const localhost = getApiUrl();
+
 export async function createMovements(
   formData: MovementsFormType
 ): Promise<ServerDTO<MovementsData>> {
-  const response = await fetch('http://localhost:8080/api/movements', {
+  const response = await fetch(`${localhost}/api/movements`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

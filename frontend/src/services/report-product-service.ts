@@ -1,6 +1,9 @@
-import { getCookie } from "@/lib/get-token";
-import { Product } from "@/types/product-schema";
-import { ServerDTOArray } from "@/types/server-dto";
+import { getApiUrl } from '@/lib/api-url';
+import { getCookie } from '@/lib/get-token';
+import { Product } from '@/types/product-schema';
+import { ServerDTOArray } from '@/types/server-dto';
+
+const localhost = getApiUrl();
 
 export type ReportProductParams = {
   pageSize?: number;
@@ -8,7 +11,6 @@ export type ReportProductParams = {
   sort?: string;
   status?: string;
 };
-
 
 export async function getReportProducts(
   params?: ReportProductParams
@@ -22,16 +24,16 @@ export async function getReportProducts(
   };
 
   if (params) {
-    const { sort = 'code', pageSize, pageNumber, status= ''} = params;
+    const { sort = 'code', pageSize, pageNumber, status = '' } = params;
     const response = await fetch(
-      `http://localhost:8080/api/reports/products?sort=${sort}&size=${pageSize}&page=${pageNumber}&status=${status}`,
+      `${localhost}/api/reports/products?sort=${sort}&size=${pageSize}&page=${pageNumber}&status=${status}`,
       init
     );
     const responseData = await response.json();
     return responseData;
   } else {
     {
-      const response = await fetch(`http://localhost:8080/api/reports/products`, init);
+      const response = await fetch(`${localhost}/api/reports/products`, init);
       const responseData = await response.json();
       return responseData;
     }

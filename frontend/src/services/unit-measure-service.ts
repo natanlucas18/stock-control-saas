@@ -1,13 +1,20 @@
-'use server'
-import { getCookie } from "@/lib/get-token";
-import { ServerDTO, ServerDTOArray } from "@/types/server-dto";
-import { UnitMeasureData, UnitMeasureFormType, UnitMeasureParams } from "@/types/unit-measure-schema";
-import { revalidateTag } from "next/cache";
+'use server';
+import { getApiUrl } from '@/lib/api-url';
+import { getCookie } from '@/lib/get-token';
+import { ServerDTO } from '@/types/server-dto';
+import {
+  UnitMeasureData,
+  UnitMeasureFormType,
+  UnitMeasureParams
+} from '@/types/unit-measure-schema';
+import { revalidateTag } from 'next/cache';
+
+const localhost = getApiUrl();
 
 export async function createUnitMeasure(
   data: UnitMeasureFormType
 ): Promise<ServerDTO<UnitMeasureData>> {
-  const response = await fetch('http://localhost:8080/api/unit-measure', {
+  const response = await fetch(`${localhost}/api/unit-measure`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -23,28 +30,30 @@ export async function createUnitMeasure(
   return responseData;
 }
 
+export async function getAllUnitMeasure(params?: UnitMeasureParams) {
+  const init: RequestInit = {
+    cache: 'force-cache',
+    headers: {
+      Authorization: `Bearer ${await getCookie('accessToken')}`
+    },
+    next: { tags: ['unit-measure'], revalidate: 60 }
+  };
 
-export async function getAllUnitMeasure(params?:UnitMeasureParams){
-    const init: RequestInit = {
-        cache: 'force-cache',
-        headers: {
-            Authorization: `Bearer ${await getCookie('accessToken')}`
-        },
-        next: {tags: ['unit-measure'], revalidate: 60 }
-    };
-
-    if (params) {
-        const {sort= '', pageNumber, pageSize, search = ''} = params;
-        const response = await fetch(`http://localhost:8080/api/unit-measure?sort=${sort}&page=${pageNumber}&size=${pageSize}&search=${search}`, init);
-        const responseData = await response.json();
-        return responseData;
-    } else {
-        const response = await fetch(`http://localhost:8080/api/unit-measure`, init);
-        const responseData = await response.json();
-    }
+  if (params) {
+    const { sort = '', pageNumber, pageSize, search = '' } = params;
+    const response = await fetch(
+      `${localhost}/api/unit-measure?sort=${sort}&page=${pageNumber}&size=${pageSize}&search=${search}`,
+      init
+    );
+    const responseData = await response.json();
+    return responseData;
+  } else {
+    const response = await fetch(`${localhost}/api/unit-measure`, init);
+    const responseData = await response.json();
+  }
 }
 
-export async function getUnitMeasureById(id: number){
+export async function getUnitMeasureById(id: number) {
   const init: RequestInit = {
     cache: 'force-cache',
     headers: {
@@ -52,14 +61,10 @@ export async function getUnitMeasureById(id: number){
     }
   };
 
-  const response = await fetch(
-    `http://localhost:8080/api/unit-measure/${id}`,
-    init
-  );
-    const responseData = await response.json();
+  const response = await fetch(`${localhost}/api/unit-measure/${id}`, init);
+  const responseData = await response.json();
 
   return responseData;
-
 }
 
 export async function editUnitMeasure(
@@ -67,7 +72,7 @@ export async function editUnitMeasure(
   unitMeasureId: number
 ): Promise<ServerDTO<UnitMeasureData>> {
   const response = await fetch(
-    `http://localhost:8080/api/unit-measure/${unitMeasureId}`,
+    `${localhost}/api/unit-measure/${unitMeasureId}`,
     {
       method: 'PUT',
       headers: {
@@ -88,7 +93,7 @@ export async function editUnitMeasure(
 export async function softUnitMeasureDelete(
   id: number
 ): Promise<ServerDTO<UnitMeasureData>> {
-  const response = await fetch(`http://localhost:8080/api/unit-measure/${id}`, {
+  const response = await fetch(`${localhost}/api/unit-measure/${id}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${await getCookie('accessToken')}`
@@ -101,5 +106,3 @@ export async function softUnitMeasureDelete(
 
   return responseData;
 }
-
-
