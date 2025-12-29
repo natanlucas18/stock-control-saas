@@ -6,3 +6,9 @@ services:
       - '3000:3000'
     env_file:
       - ../.env.local
+    networks:
+      - stock-control-dev-network
+
+networks:
+  stock-control-dev-network:
+    external: true
