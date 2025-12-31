@@ -2,14 +2,13 @@ package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.domain.entities.company.Company;
 import com.hextech.estoque_api.domain.entities.product.Product;
-import com.hextech.estoque_api.domain.entities.product.UnitMeasure;
+import com.hextech.estoque_api.domain.entities.unitMeasure.UnitMeasure;
 import com.hextech.estoque_api.domain.exceptions.*;
 import com.hextech.estoque_api.infrastructure.repositories.*;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResumeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +27,8 @@ public class ProductService {
     private MovementRepository movementRepository;
     @Autowired
     private StockLocationRepository stockLocationRepository;
+    @Autowired
+    private UnitMeasureRepository unitMeasureRepository;
     @Autowired
     private StockProductRepository stockProductRepository;
 
@@ -49,14 +50,10 @@ public class ProductService {
         Company company = companyRepository.findById(currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
 
-        validProductCode(requestDTO.getCode(), company.getId());
+        UnitMeasure unitMeasure = unitMeasureRepository.findById(requestDTO.getUnitMeasureId())
+                .orElseThrow(()-> new ResourceNotFoundException("Unidade de medida não encontrada."));
 
-        UnitMeasure unitMeasure;
-        try {
-            unitMeasure = UnitMeasure.valueOf(requestDTO.getUnitMeasure());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidUnitMeasureException("Tipo de unidade de medida inválida.");
-        }
+        validProductCode(requestDTO.getCode(), company.getId());
 
         Product entity = Product.createNewProduct(requestDTO.getCode(), requestDTO.getName(), requestDTO.getPrice(), requestDTO.getStockMax(),
                 requestDTO.getStockMin(), unitMeasure, company);
@@ -71,16 +68,12 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
         Product entity = repository.findByIdAndCompanyId(id, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
+        UnitMeasure unitMeasure = unitMeasureRepository.findById(requestDTO.getUnitMeasureId())
+                .orElseThrow(()-> new ResourceNotFoundException("Unidade de medida não encontrada."));
 
         if (!entity.isCodeEqual(requestDTO.getCode()))
             validProductCode(requestDTO.getCode(), currentCompanyId);
 
-        UnitMeasure unitMeasure;
-        try {
-            unitMeasure = UnitMeasure.valueOf(requestDTO.getUnitMeasure());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidUnitMeasureException("Tipo de unidade de medida inválida.");
-        }
 
         if (!unitMeasure.equals(entity.getUnitMeasure())) {
             if (movementRepository.existsMovementByProductId(entity.getId()))
