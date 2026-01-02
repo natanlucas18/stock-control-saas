@@ -22,7 +22,8 @@ export default function UnitMeasureRegisterForm() {
   const hookForm = useForm<UnitMeasureFormType>({
     resolver: zodResolver(unitMeasureFormSchema),
     defaultValues: {
-      name: ''
+      name: '',
+      acronym: '',
     }
   });
 
@@ -62,6 +63,24 @@ export default function UnitMeasureRegisterForm() {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={hookForm.control}
+            name='acronym'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sigla</FormLabel>
+                <FormControl>
+                  <Input
+                    type='text'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
 
           <Button type='submit'>Salvar</Button>
         </form>
