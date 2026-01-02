@@ -123,8 +123,14 @@ export function UnitMeasureTable({
               className='cursor-pointer flex items-center gap-1'
               onClick={() => handleSort('name')}
             >
-              Unidade de Medida
+              Nome
               {getSortIcon('name')}
+            </TableHead>
+            <TableHead
+              className='cursor-pointer flex items-center gap-1'
+              onClick={() => handleSort('acronym')}
+            >
+              Sigla
             </TableHead>
             <TableHead>Ações</TableHead>
           </TableRow>
@@ -148,6 +154,7 @@ export function UnitMeasureTable({
                 className='cursor-pointer'
               >
                 <TableCell>{unitMeasure.name}</TableCell>
+                <TableCell>{unitMeasure.acronym}</TableCell>
                 <TableCell>
                   <ProductDropdownMenu unitMeasure={unitMeasure} />
                 </TableCell>
