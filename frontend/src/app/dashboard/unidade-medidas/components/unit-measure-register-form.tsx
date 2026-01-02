@@ -16,6 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { UnitMeasurePopover } from './unit-measure-popover';
 
 export default function UnitMeasureRegisterForm() {
   const router = useRouter();
@@ -80,7 +81,6 @@ export default function UnitMeasureRegisterForm() {
               </FormItem>
             )}
           />
-
 
           <Button type='submit'>Salvar</Button>
         </form>
