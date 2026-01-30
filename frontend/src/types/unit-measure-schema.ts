@@ -10,10 +10,12 @@ export type UnitMeasureParams = {
 export type UnitMeasureData = {
     id: number;
     name: string;
+    acronym: string;
 }
 
 export const unitMeasureFormSchema = z.object({
-    name: z.string().min(2, 'Insira um nome.')
+    name: z.string().min(2, 'Insira um nome.'),
+    acronym: z.string().min(1, 'Insira uma sigla.')
 });
 
 export type UnitMeasureFormType = z.infer<typeof unitMeasureFormSchema>;

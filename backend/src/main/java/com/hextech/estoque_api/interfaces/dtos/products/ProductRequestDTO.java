@@ -26,7 +26,6 @@ public class ProductRequestDTO {
     private BigDecimal stockMax;
     @NotNull(message = "Estoque mínimo do produto não pode ser nulo.")
     private BigDecimal stockMin;
-    @NotBlank(message = "Tipo de unidade de medida do produto não pode ser nulo ou vazio.")
-    @Size(min = 2, max = 2, message = "Tipo de unidade de medida do produto deve ter 2 caracteres.")
-    private String unitMeasure;
+    @NotNull(message = "Unidade de medida do produto não pode ser nulo.")
+    private Long unitMeasureId;
 }

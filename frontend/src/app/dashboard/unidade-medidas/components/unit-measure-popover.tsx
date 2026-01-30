@@ -89,7 +89,8 @@ export function UnitMeasurePopover({ onChange }: UnitMeasurePopoverProps) {
                       setOpen(false);
                     }}
                   >
-                    <div className='w-24'>{unitMeasure.name}</div>
+                    <div className='w-30 lg:w-30'>{unitMeasure.name}</div>
+                    <div className='w-8'>{unitMeasure.acronym}</div>
                   </CommandItem>
                 ))}
               </CommandGroup>

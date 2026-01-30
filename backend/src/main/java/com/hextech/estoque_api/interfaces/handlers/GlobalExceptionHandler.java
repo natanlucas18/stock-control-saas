@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(new StandardResponse<>(false, List.of(error)));
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, InvalidMovementTypeException.class, InvalidUnitMeasureException.class})
+    @ExceptionHandler({IllegalArgumentException.class, InvalidMovementTypeException.class})
     public ResponseEntity<StandardResponse<?>> handleIllegalArgument(Exception ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         CustomError error = new CustomError(Instant.now().toString(), status.value(), ex.getMessage(), request.getRequestURI());

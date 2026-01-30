@@ -40,11 +40,11 @@ import { useUrlParams } from '@/hooks/use-url-params';
 import { getVisiblePages } from '@/lib/utils';
 import { PaginationOptions } from '@/types/server-dto';
 import {
-  ChevronDownIcon,
+  ArrowDownIcon,
+  ArrowUpDownIcon,
+  ArrowUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  ChevronsUpDownIcon,
-  ChevronUpIcon,
   MoreHorizontalIcon,
   SearchIcon
 } from 'lucide-react';
@@ -98,11 +98,11 @@ export function UnitMeasureTable({
 
     switch (currentSort) {
       case `${sort},asc`:
-        return <ChevronUpIcon />;
+        return <ArrowUpIcon />;
       case `${sort},desc`:
-        return <ChevronDownIcon />;
+        return <ArrowDownIcon />;
       default:
-        return <ChevronsUpDownIcon />;
+        return <ArrowUpDownIcon />;
     }
   }
 
@@ -123,8 +123,11 @@ export function UnitMeasureTable({
               className='cursor-pointer flex items-center gap-1'
               onClick={() => handleSort('name')}
             >
-              Unidade de Medida
+              Nome
               {getSortIcon('name')}
+            </TableHead>
+            <TableHead>
+              Sigla
             </TableHead>
             <TableHead>Ações</TableHead>
           </TableRow>
@@ -148,6 +151,7 @@ export function UnitMeasureTable({
                 className='cursor-pointer'
               >
                 <TableCell>{unitMeasure.name}</TableCell>
+                <TableCell>{unitMeasure.acronym}</TableCell>
                 <TableCell>
                   <ProductDropdownMenu unitMeasure={unitMeasure} />
                 </TableCell>
@@ -313,7 +317,7 @@ function ProductDropdownMenu({
           <DropdownMenuLabel>Ações</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={async () => {
-              if (unitM) await getOneProduct(unitM.id);
+              if (unitMeasure) await getOneProduct(unitMeasure.id);
               setOpenEditDialog(true);
             }}
           >
@@ -330,13 +334,13 @@ function ProductDropdownMenu({
       </DropdownMenu>
 
       <UnitMeasureEditDialog
-        unitMeasure={unitM!}
+        unitMeasure={unitMeasure!}
         open={openEditDialog}
         onOpenChange={setOpenEditDialog}
       />
 
       <UnitMeasureDeleteAlert
-        unitMeasureId={unitM?.id}
+        unitMeasureId={unitMeasure?.id}
         open={openDeletAlert}
         onOpenChange={setOpenDeletAlert}
       />

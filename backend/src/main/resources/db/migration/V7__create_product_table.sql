@@ -6,8 +6,9 @@ create table products (
     total_quantity numeric(10, 3) not null,
     stock_max int not null,
     stock_min int not null,
-    unit_measure varchar(50) not null,
-    company_id bigint,
+    unit_measure_id bigint not null,
+    company_id bigint not null,
     primary key (id),
+    foreign key (unit_measure_id) references unit_measures(id),
     foreign key (company_id) references companies(id)
     );

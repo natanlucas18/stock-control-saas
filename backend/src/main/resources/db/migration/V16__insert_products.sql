@@ -1,5 +1,5 @@
 -- Produtos para company_id = 1 (empresa de tecnologia)
-INSERT INTO products (code, name, price, total_quantity, stock_max, stock_min, unit_measure, company_id)
+INSERT INTO products (code, name, price, total_quantity, stock_max, stock_min, unit_measure_id, company_id)
 VALUES
 ('PROD000001', 'Notebook Dell Inspiron', 4500.00, 0, 10, 5, 1, 1),
 ('PROD000002', 'Mouse Logitech M170', 80.00, 0, 50, 15, 1, 1),
@@ -33,14 +33,14 @@ VALUES
 ('PROD000030', 'Placa de Captura de Vídeo', 450.00, 0, 10, 2, 1, 1);
 
 -- Produtos para company_id = 2 (loja de roupas)
-INSERT INTO products (code, name, price, total_quantity, stock_max, stock_min, unit_measure, company_id)
+INSERT INTO products (code, name, price, total_quantity, stock_max, stock_min, unit_measure_id, company_id)
 VALUES
 ('PROD000031', 'Camiseta Polo', 120.00, 0, 40, 20, 1, 2),
 ('PROD000032', 'Calça Jeans Slim', 200.00, 0, 40, 20, 1, 2);
 
 
 -- Produtos para company_id = 3 (pizzaria)
-INSERT INTO products (code, name, price, total_quantity, stock_max, stock_min, unit_measure, company_id)
+INSERT INTO products (code, name, price, total_quantity, stock_max, stock_min, unit_measure_id, company_id)
 VALUES
 ('PROD000033', 'Pizza Calabresa', 45.00, 0, 10, 3, 1, 3),
 ('PROD000034', 'Pizza Marguerita', 42.00, 0, 10, 3, 1, 3);

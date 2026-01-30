@@ -18,8 +18,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query(value = """
             SELECT p FROM Product p
-            WHERE UPPER(p.name) LIKE UPPER(CONCAT('%', :query, '%'))
-            OR UPPER(p.code) LIKE UPPER(CONCAT('%', :query, '%'))
+            WHERE (UPPER(p.name) LIKE UPPER(CONCAT('%', :query, '%'))
+            OR UPPER(p.code) LIKE UPPER(CONCAT('%', :query, '%')))
             AND p.company.id = :companyId
             """)
     Page<Product> findAllByNameAndCompanyId(String query, Long companyId, Pageable pageable);
@@ -34,6 +34,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             WHERE p.id = :productId
             """)
     void updateTotalQuantity(Long productId, BigDecimal quantity);
+
+    boolean existsProductByUnitMeasureIdAndCompanyId(Long unitMeasureId, Long companyId);
 
     boolean existsByCodeAndCompanyId(String code, Long companyId);
 

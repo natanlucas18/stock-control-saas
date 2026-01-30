@@ -16,13 +16,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { UnitMeasurePopover } from './unit-measure-popover';
 
 export default function UnitMeasureRegisterForm() {
   const router = useRouter();
   const hookForm = useForm<UnitMeasureFormType>({
     resolver: zodResolver(unitMeasureFormSchema),
     defaultValues: {
-      name: ''
+      name: '',
+      acronym: '',
     }
   });
 
@@ -52,6 +54,23 @@ export default function UnitMeasureRegisterForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nome</FormLabel>
+                <FormControl>
+                  <Input
+                    type='text'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={hookForm.control}
+            name='acronym'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sigla</FormLabel>
                 <FormControl>
                   <Input
                     type='text'

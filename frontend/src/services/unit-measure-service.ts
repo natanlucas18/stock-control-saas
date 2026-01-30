@@ -14,7 +14,7 @@ const localhost = getApiUrl();
 export async function createUnitMeasure(
   data: UnitMeasureFormType
 ): Promise<ServerDTO<UnitMeasureData>> {
-  const response = await fetch(`${localhost}/api/unit-measure`, {
+  const response = await fetch(`${localhost}/api/unit-measures`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -42,13 +42,13 @@ export async function getAllUnitMeasure(params?: UnitMeasureParams) {
   if (params) {
     const { sort = '', pageNumber, pageSize, search = '' } = params;
     const response = await fetch(
-      `${localhost}/api/unit-measure?sort=${sort}&page=${pageNumber}&size=${pageSize}&search=${search}`,
+      `${localhost}/api/unit-measures?sort=${sort}&page=${pageNumber}&size=${pageSize}&search=${search}`,
       init
     );
     const responseData = await response.json();
     return responseData;
   } else {
-    const response = await fetch(`${localhost}/api/unit-measure`, init);
+    const response = await fetch(`${localhost}/api/unit-measures`, init);
     const responseData = await response.json();
   }
 }
@@ -61,7 +61,7 @@ export async function getUnitMeasureById(id: number) {
     }
   };
 
-  const response = await fetch(`${localhost}/api/unit-measure/${id}`, init);
+  const response = await fetch(`${localhost}/api/unit-measures/${id}`, init);
   const responseData = await response.json();
 
   return responseData;
@@ -72,7 +72,7 @@ export async function editUnitMeasure(
   unitMeasureId: number
 ): Promise<ServerDTO<UnitMeasureData>> {
   const response = await fetch(
-    `${localhost}/api/unit-measure/${unitMeasureId}`,
+    `${localhost}/api/unit-measures/${unitMeasureId}`,
     {
       method: 'PUT',
       headers: {
@@ -93,7 +93,7 @@ export async function editUnitMeasure(
 export async function softUnitMeasureDelete(
   id: number
 ): Promise<ServerDTO<UnitMeasureData>> {
-  const response = await fetch(`${localhost}/api/unit-measure/${id}`, {
+  const response = await fetch(`${localhost}/api/unit-measures/${id}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${await getCookie('accessToken')}`

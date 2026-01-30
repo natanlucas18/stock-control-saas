@@ -69,6 +69,23 @@ export default function UnitMeasureEditForm({
           )}
         />
 
+        <FormField
+          control={hookForm.control}
+          name='acronym'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Sigla</FormLabel>
+              <FormControl>
+                <Input
+                  type='text'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button
           type='submit'
           form='unit-measure-edit-form'
