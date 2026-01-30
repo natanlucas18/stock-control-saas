@@ -22,7 +22,7 @@ public interface UnitMeasureRepository extends JpaRepository<UnitMeasure, Long> 
 
     Optional<UnitMeasure> findByIdAndCompanyId(Long id, Long companyId);
 
-    boolean existsByNameAndCompanyId(String name, Long companyId);
+    boolean existsByNameAndCompanyIdAndIsEnableIsTrueAndIdNot(String name, Long companyId, Long id);
 
-    boolean existsByAcronymAndCompanyId(String acronym, Long companyId);
+    boolean existsByAcronymAndCompanyIdAndIsEnableIsTrueAndIdNot(String acronym, Long companyId, Long id);
 }

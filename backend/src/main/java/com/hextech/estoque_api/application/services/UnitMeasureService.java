@@ -3,7 +3,6 @@ package com.hextech.estoque_api.application.services;
 import com.hextech.estoque_api.domain.entities.company.Company;
 import com.hextech.estoque_api.domain.entities.unitMeasure.UnitMeasure;
 import com.hextech.estoque_api.domain.exceptions.BusinessException;
-import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
 import com.hextech.estoque_api.infrastructure.repositories.ProductRepository;
@@ -37,11 +36,7 @@ public class UnitMeasureService {
         Company company = companyRepository.findById(currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
 
-        if (repository.existsByNameAndCompanyId(request.name(), company.getId()))
-            throw new BusinessException("Nome de unidade de medida já existente.");
-
-        if (repository.existsByAcronymAndCompanyId(request.acronym(), company.getId()))
-            throw new BusinessException("Sigla de unidade de medida já existente.");
+        validateNameAndAcronym(null, request.name(), request.acronym(), company.getId());
 
         UnitMeasure entity = UnitMeasure.createNewUnitMeasure(request.name(), request.acronym(), company);
 
@@ -56,10 +51,15 @@ public class UnitMeasureService {
         UnitMeasure entity = repository.findByIdAndCompanyId(id, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("U.M. não encontrada."));
 
+        if (!entity.getIsEnable())
+            throw new BusinessException("A U.M. está desabilitada e não pode ser modificada.");
+
         if (!entity.getAcronym().equals(request.acronym())) {
             if (productRepository.existsProductByUnitMeasureIdAndCompanyId(entity.getId(), currentCompanyId))
                 throw new BusinessException("Não é permitido alterar a Sigla, U.M. possui produtos cadastrados.");
         }
+
+        validateNameAndAcronym(id, request.name(), request.acronym(), currentCompanyId);
 
         entity.updateUnitMeasure(request.name(), request.acronym());
 
@@ -72,10 +72,27 @@ public class UnitMeasureService {
         UnitMeasure entity = repository.findByIdAndCompanyId(id, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("U.M. não encontrada."));
 
-        if (productRepository.existsProductByUnitMeasureIdAndCompanyId(entity.getId(), currentCompanyId))
-            throw new DeletionConflictException("A U.M. possui produtos cadastrados, não pode ser deletada.");
+        if (!entity.getIsEnable())
+            throw new BusinessException("A U.M. está desabilitada e não pode ser deletada.");
 
-        repository.delete(entity);
+        boolean hasProducts = productRepository.existsProductByUnitMeasureIdAndCompanyId(entity.getId(), currentCompanyId);
+
+        if (hasProducts) {
+            entity.disableUnitMeasure();
+            repository.save(entity);
+        } else {
+            repository.delete(entity);
+        }
+    }
+
+    private void validateNameAndAcronym(Long id, String name, String acronym, Long companyId) {
+        Long idToIgnore = (id == null) ? -1L : id;
+
+        if (repository.existsByNameAndCompanyIdAndIsEnableIsTrueAndIdNot(name, companyId, idToIgnore))
+            throw new BusinessException("Nome da unidade de medida já existe.");
+
+        if (repository.existsByAcronymAndCompanyIdAndIsEnableIsTrueAndIdNot(acronym, companyId, idToIgnore))
+            throw new BusinessException("Sigla da unidade de medida já existe.");
     }
 }
 

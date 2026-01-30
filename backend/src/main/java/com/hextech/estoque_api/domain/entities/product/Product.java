@@ -85,11 +85,17 @@ public class Product {
         if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome do produto não pode ser nulo ou vazio.");
         if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Preço do produto não pode ser nulo, zero ou negativo.");
         if (stockMax.compareTo(stockMin) <= 0) throw new IllegalArgumentException("Estoque máximo não pode ser menor ou igual ao estoque mínimo.");
-        if (unitMeasure == null) throw new IllegalArgumentException("Unidade de medida do produto não pode ser nula.");
+        if (unitMeasure == null || !unitMeasure.getIsEnable()) throw new IllegalArgumentException("Unidade de medida não encontrada.");
     }
 
     @Transient
     public StockStatus getStockStatusEnum() {
-        return StockStatus.valueOf(stockStatus.toUpperCase());
+        return StockStatus.valueOf(this.stockStatus.toUpperCase());
+    }
+
+    public StockStatus getStockStatus() {
+        if (totalQuantity.compareTo(stockMax) > 0) return StockStatus.HIGH;
+        if (totalQuantity.compareTo(stockMin) < 0) return StockStatus.LOW;
+        return StockStatus.NORMAL;
     }
 }

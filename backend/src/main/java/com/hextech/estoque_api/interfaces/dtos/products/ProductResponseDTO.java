@@ -36,6 +36,6 @@ public class ProductResponseDTO {
         this.unitMeasure = entity.getUnitMeasure().getAcronym();
         this.stockLocations = entity.getStocks().stream().map(
                 stockProduct -> new StockQuantityDTO(stockProduct.getStockLocation(), stockProduct.getQuantity())).collect(Collectors.toSet());
-        this.stockStatus = entity.getStockStatusEnum();
+        this.stockStatus = entity.getStockStatus();
     }
 }
