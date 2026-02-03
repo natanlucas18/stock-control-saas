@@ -1,7 +1,14 @@
 'use server';
 
-import { cookies } from 'next/headers';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getServerSession } from 'next-auth';
 
-export async function getCookie(key: string) {
-  return (await cookies()).get(key)?.value || '';
-}
+export async function getToken() {
+  const session = await getServerSession(authOptions);
+  
+  if (session?.user.accessToken) {
+    return session.user.accessToken
+  }
+
+  return null;
+};
