@@ -1,6 +1,6 @@
 'use server';
 import { getApiUrl } from '@/lib/api-url';
-import { getCookie } from '@/lib/get-token';
+import { getToken } from '@/lib/get-token';
 import { ServerDTO } from '@/types/server-dto';
 import {
   UnitMeasureData,
@@ -18,7 +18,7 @@ export async function createUnitMeasure(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     },
     body: JSON.stringify(data)
   });
@@ -34,7 +34,7 @@ export async function getAllUnitMeasure(params?: UnitMeasureParams) {
   const init: RequestInit = {
     cache: 'force-cache',
     headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     },
     next: { tags: ['unit-measure'], revalidate: 60 }
   };
@@ -57,7 +57,7 @@ export async function getUnitMeasureById(id: number) {
   const init: RequestInit = {
     cache: 'force-cache',
     headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     }
   };
 
@@ -77,7 +77,7 @@ export async function editUnitMeasure(
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${await getCookie('accessToken')}`
+        Authorization: `Bearer ${await getToken()}`
       },
       body: JSON.stringify(data)
     }
@@ -96,7 +96,7 @@ export async function softUnitMeasureDelete(
   const response = await fetch(`${localhost}/api/unit-measures/${id}`, {
     method: 'DELETE',
     headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     }
   });
 

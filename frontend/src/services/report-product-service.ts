@@ -1,5 +1,5 @@
 import { getApiUrl } from '@/lib/api-url';
-import { getCookie } from '@/lib/get-token';
+import { getToken } from '@/lib/get-token';
 import { Product } from '@/types/product-schema';
 import { ServerDTOArray } from '@/types/server-dto';
 
@@ -18,7 +18,7 @@ export async function getReportProducts(
   const init: RequestInit = {
     cache: 'force-cache',
     headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     },
     next: { tags: ['report-products'], revalidate: 60 }
   };

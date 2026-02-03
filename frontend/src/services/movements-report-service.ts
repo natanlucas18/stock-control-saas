@@ -1,7 +1,7 @@
 'use server';
 
 import { getApiUrl } from '@/lib/api-url';
-import { getCookie } from '@/lib/get-token';
+import { getToken } from '@/lib/get-token';
 import {
   MovementsReport,
   MovementsReportParams
@@ -16,7 +16,7 @@ export async function movementsReportFilterService(
   const init: RequestInit = {
     cache: 'force-cache',
     headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     },
     next: { tags: ['movementsReport'], revalidate: 60 }
   };

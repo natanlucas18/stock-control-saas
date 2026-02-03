@@ -1,7 +1,7 @@
 'use server';
 
 import { getApiUrl } from '@/lib/api-url';
-import { getCookie } from '@/lib/get-token';
+import { getToken } from '@/lib/get-token';
 import { ServerDTO, ServerDTOArray } from '@/types/server-dto';
 import {
   StockLocationParams,
@@ -17,7 +17,7 @@ export async function createStockLocations(data: StockLocationsFormType) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     },
     body: JSON.stringify(data)
   });
@@ -33,7 +33,7 @@ export async function getAllStockLocations(params?: StockLocationParams) {
   const init: RequestInit = {
     cache: 'force-cache',
     headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     },
     next: { tags: ['locations'], revalidate: 60 }
   };
@@ -63,7 +63,7 @@ export async function updateStockLocation(
   const response = await fetch(`${localhost}/api/stock-locations/${id}`, {
     method: 'PUT',
     headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`,
+      Authorization: `Bearer ${await getToken()}`,
       'content-type': 'application/json'
     },
     body: JSON.stringify(data)
@@ -79,7 +79,7 @@ export async function deleteStockLocation(id: number) {
   const response = await fetch(`${localhost}/api/stock-locations/${id}`, {
     method: 'DELETE',
     headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     }
   });
   revalidateTag('locations');

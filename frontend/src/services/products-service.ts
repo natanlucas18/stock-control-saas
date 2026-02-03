@@ -1,7 +1,7 @@
 'use server';
 
 import { getApiUrl } from '@/lib/api-url';
-import { getCookie } from '@/lib/get-token';
+import { getToken } from '@/lib/get-token';
 import {
   Product,
   ProductFormType,
@@ -20,7 +20,7 @@ export async function createProduct(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     },
     body: JSON.stringify(data)
   });
@@ -40,7 +40,7 @@ export async function editProduct(
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     },
     body: JSON.stringify(data)
   });
@@ -58,7 +58,7 @@ export async function getAllProducts(
   const init: RequestInit = {
     cache: 'force-cache',
     headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     },
     next: { tags: ['products'], revalidate: 60 }
   };
@@ -86,7 +86,7 @@ export async function getProductById(id: number): Promise<ServerDTO<Product>> {
   const init: RequestInit = {
     cache: 'force-cache',
     headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     },
     next: { tags: ['products'], revalidate: 60 }
   };
@@ -103,7 +103,7 @@ export async function softProductDelete(
   const response = await fetch(`${localhost}/api/products/${id}`, {
     method: 'DELETE',
     headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
+      Authorization: `Bearer ${await getToken()}`
     }
   });
 
