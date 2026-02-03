@@ -1,9 +1,14 @@
 'use client';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { LoginForm } from '@/types/login-schema';
 import { PathLinks } from '@/types/path-links';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -12,6 +17,7 @@ const schema = z.object({
 });
 
 export default function SignInPage() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -21,91 +27,78 @@ export default function SignInPage() {
   });
 
   const onSubmit = async (data: LoginForm) => {
-    signIn('credentials', {
+    const id = toast.loading('Entrando...')
+
+    const result = await signIn('credentials', {
       ...data,
-      callbackUrl: PathLinks.DASHBOARD
+      redirect: false
     });
+
+    if (result?.error) {
+      toast.error('E-mail ou senha inválidos')
+      toast.dismiss(id)
+      return
+    }
+
+    toast.success('Login realizado com sucesso!')
+    toast.dismiss(id)
+    router.push(PathLinks.DASHBOARD)
   };
+
   return (
-    <>
-      <div className='flex min-h-full h-screen bg-black flex-col justify-center px-6 py-12 lg:px-8'>
-        <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
+    <main className='flex items-center justify-center min-h-screen px-4'>
+      <Card className='w-full max-w-md shadow-md'>
+        <CardHeader className='space-y-1 text-center'>
           <img
             alt='Your Company'
             src='https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=white'
             className='mx-auto h-10 w-auto'
           />
-          <h2 className='mt-10 text-center text-2xl/9 font-bold tracking-tight text-white'>
-            Faça Login com Sua Conta!
-          </h2>
-        </div>
+          <h1 className='text-2xl font-bold'>Login</h1>
+        </CardHeader>
 
-        <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
+        <CardContent>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className='space-y-6'
+            className='space-y-4'
           >
-            <div>
-              <label
-                htmlFor='email'
-                className='block text-sm/6 font-medium text-gray-100'
-              >
-                Email
-              </label>
-              <div className='mt-2'>
-                <input
-                  id='email'
-                  type='email'
-                  required
-                  autoComplete='email'
-                  className='block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-800 sm:text-sm/6'
-                  {...register('username')}
-                />
-                {errors.username && (
-                  <span className='text-red-500 text-sm'>
-                    {errors.username.message}
-                  </span>
-                )}
-              </div>
+            <div className='space-y-1'>
+              <Input
+                placeholder='E-mail'
+                type='email'
+                {...register('username')}
+              />
+              {errors.username && (
+                <p className='text-sm text-red-500'>
+                  {errors.username.message}
+                </p>
+              )}
             </div>
 
-            <div>
-              <div className='flex items-center justify-between'>
-                <label
-                  htmlFor='password'
-                  className='block text-sm/6 font-medium text-gray-100'
-                >
-                  Senha
-                </label>
-              </div>
-              <div className='mt-2'>
-                <input
-                  id='password'
-                  type='password'
-                  required
-                  autoComplete='current-password'
-                  className='block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-800 sm:text-sm/6'
-                  {...register('password')}
-                />
-                {errors.password && (
-                  <span className='text-red-500 text-sm'>
-                    {errors.password.message}
-                  </span>
-                )}
-              </div>
+            <div className='space-y-1'>
+              <Input
+                placeholder='Senha'
+                type='password'
+                {...register('password')}
+              />
+              {errors.password && (
+                <p className='text-sm text-red-500'>
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
-            <div>
-              <button
-                type='submit'
-                className='flex w-full justify-center rounded-md bg-blue-800 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500'
-              >
-                {isSubmitting ? 'Logando...' : 'Entrar'}
-              </button>
-            </div>
+            <Button
+              type='submit'
+              disabled={isSubmitting}
+              className='w-full'
+            >
+              {isSubmitting ? 'Entrando...' : 'Entrar'}
+            </Button>
           </form>
-        </div>
-      </div>
-    </>
+        </CardContent>
+      </Card>
+    </main>
+
   );
 }
