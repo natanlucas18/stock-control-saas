@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getCookie } from './lib/get-token';
 import { PathLinks } from './types/path-links';
+import { getToken } from 'next-auth/jwt';
 
 const protectedRoutes = [
   PathLinks.DASHBOARD,
@@ -14,8 +14,6 @@ const protectedRoutes = [
   PathLinks.SIGN_UP
 ];
 
-// const secret = process.env.NEXTAUTH_SECRET;
-
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isProtected = protectedRoutes.some((route) =>
@@ -24,21 +22,25 @@ export async function middleware(req: NextRequest) {
 
   if (!isProtected) return NextResponse.next();
 
-  const regex = /[\[\"\]]/g;
-  const token = await getCookie('accessToken');
-  const userRoles = (await getCookie('userRoles'))
-    .replace(regex, '')
-    .split(',');
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET
+  });
 
-  if (!token) {
+  const buffer = 10 * 1000;
+  const isExpired = token?.expiresAt ? (Date.now() + buffer > token.expiresAt) : true;
+  
+  if (!token?.accessToken || isExpired) {
     const loginUrl = new URL(PathLinks.SIGN_IN, req.url);
     loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
   }
+  
+  const userRoles = token.userRoles as string[] | undefined
 
   const reportsRouter = ['/relatorios', '/sign-up'];
-  const isAdmin = userRoles.includes('ROLE_ADMIN');
-  const isDev = userRoles.includes('ROLE_DEV');
+  const isAdmin = userRoles?.includes('ROLE_ADMIN');
+  const isDev = userRoles?.includes('ROLE_DEV');
 
   if (
     reportsRouter.includes(pathname) &&
