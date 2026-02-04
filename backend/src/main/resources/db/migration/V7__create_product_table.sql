@@ -8,6 +8,7 @@ create table products (
     stock_min int not null,
     unit_measure_id bigint not null,
     company_id bigint not null,
+    is_enable boolean not null,
     primary key (id),
     foreign key (unit_measure_id) references unit_measures(id),
     foreign key (company_id) references companies(id)

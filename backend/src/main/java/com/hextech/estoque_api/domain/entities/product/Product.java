@@ -46,10 +46,11 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
+    private Boolean isEnable = true;
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<StockProduct> stocks = new HashSet<>();
 
-    private Product(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure, Company company) {
+    private Product(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure, Company company, Boolean isEnable) {
         this.code = code;
         this.name = name;
         this.price = price;
@@ -58,12 +59,13 @@ public class Product {
         this.totalQuantity = BigDecimal.ZERO;
         this.unitMeasure = unitMeasure;
         this.company = company;
+        this.isEnable = isEnable;
     }
 
     public static Product createNewProduct(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure, Company company) {
         validateAttributes(code, name, price, stockMax, stockMin, unitMeasure);
         if (company == null) throw new IllegalArgumentException("Empresa do produto não pode ser nula.");
-        return new Product(code, name, price, stockMax, stockMin, unitMeasure, company);
+        return new Product(code, name, price, stockMax, stockMin, unitMeasure, company, true);
     }
 
     public void updateProduct(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure) {
