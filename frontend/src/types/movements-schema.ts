@@ -10,18 +10,18 @@ export type MovementsData = {
   moment: string;
   note: string;
   product: Product;
-  user: Pick<User, 'id' | 'name'>;
+  user: Pick<User, 'userId' | 'userName'>;
   stockLocation: StockLocationsData;
 };
 
-export const movementsFormSchema = z.object({
-  type: z.enum(['ENTRADA', 'SAIDA']),
+export const entryMovementsFormSchema = z.object({
+  type: z.enum(['ENTRADA']),
   quantity: z.coerce.number<number>().min(1, 'Insira uma quantidade!'),
   note: z.string().min(1, 'Insira uma nota!'),
   productId: z.coerce.number<number>().min(1, 'Insira um produto!'),
-  stockLocationId: z.coerce
+  toStockLocationId: z.coerce
     .number<number>()
     .min(1, 'Insira um local de estoque!')
 });
 
-export type MovementsFormType = z.infer<typeof movementsFormSchema>;
+export type EntryMovementsFormType = z.infer<typeof entryMovementsFormSchema>;

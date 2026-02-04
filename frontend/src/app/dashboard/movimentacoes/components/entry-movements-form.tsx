@@ -10,39 +10,34 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+
+import { createEntryMovements } from '@/services/movements-service';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { createMovements } from '@/services/movements-service';
-import {
-  movementsFormSchema,
-  MovementsFormType
+  entryMovementsFormSchema,
+  EntryMovementsFormType
 } from '@/types/movements-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { StockLocationPopover } from '../../(local-estoque)/components/stock-location-popover';
 import { ProductsPopover } from '../../(produtos)/components/products-popover';
 
-export default function MovementsForm() {
+export default function EntryMovementsForm() {
   const router = useRouter();
-  const hookForm = useForm<MovementsFormType>({
-    resolver: zodResolver(movementsFormSchema),
+  const hookForm = useForm<EntryMovementsFormType>({
+    resolver: zodResolver(entryMovementsFormSchema),
     defaultValues: {
       type: 'ENTRADA',
       quantity: 0,
       note: '',
       productId: 0,
-      stockLocationId: 0
+      toStockLocationId: 0
     }
   });
 
-  async function onSubmit(formData: MovementsFormType) {
-    const { success, data } = await createMovements(formData);
+  async function onSubmit(formData: EntryMovementsFormType) {
+    const { success, data } = await createEntryMovements(formData);
 
     if (success) {
       toast.success('Produto cadastrado com sucesso!');
@@ -60,31 +55,6 @@ export default function MovementsForm() {
           onSubmit={hookForm.handleSubmit(onSubmit)}
           className='space-y-8 border p-5 rounded-md'
         >
-          <FormField
-            control={hookForm.control}
-            name='type'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tipo</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Unidade de Medida' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='ENTRADA'>ENTRADA</SelectItem>
-                      <SelectItem value='SAIDA'>SAIDA</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <FormField
             control={hookForm.control}
             name='productId'
@@ -135,15 +105,12 @@ export default function MovementsForm() {
 
           <FormField
             control={hookForm.control}
-            name='stockLocationId'
+            name='toStockLocationId'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>ID do Estoque</FormLabel>
                 <FormControl>
-                  <Input
-                    type='number'
-                    {...field}
-                  />
+                  <StockLocationPopover onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

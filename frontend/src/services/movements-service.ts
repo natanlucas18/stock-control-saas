@@ -2,16 +2,19 @@
 
 import { getApiUrl } from '@/lib/api-url';
 import { getCookie } from '@/lib/get-token';
-import { MovementsData, MovementsFormType } from '@/types/movements-schema';
+import {
+  EntryMovementsFormType,
+  MovementsData
+} from '@/types/movements-schema';
 import { ServerDTO } from '@/types/server-dto';
 import { revalidateTag } from 'next/cache';
 
 const localhost = getApiUrl();
 
-export async function createMovements(
-  formData: MovementsFormType
+export async function createEntryMovements(
+  formData: EntryMovementsFormType
 ): Promise<ServerDTO<MovementsData>> {
-  const response = await fetch(`${localhost}/api/movements`, {
+  const response = await fetch(`${localhost}/api/movements/entry`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
