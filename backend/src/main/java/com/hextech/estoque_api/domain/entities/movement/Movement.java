@@ -62,7 +62,7 @@ public class Movement {
         if (!Arrays.stream(MovementType.values()).toList().contains(type)) throw new IllegalArgumentException("Tipo de movimentação inválida.");
         if (quantity == null || quantity.compareTo(zero) <= 0) throw new IllegalArgumentException("Quantidade deve ser maior que zero.");
         if (moment == null) throw new IllegalArgumentException("Data de movimento inválida.");
-        if (product == null) throw new IllegalArgumentException("Produto inválido.");
+        if (product == null || !product.getIsEnable()) throw new IllegalArgumentException("Produto inválido ou desabilitado.");
         if (user == null) throw new IllegalArgumentException("Usuário inválido.");
         if (company == null) throw new IllegalArgumentException("Empresa inválida.");
         return new Movement(type, quantity, moment, note, product, user, company, fromStockLocation, toStockLocation);
