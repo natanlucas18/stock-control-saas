@@ -46,10 +46,11 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
+    private Boolean isEnable = true;
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<StockProduct> stocks = new HashSet<>();
 
-    private Product(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure, Company company) {
+    private Product(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure, Company company, Boolean isEnable) {
         this.code = code;
         this.name = name;
         this.price = price;
@@ -58,12 +59,13 @@ public class Product {
         this.totalQuantity = BigDecimal.ZERO;
         this.unitMeasure = unitMeasure;
         this.company = company;
+        this.isEnable = isEnable;
     }
 
     public static Product createNewProduct(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure, Company company) {
         validateAttributes(code, name, price, stockMax, stockMin, unitMeasure);
         if (company == null) throw new IllegalArgumentException("Empresa do produto não pode ser nula.");
-        return new Product(code, name, price, stockMax, stockMin, unitMeasure, company);
+        return new Product(code, name, price, stockMax, stockMin, unitMeasure, company, true);
     }
 
     public void updateProduct(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure) {
@@ -81,11 +83,16 @@ public class Product {
     }
 
     private static void validateAttributes(String code, String name, BigDecimal price, BigDecimal stockMax, BigDecimal stockMin, UnitMeasure unitMeasure) {
-        if (code == null || code.isBlank() || code.length() > 10) throw new IllegalArgumentException("Código do produto não pode ser nulo, vazio ou maior que 10 caracteres.");
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("Nome do produto não pode ser nulo ou vazio.");
-        if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Preço do produto não pode ser nulo, zero ou negativo.");
-        if (stockMax.compareTo(stockMin) <= 0) throw new IllegalArgumentException("Estoque máximo não pode ser menor ou igual ao estoque mínimo.");
-        if (unitMeasure == null || !unitMeasure.getIsEnable()) throw new IllegalArgumentException("Unidade de medida não encontrada.");
+        if (code == null || code.isBlank() || code.length() > 10)
+            throw new IllegalArgumentException("Código do produto não pode ser nulo, vazio ou maior que 10 caracteres.");
+        if (name == null || name.isBlank() || name.length() > 240)
+            throw new IllegalArgumentException("Nome do produto não pode ser nulo, vazio ou maior que 240 caracteres.");
+        if (price == null || price.compareTo(BigDecimal.ZERO) <= 0)
+            throw new IllegalArgumentException("Preço do produto não pode ser nulo, zero ou negativo.");
+        if (stockMax.compareTo(stockMin) <= 0)
+            throw new IllegalArgumentException("Estoque máximo não pode ser menor ou igual ao estoque mínimo.");
+        if (unitMeasure == null || !unitMeasure.getIsEnable())
+            throw new IllegalArgumentException("Unidade de medida não encontrada ou desabilitada.");
     }
 
     @Transient
@@ -97,5 +104,10 @@ public class Product {
         if (totalQuantity.compareTo(stockMax) > 0) return StockStatus.HIGH;
         if (totalQuantity.compareTo(stockMin) < 0) return StockStatus.LOW;
         return StockStatus.NORMAL;
+    }
+
+    public void disableProduct() {
+        this.name = this.name + " (desabilitado)";
+        this.isEnable = false;
     }
 }

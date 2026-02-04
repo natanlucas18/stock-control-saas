@@ -71,6 +71,9 @@ public class ProductService {
         UnitMeasure unitMeasure = unitMeasureRepository.findById(requestDTO.getUnitMeasureId())
                 .orElseThrow(()-> new ResourceNotFoundException("Unidade de medida não encontrada."));
 
+        if (!entity.getIsEnable())
+            throw new BusinessException("O produto está desabilitado e não pode ser modificado.");
+
         if (!entity.isCodeEqual(requestDTO.getCode()))
             validProductCode(requestDTO.getCode(), currentCompanyId);
 
@@ -92,10 +95,15 @@ public class ProductService {
         Product entity = repository.findByIdAndCompanyId(id, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
 
-        if (movementRepository.existsMovementByProductId(entity.getId()))
-            throw new DeletionConflictException("O produto possui movimentações e não pode ser deletado.");
+        if (!entity.getIsEnable())
+            throw new BusinessException("O produto está desabilitado e não pode ser deletado.");
 
-        repository.delete(entity);
+        if (movementRepository.existsMovementByProductId(entity.getId())) {
+            entity.disableProduct();
+            repository.save(entity);
+        } else {
+            repository.delete(entity);
+        }
     }
 
     public void checkProductCode(String code, Long companyId) {
