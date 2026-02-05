@@ -15,9 +15,9 @@ export default async function Movements() {
   return (
     <Tabs
       defaultValue='entrada'
-      className='w-[400px]'
+      className='mx-auto w-full max-w-2xl'
     >
-      <TabsList>
+      <TabsList className='mx-auto'>
         <TabsTrigger value='entrada'>Entrada</TabsTrigger>
         <TabsTrigger value='saida'>Saída</TabsTrigger>
         <TabsTrigger value='devolucao'>Devolução</TabsTrigger>
