@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
+import { Textarea } from '@/components/ui/textarea';
 import { createEntryMovements } from '@/services/movements-service';
 import {
   entryMovementsFormSchema,
@@ -88,15 +89,12 @@ export default function EntryMovementsForm() {
 
           <FormField
             control={hookForm.control}
-            name='note'
+            name='toStockLocationId'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Observações</FormLabel>
+                <FormLabel>Estoque</FormLabel>
                 <FormControl>
-                  <Input
-                    type='text'
-                    {...field}
-                  />
+                  <StockLocationPopover onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -105,12 +103,12 @@ export default function EntryMovementsForm() {
 
           <FormField
             control={hookForm.control}
-            name='toStockLocationId'
+            name='note'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ID do Estoque</FormLabel>
+                <FormLabel>Observações</FormLabel>
                 <FormControl>
-                  <StockLocationPopover onChange={field.onChange} />
+                  <Textarea {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
+import { Textarea } from '@/components/ui/textarea';
 import { createTransferMovements } from '@/services/movements-service';
 import {
   transferMovementsFormSchema,
@@ -89,23 +90,6 @@ export default function TransferMovementsForm() {
 
           <FormField
             control={hookForm.control}
-            name='note'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Observações</FormLabel>
-                <FormControl>
-                  <Input
-                    type='text'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={hookForm.control}
             name='fromStockLocationId'
             render={({ field }) => (
               <FormItem>
@@ -126,6 +110,20 @@ export default function TransferMovementsForm() {
                 <FormLabel>Para Estoque</FormLabel>
                 <FormControl>
                   <StockLocationPopover onChange={field.onChange} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={hookForm.control}
+            name='note'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Observações</FormLabel>
+                <FormControl>
+                  <Textarea {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
