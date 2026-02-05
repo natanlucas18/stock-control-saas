@@ -25,3 +25,15 @@ export const entryMovementsFormSchema = z.object({
 });
 
 export type EntryMovementsFormType = z.infer<typeof entryMovementsFormSchema>;
+
+export const exitMovementsFormSchema = z.object({
+  type: z.enum(['SAIDA']),
+  quantity: z.coerce.number<number>().min(1, 'Insira uma quantidade!'),
+  note: z.string().min(1, 'Insira uma nota!'),
+  productId: z.coerce.number<number>().min(1, 'Insira um produto!'),
+  fromStockLocationId: z.coerce
+    .number<number>()
+    .min(1, 'Insira um local de estoque!')
+});
+
+export type ExitMovementsFormType = z.infer<typeof exitMovementsFormSchema>;
