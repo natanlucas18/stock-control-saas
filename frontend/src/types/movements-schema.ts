@@ -54,3 +54,15 @@ export const transferMovementsFormSchema = z.object({
 export type TransferMovementsFormType = z.infer<
   typeof transferMovementsFormSchema
 >;
+
+export const returnMovementsFormSchema = z.object({
+  type: z.enum(['DEVOLUCAO']),
+  quantity: z.coerce.number<number>().min(1, 'Insira uma quantidade!'),
+  note: z.string().min(1, 'Insira uma nota!'),
+  productId: z.coerce.number<number>().min(1, 'Insira um produto!'),
+  toStockLocationId: z.coerce
+    .number<number>()
+    .min(1, 'Insira um local de estoque!')
+});
+
+export type ReturnMovementsFormType = z.infer<typeof returnMovementsFormSchema>;
