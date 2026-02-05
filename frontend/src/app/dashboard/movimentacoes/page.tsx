@@ -8,6 +8,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import EntryMovementsForm from './components/entry-movements-form';
 import ExitMovementsForm from './components/exit-movements-form';
+import TransferMovementsForm from './components/transfer-movements-form';
 
 export default async function Movements() {
   return (
@@ -49,7 +50,17 @@ export default async function Movements() {
       </TabsContent>
       <TabsContent value='devolucao'>Change your password here.</TabsContent>
       <TabsContent value='transferencia'>
-        Change your password here.
+        <Card>
+          <CardHeader>
+            <CardTitle>TRANSFERÊNCIA</CardTitle>
+            <CardDescription>
+              Registrar transferência de produtos entre estoques.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <TransferMovementsForm />
+          </CardContent>
+        </Card>
       </TabsContent>
     </Tabs>
   );

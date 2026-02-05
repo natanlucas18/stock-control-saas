@@ -37,3 +37,20 @@ export const exitMovementsFormSchema = z.object({
 });
 
 export type ExitMovementsFormType = z.infer<typeof exitMovementsFormSchema>;
+
+export const transferMovementsFormSchema = z.object({
+  type: z.enum(['TRANSFERENCIA']),
+  quantity: z.coerce.number<number>().min(1, 'Insira uma quantidade!'),
+  note: z.string().min(1, 'Insira uma nota!'),
+  productId: z.coerce.number<number>().min(1, 'Insira um produto!'),
+  fromStockLocationId: z.coerce
+    .number<number>()
+    .min(1, 'Insira um local de estoque!'),
+  toStockLocationId: z.coerce
+    .number<number>()
+    .min(1, 'Insira um local de estoque!')
+});
+
+export type TransferMovementsFormType = z.infer<
+  typeof transferMovementsFormSchema
+>;

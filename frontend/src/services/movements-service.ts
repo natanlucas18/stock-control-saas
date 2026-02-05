@@ -5,7 +5,8 @@ import { getCookie } from '@/lib/get-token';
 import {
   EntryMovementsFormType,
   ExitMovementsFormType,
-  MovementsData
+  MovementsData,
+  TransferMovementsFormType
 } from '@/types/movements-schema';
 import { ServerDTO } from '@/types/server-dto';
 import { revalidateTag } from 'next/cache';
@@ -35,6 +36,25 @@ export async function createExitMovements(
   formData: ExitMovementsFormType
 ): Promise<ServerDTO<MovementsData>> {
   const response = await fetch(`${localhost}/api/movements/exit`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${await getCookie('accessToken')}`
+    },
+    body: JSON.stringify(formData)
+  });
+  revalidateTag('movements');
+  revalidateTag('products');
+
+  const data = await response.json();
+
+  return data;
+}
+
+export async function createTransferMovements(
+  formData: TransferMovementsFormType
+): Promise<ServerDTO<MovementsData>> {
+  const response = await fetch(`${localhost}/api/movements/transfer`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
