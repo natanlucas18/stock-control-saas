@@ -30,4 +30,10 @@ public class AuthService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário " + credentials.getUsername() + " não encontrado."));
         return tokenProvider.createAccessToken(user);
     }
+
+    public TokenDTO refreshToken(String username, String refreshToken) {
+        var user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário " + username + " não encontrado."));
+        return tokenProvider.refreshToken(user, refreshToken);
+    }
 }

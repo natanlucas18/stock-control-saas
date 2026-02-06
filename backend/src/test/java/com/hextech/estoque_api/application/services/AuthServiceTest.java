@@ -45,7 +45,8 @@ class AuthServiceTest {
         AccountCredentialsDTO credentials = new AccountCredentialsDTO("test@test.com", "123456");
         User user = UserFactory.createUser(1L);
         String tokenString = "testToken";
-        TokenDTO tokenDTO = new TokenDTO(tokenString, new Date(), new Date(System.currentTimeMillis() + 360000), user);
+        String refreshTokenString = "testRefreshToken";
+        TokenDTO tokenDTO = new TokenDTO(tokenString, refreshTokenString, new Date(), new Date(System.currentTimeMillis() + 360000), user);
 
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
         when(tokenProvider.createAccessToken(any())).thenReturn(tokenDTO);

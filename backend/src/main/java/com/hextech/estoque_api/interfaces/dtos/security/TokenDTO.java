@@ -20,16 +20,18 @@ public class TokenDTO {
     private String userName;
     private List<String> userRoles;
     private String accessToken;
+    private String refreshToken;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime expiresAt;
 
-    public TokenDTO(String accessToken, Date createdAt, Date expiresAt, User user) {
+    public TokenDTO(String accessToken, String refreshToken, Date createdAt, Date expiresAt, User user) {
         this.userId = user.getId();
         this.userName = user.getName();
         this.userRoles = user.getRoleNames();
         this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.createdAt = createdAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         this.expiresAt = expiresAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
