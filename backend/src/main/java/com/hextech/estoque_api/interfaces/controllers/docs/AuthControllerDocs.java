@@ -1,8 +1,8 @@
 package com.hextech.estoque_api.interfaces.controllers.docs;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
 import com.hextech.estoque_api.interfaces.dtos.security.AccountCredentialsDTO;
-import com.hextech.estoque_api.interfaces.dtos.security.TokenDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,4 +20,11 @@ public interface AuthControllerDocs {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     ResponseEntity<StandardResponse<?>> login(AccountCredentialsDTO credentials);
+
+    @Operation(summary = "Realiza o refresh de um token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = StandardResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    })
+    ResponseEntity<StandardResponse<?>> refreshToken(JsonNode body, String refreshToken);
 }

@@ -40,9 +40,6 @@ public class JwtTokenProvider {
     @Value("${security.jwt.expire-length}")
     private long validityInMilliseconds;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
     Algorithm algorithm = null;
 
     @PostConstruct
@@ -55,7 +52,21 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
         String accessToken = getAccessToken(user, now, validity);
-        return new TokenDTO(accessToken, now, validity, user);
+        String refreshToken = getRefreshToken(user, now);
+        return new TokenDTO(accessToken, refreshToken, now, validity, user);
+    }
+
+    public TokenDTO refreshToken(User user, String refreshToken) {
+        if (tokenContainsBearer(refreshToken))
+            refreshToken = refreshToken.substring("Bearer ".length());
+
+        DecodedJWT decodedJWT = decodedToken(refreshToken);
+        String username = decodedJWT.getSubject();
+
+        if (!username.equals(user.getUsername()))
+            throw new InvalidJwtAuthenticationException("Usuário inválido!");
+
+        return createAccessToken(user);
     }
 
     public Authentication getAuthentication(String token) {
@@ -111,10 +122,13 @@ public class JwtTokenProvider {
                 .withIssuedAt(now)
                 .withNotBefore(now)
                 .withExpiresAt(validity)
-                .withJWTId(UUID.randomUUID().toString())
                 .withClaim("userId", user.getId())
                 .withClaim("roles", user.getRoleNames())
                 .withClaim("companyId", user.getCompany().getId())
                 .sign(algorithm);
+    }
+
+    private String getRefreshToken(User user, Date now) {
+        return getAccessToken(user, now, new Date(now.getTime() + validityInMilliseconds * 4));
     }
 }
