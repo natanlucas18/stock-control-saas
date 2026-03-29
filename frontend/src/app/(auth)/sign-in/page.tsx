@@ -1,8 +1,8 @@
 'use client';
+import { authClient } from '@/lib/auth-client';
 import { LoginForm } from '@/types/login-schema';
 import { PathLinks } from '@/types/path-links';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -21,10 +21,11 @@ export default function SignInPage() {
   });
 
   const onSubmit = async (data: LoginForm) => {
-    signIn('credentials', {
-      ...data,
-      callbackUrl: PathLinks.DASHBOARD
-    });
+    const {data: session, error} = await authClient.signIn.credentials({
+      email: data.username,
+      password: data.password,
+      callbackURL: PathLinks.DASHBOARD,
+    })
   };
   return (
     <>
