@@ -10,10 +10,11 @@ const localhost = getApiUrl();
 
 export async function loginService(formData: LoginForm) {
   return apiFetch<ServerDTO<AuthResponse>>(
-    `http://localhost:8080/api/auth/login`,
+    `${localhost}/auth/login`,
     {
       method: 'POST',
       body: JSON.stringify(formData)
     }
   )
 }
+
