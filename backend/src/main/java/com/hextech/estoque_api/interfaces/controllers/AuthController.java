@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,15 @@ public class AuthController implements AuthControllerDocs {
 
     @Autowired
     private AuthService service;
+
+    @Value("${spring.profiles.active}")
+    private String profile;
+
+    @Value("${security.jwt.access-expire-length}")
+    private long accessTokenValidity;
+
+    @Value("${security.jwt.refresh-expire-length}")
+    private long refreshTokenValidity;
 
     @PostMapping("/login")
     public ResponseEntity<StandardResponse<?>> login(@RequestBody @Valid AccountCredentialsDTO credentials,
@@ -49,10 +59,15 @@ public class AuthController implements AuthControllerDocs {
     }
 
     private void setCookies(HttpServletResponse response, String accessToken, String refreshToken) {
-        String accessCookie = String.format("accessToken=%s; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=%d",
-                accessToken, 60*15);
-        String refreshCookie = String.format("refreshToken=%s; HttpOnly; Secure; SameSite=None; Path=/auth/refresh; Max-Age=%d",
-                refreshToken, 60*60*24*7);
+        boolean isProd = profile.equals("prod");
+
+        String sameSite = isProd ? "None" : "Lax";
+        String secure = isProd ? "Secure" : "";
+
+        String accessCookie = String.format("accessToken=%s; HttpOnly; %s; SameSite=%s; Path=/; Max-Age=%d",
+                accessToken, secure, sameSite, accessTokenValidity/1000);
+        String refreshCookie = String.format("refreshToken=%s; HttpOnly; %s; SameSite=%s; Path=/auth/refresh; Max-Age=%d",
+                refreshToken, secure, sameSite, refreshTokenValidity/1000);
 
         response.addHeader("Set-Cookie", accessCookie);
         response.addHeader("Set-Cookie", refreshCookie);

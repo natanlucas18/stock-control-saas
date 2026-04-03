@@ -11,19 +11,16 @@ import com.hextech.estoque_api.infrastructure.security.exceptions.InvalidJwtAuth
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class JwtTokenProvider {
@@ -37,8 +34,11 @@ public class JwtTokenProvider {
     @Value("${security.jwt.audience}")
     private String audience;
 
-    @Value("${security.jwt.expire-length}")
-    private long validityInMilliseconds;
+    @Value("${security.jwt.access-expire-length}")
+    private long accessTokenValidity;
+
+    @Value("${security.jwt.refresh-expire-length}")
+    private long refreshTokenValidity;
 
     Algorithm algorithm = null;
 
@@ -50,7 +50,7 @@ public class JwtTokenProvider {
 
     public TokenDTO createAccessToken(User user) {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + accessTokenValidity);
         String accessToken = getAccessToken(user, now, validity);
         String refreshToken = getRefreshToken(user, now);
         return new TokenDTO(accessToken, refreshToken, now, validity, user);
@@ -129,6 +129,6 @@ public class JwtTokenProvider {
     }
 
     private String getRefreshToken(User user, Date now) {
-        return getAccessToken(user, now, new Date(now.getTime() + validityInMilliseconds * 4));
+        return getAccessToken(user, now, new Date(now.getTime() + refreshTokenValidity));
     }
 }
