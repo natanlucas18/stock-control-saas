@@ -23,4 +23,13 @@ public interface UserControllerDocs {
             @ApiResponse(responseCode = "422", description = "Unprocessable Entity", content = @Content)
     })
     ResponseEntity<StandardResponse<?>> register(UserRequestDTO requestDTO);
+
+    @Operation(summary = "Realiza o login de um usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = @Content(schema = @Schema(implementation = StandardResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
+    })
+    ResponseEntity<StandardResponse<?>> getMe();
 }

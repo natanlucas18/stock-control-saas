@@ -28,4 +28,10 @@ public class UserController implements UserControllerDocs {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new StandardResponse<>(true, response));
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<StandardResponse<?>> getMe() {
+        var response = service.getMe(authContext.getCurrentUserId(), authContext.getCurrentCompanyId());
+        return ResponseEntity.ok().body(new StandardResponse<>(true, response));
+    }
 }
