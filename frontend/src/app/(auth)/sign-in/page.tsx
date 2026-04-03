@@ -1,9 +1,11 @@
 'use client';
+import { useLogin } from '@/hooks/auth/use-login';
 import { LoginForm } from '@/types/login-schema';
 import { PathLinks } from '@/types/path-links';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -19,12 +21,22 @@ export default function SignInPage() {
   } = useForm<LoginForm>({
     resolver: zodResolver(schema)
   });
+  const router = useRouter()
+
+  const loginMutation = useLogin()
+
 
   const onSubmit = async (data: LoginForm) => {
-    signIn('credentials', {
-      ...data,
-      callbackUrl: PathLinks.DASHBOARD
-    });
+    const toastId = toast.loading("Entrando...")
+    try {
+      await loginMutation.mutateAsync(data)
+      toast.success('Login efetuado com sucesso')
+      router.push(PathLinks.DASHBOARD)
+    } catch {
+      toast.error('Falha ao efetuar o login')
+    } finally {
+      toast.dismiss(toastId)
+    }
   };
   return (
     <>

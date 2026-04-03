@@ -1,8 +1,7 @@
-export type User = {
+export type AuthResponse = {
   userId: string;
   userName: string;
   userRoles: [];
-  accessToken: string;
   createdAt: string;
-  expiresAt: string;
+  expiresAt: number;
 };

@@ -1,19 +1,19 @@
 'use server';
 
+import { apiFetch } from '@/lib/api-client';
 import { getApiUrl } from '@/lib/api-url';
 import { LoginForm } from '@/types/login-schema';
 import { ServerDTO } from '@/types/server-dto';
-import { User } from '@/types/user-schema';
+import { AuthResponse } from '@/types/user-schema';
 
 const localhost = getApiUrl();
 
-export async function login(formData: LoginForm) {
-  const response = await fetch(`${localhost}/auth/login`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(formData)
-  });
-  const responseData = await response.json();
-
-  return responseData as ServerDTO<User>;
+export async function loginService(formData: LoginForm) {
+  return apiFetch<ServerDTO<AuthResponse>>(
+    `http://localhost:8080/api/auth/login`,
+    {
+      method: 'POST',
+      body: JSON.stringify(formData)
+    }
+  )
 }
