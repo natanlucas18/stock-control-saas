@@ -1,6 +1,5 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getCookie } from './lib/get-token';
 import { PathLinks } from './types/path-links';
 
 const protectedRoutes = [
@@ -14,8 +13,6 @@ const protectedRoutes = [
   PathLinks.SIGN_UP
 ];
 
-// const secret = process.env.NEXTAUTH_SECRET;
-
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isProtected = protectedRoutes.some((route) =>
@@ -25,8 +22,8 @@ export async function middleware(req: NextRequest) {
   if (!isProtected) return NextResponse.next();
 
   const regex = /[\[\"\]]/g;
-  const token = await getCookie('accessToken');
-  const userRoles = (await getCookie('userRoles'))
+  const token = req.cookies.get('accessToken')?.value;
+  const userRoles = req.cookies.get('userRoles')?.value
     .replace(regex, '')
     .split(',');
 
@@ -37,8 +34,8 @@ export async function middleware(req: NextRequest) {
   }
 
   const reportsRouter = ['/relatorios', '/sign-up'];
-  const isAdmin = userRoles.includes('ROLE_ADMIN');
-  const isDev = userRoles.includes('ROLE_DEV');
+  const isAdmin = userRoles?.includes('ROLE_ADMIN');
+  const isDev = userRoles?.includes('ROLE_DEV');
 
   if (
     reportsRouter.includes(pathname) &&
