@@ -1,5 +1,13 @@
-import HomePage from './home/page';
+import { useEffect } from "react"
+import { useAuthStore } from "../stores/auth-store"
+import HomePage from "./home/page"
 
 export default function App() {
-  return <HomePage />;
+  const hydrateSession = useAuthStore((s) => s.hydrateSession)
+
+  useEffect(() => {
+    hydrateSession()
+  }, [hydrateSession])
+
+  return <HomePage />
 }
