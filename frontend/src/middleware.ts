@@ -1,6 +1,6 @@
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
-import { PathLinks } from './types/path-links';
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { PathLinks } from "./types/path-links";
 
 const protectedRoutes = [
   PathLinks.DASHBOARD,
@@ -10,32 +10,33 @@ const protectedRoutes = [
   PathLinks.LIST_STOCK_LOCATIONS,
   PathLinks.MOVEMENTS,
   PathLinks.REPORTS,
-  PathLinks.SIGN_UP
+  PathLinks.SIGN_UP,
 ];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isProtected = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
+    pathname.startsWith(route),
   );
 
   if (!isProtected) return NextResponse.next();
 
   const regex = /[\[\"\]]/g;
-  const token = req.cookies.get('accessToken')?.value;
-  const userRoles = req.cookies.get('userRoles')?.value
-    .replace(regex, '')
-    .split(',');
+  const token = req.cookies.get("accessToken")?.value;
+  const userRolesCookie = req.cookies.get("userRoles")?.value;
+  const userRoles = userRolesCookie
+    ? userRolesCookie.replace(regex, "").split(",")
+    : [];
 
   if (!token) {
     const loginUrl = new URL(PathLinks.SIGN_IN, req.url);
-    loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname);
+    loginUrl.searchParams.set("callbackUrl", req.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  const reportsRouter = ['/relatorios', '/sign-up'];
-  const isAdmin = userRoles?.includes('ROLE_ADMIN');
-  const isDev = userRoles?.includes('ROLE_DEV');
+  const reportsRouter = ["/relatorios", "/sign-up"];
+  const isAdmin = userRoles?.includes("ROLE_ADMIN");
+  const isDev = userRoles?.includes("ROLE_DEV");
 
   if (
     reportsRouter.includes(pathname) &&
@@ -63,6 +64,6 @@ export const config = {
     `${PathLinks.LIST_STOCK_LOCATIONS}/:path*`,
     `${PathLinks.MOVEMENTS}/:path*`,
     `${PathLinks.REPORTS}/:path*`,
-    `${PathLinks.SIGN_UP}/:path*`
-  ]
+    `${PathLinks.SIGN_UP}/:path*`,
+  ],
 };
