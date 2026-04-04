@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,8 @@ public class AuthController implements AuthControllerDocs {
                                                      HttpServletResponse response) {
         var token = service.login(credentials);
 
-        setCookies(response, token.getAccessToken(), token.getRefreshToken(), token.getUserRoles());
+        setCookies(response, token.getAccessToken(), token.getRefreshToken(),
+                token.getUserRoles(), accessTokenValidity, refreshTokenValidity);
 
         return ResponseEntity.ok().body(new StandardResponse<>(true, token));
     }
@@ -51,15 +53,23 @@ public class AuthController implements AuthControllerDocs {
             throw new IllegalArgumentException("Parâmetros do cliente inválidos.");
 
         var token = service.refreshToken(username, refreshToken);
-        setCookies(response, token.getAccessToken(), token.getRefreshToken(), token.getUserRoles());
+        setCookies(response, token.getAccessToken(), token.getRefreshToken(),
+                token.getUserRoles(), accessTokenValidity, refreshTokenValidity);
         return ResponseEntity.ok().body(new StandardResponse<>(true, token));
+    }
+
+    @PostMapping("/logout")
+    public void logout(HttpServletResponse response) {
+        setCookies(response, "", "", List.of(), 0, 0);
+        response.setStatus(204);
     }
 
     private boolean parametersAreValid(String username, String refreshToken) {
         return StringUtils.isNotBlank(username) || StringUtils.isNotBlank(refreshToken);
     }
 
-    private void setCookies(HttpServletResponse response, String accessToken, String refreshToken, List<String> roles) {
+    private void setCookies(HttpServletResponse response, String accessToken, String refreshToken,
+                            List<String> roles, long accessTokenValidity, long refreshTokenValidity) {
         boolean isProd = profile.equals("prod");
 
         String sameSite = isProd ? "None" : "Lax";
@@ -67,10 +77,10 @@ public class AuthController implements AuthControllerDocs {
 
         String accessCookie = String.format("accessToken=%s; HttpOnly; %s; SameSite=%s; Path=/; Max-Age=%d;",
                 accessToken, secure, sameSite, accessTokenValidity/1000);
-        String refreshCookie = String.format("refreshToken=%s; HttpOnly; %s; SameSite=%s; Path=/auth/; Max-Age=%d;",
+        String refreshCookie = String.format("refreshToken=%s; HttpOnly; %s; SameSite=%s; Path=/; Max-Age=%d;",
                 refreshToken, secure, sameSite, refreshTokenValidity/1000);
-        String userRolesCookie = String.format("userRoles=%s; HttpOnly; %s; SameSite=%s; Path=/;",
-                roles, secure, sameSite);
+        String userRolesCookie = String.format("userRoles=%s; HttpOnly; %s; SameSite=%s; Path=/; Max-Age=%d;",
+                roles, secure, sameSite, accessTokenValidity/1000);
 
         response.addHeader("Set-Cookie", accessCookie);
         response.addHeader("Set-Cookie", refreshCookie);
