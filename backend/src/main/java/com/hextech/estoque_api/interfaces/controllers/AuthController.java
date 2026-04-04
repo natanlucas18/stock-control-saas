@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController implements AuthControllerDocs {
@@ -34,7 +36,7 @@ public class AuthController implements AuthControllerDocs {
                                                      HttpServletResponse response) {
         var token = service.login(credentials);
 
-        setCookies(response, token.getAccessToken(), token.getRefreshToken());
+        setCookies(response, token.getAccessToken(), token.getRefreshToken(), token.getUserRoles());
 
         return ResponseEntity.ok().body(new StandardResponse<>(true, token));
     }
@@ -49,7 +51,7 @@ public class AuthController implements AuthControllerDocs {
             throw new IllegalArgumentException("Parâmetros do cliente inválidos.");
 
         var token = service.refreshToken(username, refreshToken);
-        setCookies(response, token.getAccessToken(), token.getRefreshToken());
+        setCookies(response, token.getAccessToken(), token.getRefreshToken(), token.getUserRoles());
         return ResponseEntity.ok().body(new StandardResponse<>(true, token));
     }
 
@@ -57,18 +59,21 @@ public class AuthController implements AuthControllerDocs {
         return StringUtils.isNotBlank(username) || StringUtils.isNotBlank(refreshToken);
     }
 
-    private void setCookies(HttpServletResponse response, String accessToken, String refreshToken) {
+    private void setCookies(HttpServletResponse response, String accessToken, String refreshToken, List<String> roles) {
         boolean isProd = profile.equals("prod");
 
         String sameSite = isProd ? "None" : "Lax";
         String secure = isProd ? "Secure" : "";
 
-        String accessCookie = String.format("accessToken=%s; HttpOnly; %s; SameSite=%s; Path=/; Max-Age=%d",
+        String accessCookie = String.format("accessToken=%s; HttpOnly; %s; SameSite=%s; Path=/; Max-Age=%d;",
                 accessToken, secure, sameSite, accessTokenValidity/1000);
-        String refreshCookie = String.format("refreshToken=%s; HttpOnly; %s; SameSite=%s; Path=/auth/refresh; Max-Age=%d",
+        String refreshCookie = String.format("refreshToken=%s; HttpOnly; %s; SameSite=%s; Path=/auth/; Max-Age=%d;",
                 refreshToken, secure, sameSite, refreshTokenValidity/1000);
+        String userRolesCookie = String.format("userRoles=%s; HttpOnly; %s; SameSite=%s; Path=/;",
+                roles, secure, sameSite);
 
         response.addHeader("Set-Cookie", accessCookie);
         response.addHeader("Set-Cookie", refreshCookie);
+        response.addHeader("Set-Cookie", userRolesCookie);
     }
 }
