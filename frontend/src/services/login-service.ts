@@ -1,4 +1,4 @@
-'use server';
+'use client';
 
 import { apiFetch } from '@/lib/api-client';
 import { getApiUrl } from '@/lib/api-url';
@@ -10,11 +10,12 @@ const localhost = getApiUrl();
 
 export async function loginService(formData: LoginForm) {
   return apiFetch<ServerDTO<AuthResponse>>(
-    `${localhost}/auth/login`,
-    {
+    `${localhost}/auth/login`, {
       method: 'POST',
       body: JSON.stringify(formData)
     }
   )
 }
+
+
 
