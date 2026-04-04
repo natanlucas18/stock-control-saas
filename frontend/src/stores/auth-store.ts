@@ -1,3 +1,4 @@
+import { getApiUrl } from "@/lib/api-url"
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
 
@@ -12,19 +13,17 @@ type AuthState = {
   expiresAt: number | null
   isAuthenticated: boolean
 
-  setSession: (data: {
-    user: User
-    expiresIn: number
-  }) => void
-
+  setSession: (data: { user: User; expiresIn: number }) => void
   logout: () => void
+  hydrateSession: () => Promise<void>
 }
+
+const localhost = getApiUrl();
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      tenant: null,
       expiresAt: null,
       isAuthenticated: false,
 
@@ -32,19 +31,41 @@ export const useAuthStore = create<AuthState>()(
         set({
           user,
           expiresAt: Date.now() + expiresIn,
-          isAuthenticated: true
+          isAuthenticated: true,
         }),
 
       logout: () =>
         set({
           user: null,
           expiresAt: null,
-          isAuthenticated: false
-        })
+          isAuthenticated: false,
+        }),
+
+      hydrateSession: async () => {
+        try {
+          const res = await fetch(`${localhost}/api/users/me`, {
+            credentials: "include", 
+          })
+          if (!res.ok) throw new Error("Sessão inválida")
+          const data = await res.json()
+          set({
+            user: data.user,
+            expiresAt: Date.now() + data.expiresIn,
+            isAuthenticated: true,
+          })
+        } catch (err) {
+          console.error(err)
+          set({
+            user: null,
+            expiresAt: null,
+            isAuthenticated: false,
+          })
+        }
+      },
     }),
     {
       name: "auth-session",
-      storage: createJSONStorage(() => sessionStorage)
+      storage: createJSONStorage(() => sessionStorage),
     }
   )
 )
