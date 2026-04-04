@@ -1,36 +1,38 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { refreshSession } from "@/services/refresh-token-service";
 import { useAuthStore } from "@/stores/auth-store";
+import { refreshSession } from "@/lib/refresh-token";
 
 export function useSilentRefresh() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const expiresAt = useAuthStore((s) => s.expiresAt);
+  const { expiresAt, setSession, logout } = useAuthStore();
 
   useEffect(() => {
     if (!expiresAt) return;
 
     async function runRefresh() {
       try {
-        const data = await refreshSession();
-        useAuthStore.getState().setSession({
+        const res = await refreshSession();
+
+        setSession({
           user: {
-            id: data.data.userId,
-            name: data.data.userName,
-            role: data.data.userRoles
+            id: res.data.userId,
+            name: res.data.userName,
+            role: res.data.userRoles,
           },
-          expiresIn: data.data.expiresAt
-        })
+          expiresIn: new Date(res.data.expiresAt).getTime(),
+        });
       } catch (err) {
-        console.error("Session expired");
+        console.error("Sessão expirada");
+        logout(); 
       }
     }
 
     function schedule() {
-      if (!expiresAt) return;
+      if(!expiresAt) return;
       const now = Date.now();
-      const delay = expiresAt - now - 10000;
+      const delay = expiresAt - now - 10_000;
 
       if (delay <= 0) {
         runRefresh();
@@ -40,10 +42,6 @@ export function useSilentRefresh() {
       timerRef.current = setTimeout(runRefresh, delay);
     }
 
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-
     schedule();
 
     return () => {
@@ -51,5 +49,5 @@ export function useSilentRefresh() {
         clearTimeout(timerRef.current);
       }
     };
-  }, [expiresAt]);
+  }, [expiresAt, setSession, logout]);
 }

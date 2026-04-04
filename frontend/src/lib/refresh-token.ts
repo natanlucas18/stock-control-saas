@@ -5,27 +5,29 @@ import { getApiUrl } from "@/lib/api-url";
 import { ServerDTO } from "@/types/server-dto";
 import { AuthResponse } from "@/types/user-schema";
 
-const localhost = getApiUrl();
-let isRefreshing = false;
+const baseUrl = getApiUrl();
 
-export async function refreshSession() {
-  if (isRefreshing) return;
-  try {
+let refreshPromise: Promise<ServerDTO<AuthResponse>> | null = null;
+
+export async function refreshSession(): Promise<ServerDTO<AuthResponse>> {
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = (async () => {
     const res = await apiFetch<ServerDTO<AuthResponse>>(
-      `${localhost}/auth/refresh`,
-      {
-        method: "POST",
-      },
+      `${baseUrl}/auth/refresh`,
+      { method: "POST" }
     );
 
-    if (!res.success) {
-      throw new Error("Failed to refresh session");
+    if (!res?.success || !res.data) {
+      throw new Error("Falha ao renovar sessão");
     }
 
     return res;
-  } catch (err) {
-    console.error("Erro ao renovar token:", err);
+  })();
+
+  try {
+    return await refreshPromise;
   } finally {
-    isRefreshing = false;
+    refreshPromise = null;
   }
 }
