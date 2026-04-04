@@ -1,3 +1,4 @@
+'use client';
 import { getApiUrl } from "@/lib/api-url"
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
@@ -19,6 +20,7 @@ type AuthState = {
 }
 
 const localhost = getApiUrl();
+console.log(localhost)
 
 export const useAuthStore = create<AuthState>()(
   persist(
