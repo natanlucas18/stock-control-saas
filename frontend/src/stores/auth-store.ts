@@ -1,26 +1,25 @@
-'use client';
-import { getApiUrl } from "@/lib/api-url"
-import { create } from "zustand"
-import { persist, createJSONStorage } from "zustand/middleware"
+"use client";
+import { getApiUrl } from "@/lib/api-url";
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 type User = {
-  id: string
-  name: string
-  role: string[]
-}
+  id: number;
+  name: string;
+  role: string[];
+};
 
 type AuthState = {
-  user: User | null
-  expiresAt: number | null
-  isAuthenticated: boolean
+  user: User | null;
+  expiresAt: number | null;
+  isAuthenticated: boolean;
 
-  setSession: (data: { user: User; expiresIn: number }) => void
-  logout: () => void
-  hydrateSession: () => Promise<void>
-}
+  setSession: (data: { user: User; expiresIn: number }) => void;
+  logout: () => void;
+  hydrateSession: () => Promise<void>;
+};
 
 const localhost = getApiUrl();
-console.log(localhost)
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -46,28 +45,39 @@ export const useAuthStore = create<AuthState>()(
       hydrateSession: async () => {
         try {
           const res = await fetch(`${localhost}/api/users/me`, {
-            credentials: "include", 
-          })
-          if (!res.ok) throw new Error("Sessão inválida")
-          const data = await res.json()
+            credentials: "include",
+          });
+
+          if (!res.ok) {
+            set({
+              user: null,
+              expiresAt: null,
+              isAuthenticated: false,
+            });
+            return;
+          }
+
+          const data = await res.json();
+
           set({
             user: data.user,
             expiresAt: Date.now() + data.expiresIn,
             isAuthenticated: true,
-          })
+          });
         } catch (err) {
-          console.error(err)
+          console.error("Erro ao hidratar sessão:", err);
+
           set({
             user: null,
             expiresAt: null,
             isAuthenticated: false,
-          })
+          });
         }
       },
     }),
     {
       name: "auth-session",
-      storage: createJSONStorage(() => sessionStorage),
-    }
-  )
-)
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);

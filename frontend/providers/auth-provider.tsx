@@ -1,7 +1,8 @@
 "use client"
 
 import { useSessionController } from "@/hooks/use-session-controller"
-import { ReactNode } from "react"
+import { useAuthStore } from "@/stores/auth-store"
+import { ReactNode, useEffect } from "react"
 
 type AuthProviderProps = {
   children: ReactNode
@@ -9,6 +10,11 @@ type AuthProviderProps = {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   useSessionController()
+  const hydrateSession = useAuthStore((s) => s.hydrateSession)
+
+  useEffect(() => {
+    hydrateSession()
+  }, [hydrateSession])
 
   return <>{children}</>
 }
