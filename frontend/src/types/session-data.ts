@@ -4,5 +4,5 @@ export type SessionData = {
       name: string;
       role: string[];
     };
-    expiresAt: string
+    expiresAt: number
 };

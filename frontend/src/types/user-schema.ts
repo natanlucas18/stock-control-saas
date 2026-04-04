@@ -1,5 +1,5 @@
 export type AuthResponse = {
-  userId: string;
+  userId: number;
   userName: string;
   userRoles: [];
   createdAt: string;
