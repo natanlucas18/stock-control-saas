@@ -18,7 +18,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/unit-measures", produces = "application/json")
 public class UnitMeasureController implements UnitMeasureControllerDocs {

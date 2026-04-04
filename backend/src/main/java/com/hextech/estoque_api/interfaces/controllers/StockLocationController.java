@@ -6,7 +6,6 @@ import com.hextech.estoque_api.interfaces.controllers.docs.StockLocationControll
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PageMetadata;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PaginatedResponse;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
-import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/stock-locations", produces = "application/json")
 public class StockLocationController implements StockLocationControllerDocs {
