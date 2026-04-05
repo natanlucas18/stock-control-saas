@@ -53,7 +53,7 @@ public class JwtTokenProvider {
         Date validity = new Date(now.getTime() + accessTokenValidity);
         String accessToken = getAccessToken(user, now, validity);
         String refreshToken = getRefreshToken(user, now);
-        return new TokenDTO(accessToken, refreshToken, now, validity, user);
+        return new TokenDTO(accessToken, refreshToken, accessTokenValidity, user);
     }
 
     public TokenDTO refreshToken(User user, String refreshToken) {
@@ -118,8 +118,7 @@ public class JwtTokenProvider {
                 .withIssuer(issuer)
                 .withAudience(audience)
                 .build();
-        DecodedJWT decodedJWT = verifier.verify(token);
-        return decodedJWT;
+        return verifier.verify(token);
     }
 
     private String getAccessToken(User user, Date now, Date validity) {
