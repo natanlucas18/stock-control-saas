@@ -21,19 +21,27 @@ export function useSilentRefresh() {
             name: res.data.userName,
             role: res.data.userRoles,
           },
-          expiresIn: res.data.tokenExpiresAt,
+          expiresAt: new Date(res.data.tokenExpiresAt).getTime(),
         });
-      } catch (err) {
+
+        schedule();
+      } catch {
         console.error("Sessão expirada");
-        logout(); 
+        logout();
       }
     }
 
     function schedule() {
-      if(!expiresAt) return;
-      const now = Date.now();
-      const delay = expiresAt - now - 10_000;
+      const { expiresAt } = useAuthStore.getState();
 
+      if (!expiresAt) return;
+
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
+      const now = Date.now();
+      const delay = expiresAt - now - 30_000;
       if (delay <= 0) {
         runRefresh();
         return;
