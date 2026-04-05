@@ -8,6 +8,6 @@ export enum PathLinks {
   SIGN_IN = '/sign-in',
   SIGN_UP = '/sign-up',
   MOVEMENTS = '/dashboard/movimentacoes',
-  REPORTS = '/dashboard/relatorios',
-  USERS = '/usuarios'
+  MOVEMENTS_REPORT = '/dashboard/relatorios/movimentacoes',
+  PRODUCTS_REPORT = '/dashboard/relatorios/produtos'
 }

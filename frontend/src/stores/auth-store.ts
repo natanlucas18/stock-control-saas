@@ -1,12 +1,13 @@
-"use client";
-import { getApiUrl } from "@/lib/api-url";
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+'use client';
+import { Role } from '@/config/routes';
+import { getApiUrl } from '@/lib/api-url';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 type User = {
   id: number;
   name: string;
-  role: string[];
+  role: Role[];
 };
 
 type AuthState = {
@@ -32,28 +33,28 @@ export const useAuthStore = create<AuthState>()(
         set({
           user,
           expiresAt: Date.now() + expiresIn,
-          isAuthenticated: true,
+          isAuthenticated: true
         }),
 
       logout: () =>
         set({
           user: null,
           expiresAt: null,
-          isAuthenticated: false,
+          isAuthenticated: false
         }),
 
       hydrateSession: async () => {
         try {
-          const res = await fetch(`${localhost}/auth-session`, {
-            method: "GET",
-            credentials: "include",
+          const res = await fetch(`${localhost}/auth/session`, {
+            method: 'GET',
+            credentials: 'include'
           });
 
           if (!res.ok) {
             set({
               user: null,
               expiresAt: null,
-              isAuthenticated: false,
+              isAuthenticated: false
             });
             return;
           }
@@ -63,22 +64,22 @@ export const useAuthStore = create<AuthState>()(
           set({
             user: data.user,
             expiresAt: Date.now() + data.expiresIn,
-            isAuthenticated: true,
+            isAuthenticated: true
           });
         } catch (err) {
-          console.error("Erro ao hidratar sessão:", err);
+          console.error('Erro ao hidratar sessão:', err);
 
           set({
             user: null,
             expiresAt: null,
-            isAuthenticated: false,
+            isAuthenticated: false
           });
         }
-      },
+      }
     }),
     {
-      name: "auth-session",
-      storage: createJSONStorage(() => localStorage),
-    },
-  ),
+      name: 'auth-session',
+      storage: createJSONStorage(() => localStorage)
+    }
+  )
 );
