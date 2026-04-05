@@ -54,15 +54,14 @@ public class AuthController implements AuthControllerDocs {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<StandardResponse<?>> refreshToken(@RequestBody JsonNode body,
-                                                            @RequestHeader("Authorization") String refreshToken,
-                                                            HttpServletResponse response) {
+    public ResponseEntity<StandardResponse<?>> refreshToken(@RequestBody JsonNode body, HttpServletResponse response,
+                                                            HttpServletRequest request) {
         String username = body.get("username").asText();
 
-        if (!parametersAreValid(username, refreshToken))
+        if (!parametersAreValid(username))
             throw new IllegalArgumentException("Parâmetros do cliente inválidos.");
 
-        var token = service.refreshToken(username, refreshToken);
+        var token = service.refreshToken(username, request);
         setCookies(response, token.getAccessToken(), token.getRefreshToken(),
                 token.getUserRoles(), accessTokenValidity, refreshTokenValidity);
         return ResponseEntity.ok().body(new StandardResponse<>(true, token));
@@ -74,8 +73,8 @@ public class AuthController implements AuthControllerDocs {
         response.setStatus(204);
     }
 
-    private boolean parametersAreValid(String username, String refreshToken) {
-        return StringUtils.isNotBlank(username) || StringUtils.isNotBlank(refreshToken);
+    private boolean parametersAreValid(String username) {
+        return StringUtils.isNotBlank(username);
     }
 
     private void setCookies(HttpServletResponse response, String accessToken, String refreshToken,

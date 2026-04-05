@@ -26,7 +26,7 @@ public class AuthService {
     private JwtTokenProvider tokenProvider;
 
     public SessionDTO getCurrentSession(HttpServletRequest request, Long userId, Long companyId) {
-        var token = tokenProvider.resolveToken(request);
+        var token = tokenProvider.resolveAccessToken(request);
         long remainingTime = tokenProvider.extractRemainingTime(token);
         var user = userRepository.findByIdAndCompanyId(userId, companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
@@ -43,7 +43,8 @@ public class AuthService {
         return tokenProvider.createAccessToken(user);
     }
 
-    public TokenDTO refreshToken(String username, String refreshToken) {
+    public TokenDTO refreshToken(String username, HttpServletRequest request) {
+        String refreshToken = tokenProvider.resolveRefreshToken(request);
         var user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário " + username + " não encontrado."));
         return tokenProvider.refreshToken(user, refreshToken);

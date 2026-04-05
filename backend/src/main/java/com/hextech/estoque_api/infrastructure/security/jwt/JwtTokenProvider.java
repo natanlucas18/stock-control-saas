@@ -85,13 +85,27 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public String resolveToken(HttpServletRequest request) {
+    public String resolveAccessToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if(authHeader != null && tokenContainsBearer(authHeader)) return authHeader.substring("Bearer ".length());
 
         if (request.getCookies() != null) {
             for (var cookie : request.getCookies()) {
                 if (cookie.getName().equals("accessToken")) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    public String resolveRefreshToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if(authHeader != null && tokenContainsBearer(authHeader)) return authHeader.substring("Bearer ".length());
+
+        if (request.getCookies() != null) {
+            for (var cookie : request.getCookies()) {
+                if (cookie.getName().equals("refreshToken")) {
                     return cookie.getValue();
                 }
             }
