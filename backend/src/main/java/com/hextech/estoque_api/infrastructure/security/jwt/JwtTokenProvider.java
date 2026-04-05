@@ -4,10 +4,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
-import com.hextech.estoque_api.interfaces.dtos.security.TokenDTO;
 import com.hextech.estoque_api.domain.entities.user.User;
-import com.hextech.estoque_api.infrastructure.security.utils.CustomUserDetails;
 import com.hextech.estoque_api.infrastructure.security.exceptions.InvalidJwtAuthenticationException;
+import com.hextech.estoque_api.infrastructure.security.utils.CustomUserDetails;
+import com.hextech.estoque_api.interfaces.dtos.security.TokenDTO;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -86,8 +86,16 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if(tokenContainsBearer(bearerToken)) return bearerToken.substring("Bearer ".length());
+        String authHeader = request.getHeader("Authorization");
+        if(authHeader != null && tokenContainsBearer(authHeader)) return authHeader.substring("Bearer ".length());
+
+        if (request.getCookies() != null) {
+            for (var cookie : request.getCookies()) {
+                if (cookie.getName().equals("accessToken")) {
+                    return cookie.getValue();
+                }
+            }
+        }
         return null;
     }
 
