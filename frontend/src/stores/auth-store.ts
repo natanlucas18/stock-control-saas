@@ -44,7 +44,8 @@ export const useAuthStore = create<AuthState>()(
 
       hydrateSession: async () => {
         try {
-          const res = await fetch(`${localhost}/api/users/me`, {
+          const res = await fetch(`${localhost}/auth-session`, {
+            method: "GET",
             credentials: "include",
           });
 

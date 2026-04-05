@@ -14,7 +14,7 @@ export function useLogin() {
             name: data.data.userName,
             role: data.data.userRoles,
         },
-        expiresIn: new Date(data.data.expiresAt).getTime()
+        expiresIn: data.data.tokenExpiresAt
       })
     }
   })

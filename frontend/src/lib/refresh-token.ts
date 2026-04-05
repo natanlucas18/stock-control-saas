@@ -3,7 +3,7 @@
 import { apiFetch } from "@/lib/api-client";
 import { getApiUrl } from "@/lib/api-url";
 import { ServerDTO } from "@/types/server-dto";
-import { AuthResponse } from "@/types/user-schema";
+import { AuthResponse } from "@/types/auth-response";
 
 const baseUrl = getApiUrl();
 

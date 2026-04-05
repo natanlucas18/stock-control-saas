@@ -21,7 +21,7 @@ export function useSilentRefresh() {
             name: res.data.userName,
             role: res.data.userRoles,
           },
-          expiresIn: new Date(res.data.expiresAt).getTime(),
+          expiresIn: res.data.tokenExpiresAt,
         });
       } catch (err) {
         console.error("Sessão expirada");
