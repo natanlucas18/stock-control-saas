@@ -108,6 +108,13 @@ public class JwtTokenProvider {
         }
     }
 
+    public long extractRemainingTime(String token) {
+        DecodedJWT decodedJWT = decodedToken(token);
+        Date expiration = decodedJWT.getExpiresAt();
+        long now = System.currentTimeMillis();
+        return expiration.getTime() - now;
+    }
+
     private boolean tokenContainsBearer(String bearerToken) {
         return StringUtils.isNotBlank(bearerToken) && bearerToken.startsWith("Bearer ");
     }

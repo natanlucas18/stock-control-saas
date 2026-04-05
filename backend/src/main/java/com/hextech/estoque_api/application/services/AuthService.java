@@ -1,9 +1,12 @@
 package com.hextech.estoque_api.application.services;
 
+import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.infrastructure.repositories.UserRepository;
 import com.hextech.estoque_api.infrastructure.security.jwt.JwtTokenProvider;
 import com.hextech.estoque_api.interfaces.dtos.security.AccountCredentialsDTO;
 import com.hextech.estoque_api.interfaces.dtos.security.TokenDTO;
+import com.hextech.estoque_api.interfaces.dtos.users.SessionDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +24,15 @@ public class AuthService {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
+
+    public SessionDTO getCurrentSession(HttpServletRequest request, Long userId, Long companyId) {
+        var token = tokenProvider.resolveToken(request);
+        long remainingTime = tokenProvider.extractRemainingTime(token);
+        var user = userRepository.findByIdAndCompanyId(userId, companyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+
+        return new SessionDTO(user.getId(), user.getName(), user.getRoleNames(), remainingTime);
+    }
 
     public TokenDTO login(AccountCredentialsDTO credentials) {
         authenticationManager.authenticate(
