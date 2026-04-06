@@ -15,7 +15,10 @@ export async function refreshSession(): Promise<ServerDTO<AuthResponse>> {
   refreshPromise = (async () => {
     const res = await apiFetch<ServerDTO<AuthResponse>>(
       `${baseUrl}/auth/refresh`,
-      { method: "POST" }
+      { 
+        method: "POST",
+        credentials: "include"
+       }
     );
 
     if (!res?.success || !res.data) {

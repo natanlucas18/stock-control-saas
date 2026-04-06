@@ -21,7 +21,7 @@ export function useSilentRefresh() {
             name: res.data.userName,
             role: res.data.userRoles,
           },
-          expiresAt: new Date(res.data.tokenExpiresAt).getTime(),
+          expiresAt: res.data.tokenExpiresAt,
         });
 
         schedule();
@@ -42,6 +42,7 @@ export function useSilentRefresh() {
 
       const now = Date.now();
       const delay = expiresAt - now - 30_000;
+
       if (delay <= 0) {
         runRefresh();
         return;
