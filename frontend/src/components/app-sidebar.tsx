@@ -37,8 +37,9 @@ export default function AppSidebar() {
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {routes.map((route) =>
-                route.children ? (
+              {routes.map((route) => {
+                const Icon = route.icon;
+                return route.children ? (
                   <Collapsible
                     key={route.path}
                     asChild
@@ -50,18 +51,26 @@ export default function AppSidebar() {
                           'cursor-pointer'
                         )}
                       >
-                        {route.label}
+                        <Icon />
+                        <div>{route.label}</div>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
-                        {route.children.map((children) => (
-                          <Link
-                            className={cn(sidebarMenuButtonVariants(), 'pl-6')}
-                            href={children.path}
-                            key={children.path}
-                          >
-                            {children.label}
-                          </Link>
-                        ))}
+                        {route.children.map((children) => {
+                          const ChildrenIcon = children.icon;
+                          return (
+                            <Link
+                              className={cn(
+                                sidebarMenuButtonVariants(),
+                                'pl-6'
+                              )}
+                              href={children.path}
+                              key={children.path}
+                            >
+                              <ChildrenIcon />
+                              <div>{children.label}</div>
+                            </Link>
+                          );
+                        })}
                       </CollapsibleContent>
                     </SidebarMenuItem>
                   </Collapsible>
@@ -72,12 +81,13 @@ export default function AppSidebar() {
                         href={route.path}
                         className='flex items-center gap-2'
                       >
-                        <span>{route.label}</span>
+                        <Icon />
+                        <div>{route.label}</div>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                )
-              )}
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

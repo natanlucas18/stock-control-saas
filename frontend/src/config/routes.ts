@@ -1,11 +1,14 @@
 import { PathLinks } from '@/types/path-links';
 import {
-  CalendarDays,
-  CalendarPlus,
-  CalendarSearch,
-  LayoutDashboard,
-  Scissors,
-  Users
+  ArrowRightLeftIcon,
+  ClipboardIcon,
+  ClipboardListIcon,
+  LayoutDashboardIcon,
+  LucideIcon,
+  MapPinIcon,
+  MapPinPlusIcon,
+  PackagePlusIcon,
+  PackageSearchIcon
 } from 'lucide-react';
 
 export type Role = 'ROLE_ADMIN' | 'ROLE_USER' | 'ROLE_DEV';
@@ -13,12 +16,12 @@ export type Role = 'ROLE_ADMIN' | 'ROLE_USER' | 'ROLE_DEV';
 export interface AppRoute {
   label: string;
   path: string;
-  icon?: any;
+  icon: LucideIcon;
   roles: Role[];
   children?: {
     label: string;
     path: string;
-    icon: any;
+    icon: LucideIcon;
   }[];
 }
 
@@ -26,54 +29,54 @@ export const APP_ROUTES: AppRoute[] = [
   {
     label: 'Dashboard',
     path: PathLinks.DASHBOARD,
-    icon: LayoutDashboard,
+    icon: LayoutDashboardIcon,
     roles: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_DEV']
   },
   {
     label: 'Produtos',
     path: PathLinks.LIST_PRODUCTS,
-    icon: CalendarPlus,
+    icon: PackageSearchIcon,
     roles: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_DEV']
   },
   {
     label: 'Criar Produto',
     path: PathLinks.CREATE_PRODUCT,
-    icon: CalendarSearch,
+    icon: PackagePlusIcon,
     roles: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_DEV']
   },
   {
     label: 'Localização de Estoque',
     path: PathLinks.LIST_STOCK_LOCATIONS,
-    icon: CalendarDays,
+    icon: MapPinIcon,
     roles: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_DEV']
   },
   {
     label: 'Criar Localização de Estoque',
     path: PathLinks.CREATE_STOCK_LOCATION,
-    icon: CalendarDays,
+    icon: MapPinPlusIcon,
     roles: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_DEV']
   },
   {
     label: 'Movimentações',
     path: PathLinks.MOVEMENTS,
-    icon: Scissors,
+    icon: ArrowRightLeftIcon,
     roles: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_DEV']
   },
   {
     label: 'Relatórios',
     path: '',
-    icon: Users,
+    icon: ClipboardIcon,
     roles: ['ROLE_ADMIN', 'ROLE_DEV'],
     children: [
       {
         label: 'Produtos',
         path: PathLinks.PRODUCTS_REPORT,
-        icon: Users
+        icon: ClipboardListIcon
       },
       {
         label: 'Movimentações',
         path: PathLinks.MOVEMENTS_REPORT,
-        icon: Users
+        icon: ClipboardListIcon
       }
     ]
   }
