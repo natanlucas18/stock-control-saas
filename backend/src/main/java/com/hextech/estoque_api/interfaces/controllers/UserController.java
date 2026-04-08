@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/users", produces = "application/json")
 public class UserController implements UserControllerDocs {
@@ -27,5 +26,11 @@ public class UserController implements UserControllerDocs {
         var response = service.createNewUser(requestDTO, authContext.getCurrentCompanyId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new StandardResponse<>(true, response));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<StandardResponse<?>> getMe() {
+        var response = service.getMe(authContext.getCurrentUserId(), authContext.getCurrentCompanyId());
+        return ResponseEntity.ok().body(new StandardResponse<>(true, response));
     }
 }

@@ -4,26 +4,23 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
-import com.hextech.estoque_api.interfaces.dtos.security.TokenDTO;
 import com.hextech.estoque_api.domain.entities.user.User;
-import com.hextech.estoque_api.infrastructure.security.utils.CustomUserDetails;
 import com.hextech.estoque_api.infrastructure.security.exceptions.InvalidJwtAuthenticationException;
+import com.hextech.estoque_api.infrastructure.security.utils.CustomUserDetails;
+import com.hextech.estoque_api.interfaces.dtos.security.TokenDTO;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class JwtTokenProvider {
@@ -37,8 +34,11 @@ public class JwtTokenProvider {
     @Value("${security.jwt.audience}")
     private String audience;
 
-    @Value("${security.jwt.expire-length}")
-    private long validityInMilliseconds;
+    @Value("${security.jwt.access-expire-length}")
+    private long accessTokenValidity;
+
+    @Value("${security.jwt.refresh-expire-length}")
+    private long refreshTokenValidity;
 
     Algorithm algorithm = null;
 
@@ -50,10 +50,10 @@ public class JwtTokenProvider {
 
     public TokenDTO createAccessToken(User user) {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + accessTokenValidity);
         String accessToken = getAccessToken(user, now, validity);
         String refreshToken = getRefreshToken(user, now);
-        return new TokenDTO(accessToken, refreshToken, now, validity, user);
+        return new TokenDTO(accessToken, refreshToken, accessTokenValidity, user);
     }
 
     public TokenDTO refreshToken(User user, String refreshToken) {
@@ -85,9 +85,31 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if(tokenContainsBearer(bearerToken)) return bearerToken.substring("Bearer ".length());
+    public String resolveAccessToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if(authHeader != null && tokenContainsBearer(authHeader)) return authHeader.substring("Bearer ".length());
+
+        if (request.getCookies() != null) {
+            for (var cookie : request.getCookies()) {
+                if (cookie.getName().equals("accessToken")) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    public String resolveRefreshToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if(authHeader != null && tokenContainsBearer(authHeader)) return authHeader.substring("Bearer ".length());
+
+        if (request.getCookies() != null) {
+            for (var cookie : request.getCookies()) {
+                if (cookie.getName().equals("refreshToken")) {
+                    return cookie.getValue();
+                }
+            }
+        }
         return null;
     }
 
@@ -100,6 +122,18 @@ public class JwtTokenProvider {
         }
     }
 
+    public long extractRemainingTime(String token) {
+        DecodedJWT decodedJWT = decodedToken(token);
+        Date expiration = decodedJWT.getExpiresAt();
+        long now = System.currentTimeMillis();
+        return expiration.getTime() - now;
+    }
+
+    public String extractUsername(String token) {
+        DecodedJWT decodedJWT = decodedToken(token);
+        return decodedJWT.getSubject();
+    }
+
     private boolean tokenContainsBearer(String bearerToken) {
         return StringUtils.isNotBlank(bearerToken) && bearerToken.startsWith("Bearer ");
     }
@@ -110,8 +144,7 @@ public class JwtTokenProvider {
                 .withIssuer(issuer)
                 .withAudience(audience)
                 .build();
-        DecodedJWT decodedJWT = verifier.verify(token);
-        return decodedJWT;
+        return verifier.verify(token);
     }
 
     private String getAccessToken(User user, Date now, Date validity) {
@@ -129,6 +162,6 @@ public class JwtTokenProvider {
     }
 
     private String getRefreshToken(User user, Date now) {
-        return getAccessToken(user, now, new Date(now.getTime() + validityInMilliseconds * 4));
+        return getAccessToken(user, now, new Date(now.getTime() + refreshTokenValidity));
     }
 }

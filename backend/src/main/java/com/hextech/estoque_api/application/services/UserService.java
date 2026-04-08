@@ -61,4 +61,10 @@ public class UserService implements UserDetailsService {
 
         return new UserResponseDTO(user);
     }
+
+    public Object getMe(Long currentUserId, Long currentCompanyId) {
+        User user = repository.findByIdAndCompanyId(currentUserId, currentCompanyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
+        return new UserResponseDTO(user);
+    }
 }

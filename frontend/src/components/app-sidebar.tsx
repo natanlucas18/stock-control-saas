@@ -9,50 +9,26 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
+  sidebarMenuButtonVariants,
   SidebarMenuItem
 } from '@/components/ui/sidebar';
-import { PathLinks } from '@/types/path-links';
-import { deleteCookie, getCookie } from 'cookies-next/client';
-import {
-  ActivityIcon,
-  ClipboardListIcon,
-  LayoutDashboardIcon,
-  LogOutIcon,
-  MapPinHouse,
-  Package,
-  UserPlus2Icon
-} from 'lucide-react';
+import { APP_ROUTES } from '@/config/routes';
+import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/stores/auth-store';
+import { LogOutIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
-import { signOut } from 'next-auth/react';
-import { toast } from 'react-toastify';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from './ui/collapsible';
 
 export default function AppSidebar() {
-  const userRoles = getCookie('userRoles');
-  const [isAdmin, setIsAdmin] = useState(true);
-  const [isDev, setIsDev] = useState(true);
-
-  useEffect(() => {
-    if (userRoles) {
-      setIsAdmin(!userRoles.includes('ROLE_ADMIN'));
-      setIsDev(!userRoles.includes('ROLE_DEV'));
-    }
-  }, [userRoles]);
-
-
-  const handleLogout = async () => {
-    try {
-      deleteCookie('accessToken');
-
-      await signOut({
-        redirect: true,
-        callbackUrl: PathLinks.SIGN_IN
-      });
-    } catch {
-      toast.error('Erro ao fazer logout');
-    }
-  };
+  const { user } = useAuthStore((state) => state);
+  const routes = APP_ROUTES.filter((route) => {
+    return route.roles.some((r) => user?.role.includes(r));
+  });
 
   return (
     <Sidebar collapsible='icon'>
@@ -61,82 +37,63 @@ export default function AppSidebar() {
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    href={PathLinks.DASHBOARD}
-                    className='flex items-center gap-2'
+              {routes.map((route) => {
+                const Icon = route.icon;
+                return route.children ? (
+                  <Collapsible
+                    key={route.path}
+                    asChild
                   >
-                    <LayoutDashboardIcon />
-                    <span>Dashboard</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    href={PathLinks.LIST_PRODUCTS}
-                    className='flex items-center gap-2'
-                  >
-                    <Package />
-                    <span>Produtos</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    href={PathLinks.LIST_STOCK_LOCATIONS}
-                    className='flex items-center gap-2'
-                  >
-                    <MapPinHouse />
-                    <span>Local de estoque</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    href={PathLinks.MOVEMENTS}
-                    className='flex items-center gap-2'
-                  >
-                    <ActivityIcon />
-                    <span>Movimentações</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              <SidebarMenuItem hidden={isAdmin}>
-                <SidebarMenuButton asChild>
-                  <div className='flex items-center gap-2 cursor-pointer'>
-                    <ClipboardListIcon />
-                    <span>Relatórios</span>
-                  </div>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              <SidebarMenuItem hidden={isDev}>
-                <SidebarMenuButton asChild>
-                  <Link
-                    href={PathLinks.SIGN_UP}
-                    className='flex items-center gap-2'
-                  >
-                    <UserPlus2Icon />
-                    <span>Registro</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <CollapsibleTrigger
+                        className={cn(
+                          sidebarMenuButtonVariants(),
+                          'cursor-pointer'
+                        )}
+                      >
+                        <Icon />
+                        <div>{route.label}</div>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        {route.children.map((children) => {
+                          const ChildrenIcon = children.icon;
+                          return (
+                            <Link
+                              className={cn(
+                                sidebarMenuButtonVariants(),
+                                'pl-6'
+                              )}
+                              href={children.path}
+                              key={children.path}
+                            >
+                              <ChildrenIcon />
+                              <div>{children.label}</div>
+                            </Link>
+                          );
+                        })}
+                      </CollapsibleContent>
+                    </SidebarMenuItem>
+                  </Collapsible>
+                ) : (
+                  <SidebarMenuItem key={route.path}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        href={route.path}
+                        className='flex items-center gap-2'
+                      >
+                        <Icon />
+                        <div>{route.label}</div>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Button
-          onClick={handleLogout}
-        >
+        <Button>
           <LogOutIcon />
         </Button>
       </SidebarFooter>

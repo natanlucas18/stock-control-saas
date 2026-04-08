@@ -1,7 +1,7 @@
 import z from 'zod';
 import { Product } from './product-schema';
 import { StockLocationsData } from './stock-location-schema';
-import { User } from './user-schema';
+import { User } from './auth-response';
 
 export type MovementsData = {
   id: number;

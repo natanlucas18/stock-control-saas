@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/movements", produces = "application/json")
 public class MovementController implements MovementControllerDocs {
