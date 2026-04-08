@@ -129,6 +129,11 @@ public class JwtTokenProvider {
         return expiration.getTime() - now;
     }
 
+    public String extractUsername(String token) {
+        DecodedJWT decodedJWT = decodedToken(token);
+        return decodedJWT.getSubject();
+    }
+
     private boolean tokenContainsBearer(String bearerToken) {
         return StringUtils.isNotBlank(bearerToken) && bearerToken.startsWith("Bearer ");
     }

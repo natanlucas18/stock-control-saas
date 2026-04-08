@@ -43,8 +43,9 @@ public class AuthService {
         return tokenProvider.createAccessToken(user);
     }
 
-    public TokenDTO refreshToken(String username, HttpServletRequest request) {
+    public TokenDTO refreshToken(HttpServletRequest request) {
         String refreshToken = tokenProvider.resolveRefreshToken(request);
+        String username = tokenProvider.extractUsername(refreshToken);
         var user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário " + username + " não encontrado."));
         return tokenProvider.refreshToken(user, refreshToken);

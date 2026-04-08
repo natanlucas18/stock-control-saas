@@ -37,7 +37,7 @@ public interface AuthControllerDocs {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = StandardResponse.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     })
-    ResponseEntity<StandardResponse<?>> refreshToken(JsonNode body, HttpServletResponse response, HttpServletRequest request);
+    ResponseEntity<StandardResponse<?>> refreshToken(HttpServletResponse response, HttpServletRequest request);
 
     @Operation(summary = "Finaliza a sessão do usuário")
     @ApiResponses(value = {
