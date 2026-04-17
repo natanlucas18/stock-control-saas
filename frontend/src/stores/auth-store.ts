@@ -4,7 +4,6 @@ import { getApiUrl } from '@/lib/api-url';
 import { AuthResponse } from '@/types/auth-response';
 import { ServerDTO } from '@/types/server-dto';
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
 
 type User = {
   id: number;
@@ -25,7 +24,6 @@ type AuthState = {
 const localhost = getApiUrl();
 
 export const useAuthStore = create<AuthState>()(
-  persist(
     (set) => ({
       user: null,
       expiresAt: null,
@@ -82,10 +80,5 @@ export const useAuthStore = create<AuthState>()(
           });
         }
       }
-    }),
-    {
-      name: 'auth-session',
-      storage: createJSONStorage(() => localStorage)
-    }
-  )
+    })
 );
