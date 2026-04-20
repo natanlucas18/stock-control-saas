@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { useCreateProduct } from '@/hooks/products/useCreateProduct';
 import { createProduct } from '@/services/products-service';
 import { productFormSchema, ProductFormType } from '@/types/product-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,7 +25,11 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-export default function ProductRegisterForm() {
+type ProductRegisterProps = {
+  onCloseDialog?: () => void
+}
+
+export default function ProductRegisterForm({ onCloseDialog }: ProductRegisterProps) {
   const router = useRouter();
   const hookForm = useForm<ProductFormType>({
     resolver: zodResolver(productFormSchema),
@@ -38,16 +43,20 @@ export default function ProductRegisterForm() {
     }
   });
 
+  const { mutate, isPending } = useCreateProduct()
+
   async function onSubmit(formData: ProductFormType) {
-    const { success } = await createProduct(formData);
-
-    if (success) {
-      toast.success('Produto cadastrado com sucesso!');
-      hookForm.reset();
-      router.refresh();
-    }
-
-    if (!success) toast.error('Erro ao cadastrar produto!');
+    mutate(formData, {
+      onSuccess: () => {
+        toast.success('Produto cadastrado com sucesso!');
+        hookForm.reset();
+        router.refresh();
+        onCloseDialog?.()
+      },
+      onError: () => {
+        toast.error('Erro ao cadastrar produto!');
+      }
+    })
   }
 
   return (
@@ -156,7 +165,7 @@ export default function ProductRegisterForm() {
             name='stockMax'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Quantidade Máximo</FormLabel>
+                <FormLabel>Quantidade Máxima</FormLabel>
                 <FormControl>
                   <Input
                     type='number'
@@ -168,7 +177,11 @@ export default function ProductRegisterForm() {
             )}
           />
 
-          <Button type='submit'>Salvar Produto</Button>
+          <Button 
+            type='submit'
+            disabled={isPending}
+          >{isPending ? 'Salvando...' : 'Salvar Produto'}
+          </Button>
         </form>
       </Form>
     </div>

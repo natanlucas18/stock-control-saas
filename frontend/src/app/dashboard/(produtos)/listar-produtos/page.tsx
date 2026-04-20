@@ -1,29 +1,7 @@
-import { getAllProducts } from '@/services/products-service';
 import { ProductsTable } from '../components/products-table';
 
-type UrlParams = {
-  searchParams: Promise<{
-    sort?: string;
-    size?: number;
-    page?: number;
-    query?: string;
-  }>;
-};
-
-export default async function ProductsListPage({ searchParams }: UrlParams) {
-  const params = await searchParams;
-  const { data } = await getAllProducts({
-    pageSize: params?.size,
-    pageNumber: params?.page,
-    search: params?.query,
-    sort: params?.sort
-  });
-  const { content: products, pagination } = data;
-
+export default async function ProductsListPage() {
   return (
-    <ProductsTable
-      productsMin={products}
-      paginationOptions={pagination}
-    />
+    <ProductsTable/>
   );
 }

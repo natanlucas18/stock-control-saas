@@ -10,6 +10,7 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useUpdateStockLocation } from '@/hooks/stock-locations/useUpdateStockLocation';
 import { updateStockLocation } from '@/services/stock-location-service';
 import {
   StockLocationsData,
@@ -22,27 +23,39 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 export default function StockLocationEditForm({
-  defaultValues
+  defaultValues,
+  onOpenChange
 }: {
   defaultValues: StockLocationsData;
+  onOpenChange?: (open: boolean) => void
 }) {
   const router = useRouter();
+
+  const { mutate, isPending } = useUpdateStockLocation()
+
   const hookForm = useForm<StockLocationsFormType>({
     resolver: zodResolver(stockLocationsFormSchema),
     defaultValues
   });
-  const id = defaultValues.id;
-  const onSubmit = async (data: StockLocationsFormType) => {
-    const { success } = await updateStockLocation(id, data);
 
-    if (success) {
-      toast.success('Local de estoque editado com sucesso!');
-      hookForm.reset();
-      router.refresh();
-    }
-    if (!success) {
-      toast.error('Erro ao editar local de estoque!');
-    }
+  const onSubmit = async (data: StockLocationsFormType) => {
+    mutate(
+      {
+        id: defaultValues.id,
+        data
+      },
+      {
+        onSuccess: () => {
+          toast.success('Local de estoque editado com sucesso!');
+          hookForm.reset();
+          router.refresh();
+          onOpenChange?.(false)
+        },
+        onError: () => {
+          toast.error('Erro ao editar local de estoque!');
+        }
+      }
+    )
   };
 
   return (
@@ -69,7 +82,11 @@ export default function StockLocationEditForm({
             )}
           />
 
-          <Button type='submit'>Salvar Alteração</Button>
+          <Button
+            type='submit'
+            disabled={isPending}
+          >{isPending ? 'Salvando...' : 'Salvar Alteração'}
+          </Button>
         </form>
       </Form>
     </div>

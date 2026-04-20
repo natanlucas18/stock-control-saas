@@ -10,9 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
-import { softProductDelete } from '@/services/products-service';
-import { deleteStockLocation } from '@/services/stock-location-service';
-import { ProductsData } from '@/types/product-schema';
+import { useDeleteStockLocation } from '@/hooks/stock-locations/useDeleteStockLocations';
 import { StockLocationsData } from '@/types/stock-location-schema';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
@@ -29,17 +27,20 @@ export default function LocationDeleteAlert({
   trigger?: React.ReactNode;
 }) {
   const router = useRouter();
+
+  const { mutate, isPending } = useDeleteStockLocation()
+
   async function onDelete(id: number) {
-    const { success } = await deleteStockLocation(id);
-
-    if (success) {
-      toast.success('Local de estoque excluído com sucesso');
-      router.refresh();
-    }
-
-    if (!success) {
-      toast.error('Erro ao excluir local de estoque');
-    }
+    mutate(id, {
+      onSuccess: () => {
+        toast.success('Local de estoque excluído com sucesso');
+        router.refresh();
+        onOpenChange?.(false)
+      },
+      onError: () => {
+        toast.error('Erro ao excluir local de estoque');
+      }
+    })
   }
 
   return (
@@ -58,8 +59,11 @@ export default function LocationDeleteAlert({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={() => onDelete(location.id)}>
-            Continuar
+          <AlertDialogAction
+            onClick={() => onDelete(location.id)}
+            disabled={isPending}
+          >
+            {isPending ? 'Excluindo...' : 'Continuar'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

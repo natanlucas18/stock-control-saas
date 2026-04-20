@@ -57,21 +57,24 @@ import ProductDeleteAlert from './product-delete-alert';
 import ProductDetailsSheet from './product-details-sheet';
 import ProductEditDialog from './product-edit-dialog';
 import ProductRegisterDialog from './product-register-dialog';
+import { useProducts } from '@/hooks/products/useProducts';
+import { SkeletonTable } from '@/components/skeleton-table';
 
-type ProductsTableProps = {
-  productsMin: ProductMin[];
-  paginationOptions?: PaginationOptions;
-  pageSize?: number;
-};
-
-export function ProductsTable({
-  productsMin,
-  paginationOptions
-}: ProductsTableProps) {
+export function ProductsTable() {
   const { setUrlParam, params } = useUrlParams();
   const [openDetails, setOpenDetails] = useState(false);
   const [product, setProduct] = useState<Product>();
 
+  const {data, isLoading} = useProducts({
+    pageSize: Number(params?.get('size')) || 10,
+    pageNumber: Number(params?.get('page')) || 1,
+    search: String(params?.get('name')) || '',
+    sort: String(params?.get('sort')) || ''
+  })
+
+  const products = data?.data.content ?? [];
+  const paginationOptions  = data?.data.pagination
+  
   async function getOneProduct(id: number) {
     const { data } = await getProductById(id);
     setProduct(data);
@@ -137,7 +140,10 @@ export function ProductsTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {productsMin.length === 0 ? (
+          { isLoading && (
+            <SkeletonTable />
+          )}
+          {products.length === 0 ? (
             <>
               <TableRow>
                 <TableCell
@@ -149,7 +155,7 @@ export function ProductsTable({
               </TableRow>
             </>
           ) : (
-            productsMin.map((productMin) => (
+            products.map((productMin) => (
               <TableRow
                 key={productMin.id}
                 onDoubleClick={async () => {

@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { useUpdateProduct } from '@/hooks/products/useUpdateProduct';
 import { editProduct } from '@/services/products-service';
 import {
   Product,
@@ -43,19 +44,25 @@ export default function ProductEditForm({
     resolver: zodResolver(productFormSchema),
     defaultValues
   });
-  const productId = defaultValues.id;
+  const { mutate, isPending } = useUpdateProduct()
 
   async function onSubmit(formData: ProductFormType) {
-    const { success } = await editProduct(formData, productId);
-
-    if (success) {
-      toast.success('Produto editado com sucesso!');
-      hookForm.reset();
-      router.refresh();
-      if (onOpenChange) onOpenChange(false);
-    }
-
-    if (!success) toast.error('Erro ao editar produto!');
+    mutate(
+      {
+        id: defaultValues.id,
+        data: formData
+      },
+      {
+        onSuccess: () => {
+          toast.success('Produto editado com sucesso!');
+          hookForm.reset();
+          router.refresh();
+          onOpenChange?.(false)
+        },
+          onError: () => {
+            toast.error('Erro ao editar produto!');
+          }
+      })
   }
 
   return (
@@ -178,8 +185,9 @@ export default function ProductEditForm({
         <Button
           type='submit'
           form='product-edit-form'
+          disabled={isPending}
         >
-          Salvar Alterações
+          {isPending ? 'Salvando...' : 'Salvar Alterações'}
         </Button>
       </form>
     </Form>
