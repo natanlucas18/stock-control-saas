@@ -1,115 +1,61 @@
-'use server';
+'use client';
 
+import { apiFetch } from '@/lib/api-client';
 import { getApiUrl } from '@/lib/api-url';
-import { getCookie } from '@/lib/get-token';
+import { Params } from '@/types/Params';
 import {
   Product,
   ProductFormType,
-  ProductMin,
-  ProductParams
+  ProductMin
 } from '@/types/product-schema';
 import { ServerDTO, ServerDTOArray } from '@/types/server-dto';
-import { revalidateTag } from 'next/cache';
 
 const localhost = getApiUrl();
 
 export async function createProduct(
   data: ProductFormType
-): Promise<ServerDTO<ProductMin>> {
-  const response = await fetch(`${localhost}/api/products`, {
+){
+  return apiFetch<ServerDTO<ProductMin>>(`${localhost}/api/products`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${await getCookie('accessToken')}`
-    },
     body: JSON.stringify(data)
-  });
-
-  revalidateTag('products');
-
-  const responseData = await response.json();
-
-  return responseData;
+  })
 }
 
 export async function editProduct(
   data: ProductFormType,
   productId: number
-): Promise<ServerDTO<ProductMin>> {
-  const response = await fetch(`${localhost}/api/products/${productId}`, {
+){
+  return apiFetch<ServerDTO<ProductMin>>(`${localhost}/api/products/${productId}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${await getCookie('accessToken')}`
-    },
     body: JSON.stringify(data)
-  });
-
-  revalidateTag('products');
-
-  const responseData = await response.json();
-
-  return responseData;
+  })
 }
 
 export async function getAllProducts(
-  params?: ProductParams
-): Promise<ServerDTOArray<ProductMin>> {
-  const init: RequestInit = {
-    cache: 'force-cache',
-    headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
-    },
-    next: { tags: ['products'], revalidate: 60 }
-  };
-
-  if (params) {
-    const { sort = 'code', pageSize, pageNumber, search = '' } = params;
-    const response = await fetch(
-      `${localhost}/api/products?sort=${sort}&size=${pageSize}&page=${pageNumber}&query=${search}`,
-      init
-    );
-    const responseData = await response.json();
-
-    return responseData;
-  } else {
-    {
-      const response = await fetch(`${localhost}/api/products`, init);
-      const responseData = await response.json();
-
-      return responseData;
-    }
-  }
+  {pageSize, pageNumber, search, sort}: Params
+) {
+  const safeSort = sort ?? 'code'
+  const params = new URLSearchParams({
+    size: String(pageSize),
+    page: String(pageNumber),
+    query: search ?? '',
+    sort: safeSort
+  })
+  return apiFetch<ServerDTOArray<ProductMin>>(`${localhost}/api/products?${params.toString()}`, {
+    method: 'GET',
+  })
 }
 
-export async function getProductById(id: number): Promise<ServerDTO<Product>> {
-  const init: RequestInit = {
-    cache: 'force-cache',
-    headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
-    },
-    next: { tags: ['products'], revalidate: 60 }
-  };
-
-  const response = await fetch(`${localhost}/api/products/${id}`, init);
-  const responseData = await response.json();
-
-  return responseData;
+export async function getProductById(id: number) {
+  return apiFetch<ServerDTO<Product>>(`${localhost}/api/products/${id}`, {
+    method: 'GET',
+  })
 }
 
 export async function softProductDelete(
   id: number
-): Promise<ServerDTO<ProductMin>> {
-  const response = await fetch(`${localhost}/api/products/${id}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
-    }
-  });
-
-  revalidateTag('products');
-
-  const responseData = await response.json();
-
-  return responseData as ServerDTO<ProductMin>;
+) {
+  return apiFetch<ServerDTO<ProductMin>>(`${localhost}/api/products/${id}`, {
+    method: 'DELETE'
+  })
 }
