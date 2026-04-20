@@ -8,10 +8,12 @@ import {
 } from '@/components/ui/dialog';
 import StockLocationRegisterForm from './stock-location-register-form';
 import {MdAdd} from 'react-icons/md'
+import { useState } from 'react';
 
 export default function StockLocationRegisterDialog() {
+  const [open, setOpen] = useState(false)
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
           <MdAdd/>
@@ -21,7 +23,7 @@ export default function StockLocationRegisterDialog() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Cadastro de Local de Estoque</DialogTitle>
-          <StockLocationRegisterForm />
+          <StockLocationRegisterForm onCloseDialog={() => setOpen(false)}/>
         </DialogHeader>
       </DialogContent>
     </Dialog>
