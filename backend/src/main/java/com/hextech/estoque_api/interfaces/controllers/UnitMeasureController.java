@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
 import com.hextech.estoque_api.application.services.UnitMeasureService;
-import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
+import com.hextech.estoque_api.infrastructure.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.controllers.docs.UnitMeasureControllerDocs;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PageMetadata;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PaginatedResponse;
@@ -9,7 +9,6 @@ import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardRespons
 import com.hextech.estoque_api.interfaces.dtos.unitMeasure.UnitMeasureRequestDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +28,7 @@ public class UnitMeasureController implements UnitMeasureControllerDocs {
 
     @GetMapping
     public ResponseEntity<StandardResponse<?>> findAllPaged(@RequestParam(value = "query", defaultValue = "") String query, Pageable pageable) {
-        int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
-        Pageable adjustedPageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
-        var response = service.findAllByCompanyId(query, authContext.getCurrentCompanyId(), adjustedPageable);
+        var response = service.findAllByCompanyId(query, authContext.getCurrentCompanyId(), pageable);
 
         List<?> content = response.getContent();
         PageMetadata pageMetadata = new PageMetadata(response);

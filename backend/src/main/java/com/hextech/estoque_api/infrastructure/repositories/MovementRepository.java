@@ -18,14 +18,6 @@ public interface MovementRepository extends JpaRepository<Movement, Long> {
             SELECT m FROM Movement m
             WHERE m.company.id = :companyId
             AND m.moment BETWEEN :startDate AND :endDate
-            """
-    )
-    Page<Movement> searchAllByCompanyIdAndDate(Long companyId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
-
-    @Query(value = """
-            SELECT m FROM Movement m
-            WHERE m.company.id = :companyId
-            AND m.moment BETWEEN :startDate AND :endDate
             AND ((:type IS NULL) OR (m.type = :type))
             AND ((:productId IS NULL) OR (m.product.id = :productId))
             """)

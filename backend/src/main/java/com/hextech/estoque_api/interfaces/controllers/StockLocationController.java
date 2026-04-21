@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
 import com.hextech.estoque_api.application.services.StockLocationService;
-import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
+import com.hextech.estoque_api.infrastructure.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.controllers.docs.StockLocationControllerDocs;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PageMetadata;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PaginatedResponse;
@@ -10,7 +10,6 @@ import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +28,9 @@ public class StockLocationController implements StockLocationControllerDocs {
     private AuthContext authContext;
 
     @GetMapping
-    public ResponseEntity<StandardResponse<?>> findAllByCompanyPaged(@RequestParam(value = "name", defaultValue = "") String name, Pageable pageable) {
-        int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
-        Pageable adjustedPageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
-        Page<StockLocationDTO> response = service.findAllByCompanyId(name, authContext.getCurrentCompanyId(), adjustedPageable);
+    public ResponseEntity<StandardResponse<?>> findAllByCompanyPaged(@RequestParam(value = "query", defaultValue = "") String query, Pageable pageable) {
+
+        Page<StockLocationDTO> response = service.findAllByCompanyId(query, authContext.getCurrentCompanyId(), pageable);
 
         List<StockLocationDTO> content = response.getContent();
         PageMetadata pageMetadata = new PageMetadata(response);

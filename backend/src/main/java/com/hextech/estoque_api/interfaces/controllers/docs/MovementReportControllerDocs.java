@@ -20,5 +20,5 @@ public interface MovementReportControllerDocs {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
     })
-    ResponseEntity<StandardResponse<?>> reportMovements(String startDate, String endDate, String type, Long productId, Pageable pageable);
+    ResponseEntity<StandardResponse<?>> reportMovements(String startDate, String endDate, String type, String productId, Pageable pageable);
 }

@@ -1,15 +1,13 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.hextech.estoque_api.application.services.AuthService;
-import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
+import com.hextech.estoque_api.infrastructure.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.controllers.docs.AuthControllerDocs;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
 import com.hextech.estoque_api.interfaces.dtos.security.AccountCredentialsDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

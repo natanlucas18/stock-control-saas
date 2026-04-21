@@ -1,4 +1,4 @@
-package com.hextech.estoque_api.infrastructure.security.utils;
+package com.hextech.estoque_api.infrastructure.utils;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

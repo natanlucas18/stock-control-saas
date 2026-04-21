@@ -7,6 +7,7 @@ import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
 import com.hextech.estoque_api.infrastructure.repositories.ProductRepository;
 import com.hextech.estoque_api.infrastructure.repositories.UnitMeasureRepository;
+import com.hextech.estoque_api.infrastructure.utils.PageableUtils;
 import com.hextech.estoque_api.interfaces.dtos.unitMeasure.UnitMeasureRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.unitMeasure.UnitMeasureResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class UnitMeasureService {
@@ -27,7 +30,9 @@ public class UnitMeasureService {
 
     @Transactional(readOnly = true)
     public Page<UnitMeasureResponseDTO> findAllByCompanyId(String query, Long currentCompanyId, Pageable pageable) {
-        Page<UnitMeasure> UnitMeasures = repository.findAllByNameAndCompanyId(query, currentCompanyId, pageable);
+        Pageable validPageable = PageableUtils.validatePageable(pageable, List.of("id", "name", "acronym"));
+
+        Page<UnitMeasure> UnitMeasures = repository.findAllByNameAndCompanyId(query, currentCompanyId, validPageable);
         return UnitMeasures.map(UnitMeasureResponseDTO::new);
     }
 
