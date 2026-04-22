@@ -59,6 +59,7 @@ import ProductEditDialog from './product-edit-dialog';
 import ProductRegisterDialog from './product-register-dialog';
 import { useProducts } from '@/hooks/products/useProducts';
 import { SkeletonTable } from '@/components/skeleton-table';
+import { parseNumber } from '@/lib/parse-number';
 
 export function ProductsTable() {
   const { setUrlParam, params } = useUrlParams();
@@ -66,10 +67,10 @@ export function ProductsTable() {
   const [product, setProduct] = useState<Product>();
 
   const {data, isLoading} = useProducts({
-    pageSize: Number(params?.get('size')) || 10,
-    pageNumber: Number(params?.get('page')) || 1,
-    search: String(params?.get('name')) || '',
-    sort: String(params?.get('sort')) || ''
+    pageSize: parseNumber(params?.get('size')),
+    pageNumber: parseNumber(params?.get('page')),
+    search: params?.get('query') || undefined,
+    sort: params?.get('sort') || undefined
   })
 
   const products = data?.data.content ?? [];

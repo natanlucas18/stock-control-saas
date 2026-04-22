@@ -2,6 +2,7 @@
 
 import { apiFetch } from '@/lib/api-client';
 import { getApiUrl } from '@/lib/api-url';
+import { createQueryParams } from '@/lib/create-query-params';
 import { Params } from '@/types/Params';
 import {
   Product,
@@ -34,12 +35,11 @@ export async function editProduct(
 export async function getAllProducts(
   {pageSize, pageNumber, search, sort}: Params
 ) {
-  const safeSort = sort ?? 'code'
-  const params = new URLSearchParams({
-    size: String(pageSize),
-    page: String(pageNumber),
-    query: search ?? '',
-    sort: safeSort
+  const params = createQueryParams({
+    size: pageSize,
+    page: pageNumber,
+    query: search,
+    sort,
   })
   return apiFetch<ServerDTOArray<ProductMin>>(`${localhost}/api/products?${params.toString()}`, {
     method: 'GET',

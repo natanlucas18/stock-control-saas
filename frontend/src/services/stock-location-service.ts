@@ -2,6 +2,7 @@
 
 import { apiFetch } from '@/lib/api-client';
 import { getApiUrl } from '@/lib/api-url';
+import { createQueryParams } from '@/lib/create-query-params';
 import { Params } from '@/types/Params';
 import { ServerDTO, ServerDTOArray } from '@/types/server-dto';
 import {
@@ -19,12 +20,11 @@ export async function createStockLocation(data: StockLocationsFormType) {
 }
 
 export async function getAllStockLocations({ pageSize, pageNumber, search, sort }: Params) {
-  const safeSort = sort ?? 'name'
-  const params = new URLSearchParams({
-    size: String(pageSize),
-    page: String(pageNumber),
-    name: search ?? '',
-    sort: safeSort
+  const params = createQueryParams({
+    size: pageSize,
+    page: pageNumber,
+    name: search,
+    sort,
   })
 
   return apiFetch<ServerDTOArray<StockLocationsData>>(`${localhost}/api/stock-locations?${params.toString()}`, {

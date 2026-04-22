@@ -59,6 +59,7 @@ import {RiDeleteBin5Line} from 'react-icons/ri'
 import { useStockLocations } from '@/hooks/stock-locations/useStockLocations';
 import { SkeletonTable } from '@/components/skeleton-table';
 import { toast } from 'react-toastify';
+import { parseNumber } from '@/lib/parse-number';
 
 export type StockLocationsTableProps = {
   locations: StockLocationsData[];
@@ -68,11 +69,11 @@ export type StockLocationsTableProps = {
 
 export function StockLocationsTable() {
   const { setUrlParam, params } = useUrlParams();
-    const { data, isLoading, isError } = useStockLocations({
-      pageSize: Number(params?.get('size')) || 10,
-      pageNumber: Number(params?.get('page')) || 1,
-      search: String(params?.get('name')) || '',
-      sort: String(params?.get('sort')) || ''
+    const { data, isLoading } = useStockLocations({
+      pageSize: parseNumber(params?.get('size')),
+      pageNumber: parseNumber(params?.get('page')),
+      search: params?.get('name') || undefined,
+      sort: params?.get('sort') || undefined
     })
   
   const locations = data?.data.content ?? [];
