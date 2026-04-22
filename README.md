@@ -1,4 +1,4 @@
- Stock Control SaaS
+# Stock Control SaaS
 Sistema SaaS moderno para controle de estoque, desenvolvido com foco em escalabilidade, automação e usabilidade para pequenos e médios negócios.
 - Sobre o Projeto
 O Stock Control SaaS é uma aplicação web completa para gerenciamento de estoque que permite:
