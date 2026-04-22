@@ -19,7 +19,6 @@ Next.js (App Router)
 React + Server/Client Components
 UI moderna e responsiva
 Infraestrutura
-Integração com AWS (ex: S3 para arquivos/imagens)
 Estrutura preparada para multi-tenant
 
 🛠️ Tecnologias Utilizadas
