@@ -57,42 +57,36 @@ Separação entre Access Token e Refresh Token
 RBAC (Role-Based Access Control)
 Boas práticas para evitar exposição de dados sensíveis
 
-⚙️ Como rodar o projeto
+# ⚙️ Como rodar o projeto
  Pré-requisitos
 Node.js 20+
 Docker 
 Banco de dados (PostgreSQL)
 
-📦 Backend
+ 📦 Backend
 cd backend
 
-# configurar variáveis de ambiente
-
-
-npm run start:dev
+ configurar variáveis de ambiente
 
 💻 Frontend
 cd frontend
 npm install
 npm run dev
 
-📈 Roadmap
+# 📈 Roadmap
   Multi-tenant completo
   Dashboard com métricas
   Receber notificações automáticas de estoque baixo/excedente
   Gerar relatórios (PDF)
   Imprimir etiquetas com rastreabilidade
  
-- Possíveis Casos de Uso
+# - Possíveis Casos de Uso
 Pequenos comércios
 Estoques industriais
 E-commerce
 Almoxarifado interno
 
-- Licença
-Este projeto está sob a licença MIT.
-
-- Considerações finais
+# - Considerações finais
 Esse projeto vai além de um CRUD simples — ele já tem características reais de um produto SaaS pronto para evoluir, como:
 separação de responsabilidades
 preocupação com segurança
