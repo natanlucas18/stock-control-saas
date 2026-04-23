@@ -23,6 +23,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { StockLocationPopover } from '../../(local-estoque)/components/stock-location-popover';
 import { ProductsPopover } from '../../(produtos)/components/products-popover';
+import { useTransferMovements } from '@/hooks/movements/useTransferMovements';
 
 export default function TransferMovementsForm() {
   const router = useRouter();
@@ -38,16 +39,19 @@ export default function TransferMovementsForm() {
     }
   });
 
+  const { mutate, isPending, data } = useTransferMovements();
+
   async function onSubmit(formData: TransferMovementsFormType) {
-    const { success, data } = await createTransferMovements(formData);
-
-    if (success) {
-      toast.success('Produto transferido com sucesso!');
-      hookForm.reset();
-      router.refresh();
-    }
-
-    if (!success) toast.error('Erro ao transferir produto!');
+    mutate(formData, {
+      onSuccess: () => {
+        toast.success('Produto transferido com sucesso!');
+        hookForm.reset();
+        router.refresh();
+      },
+      onError: () => {
+        toast.error('Erro ao transferir produto!');
+      }
+    })
   }
 
   return (
@@ -130,7 +134,10 @@ export default function TransferMovementsForm() {
             )}
           />
 
-          <Button type='submit'>Enviar</Button>
+          <Button
+            type='submit'
+            disabled={isPending}  
+          >Enviar</Button>
         </form>
       </Form>
     </div>

@@ -11,7 +11,7 @@ export function useUpdateProduct() {
     return useMutation({
         mutationFn: ({id, data}: UpdateProductPayload) => editProduct(data, id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['products'] })
+            queryClient.invalidateQueries({ queryKey: ['products','products-report'] })
         }
     })
 }

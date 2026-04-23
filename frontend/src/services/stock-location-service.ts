@@ -23,7 +23,7 @@ export async function getAllStockLocations({ pageSize, pageNumber, search, sort 
   const params = createQueryParams({
     size: pageSize,
     page: pageNumber,
-    name: search,
+    query: search,
     sort,
   })
 

@@ -1,7 +1,8 @@
-'use server';
+'use client';
 
+import { apiFetch } from '@/lib/api-client';
 import { getApiUrl } from '@/lib/api-url';
-import { getCookie } from '@/lib/get-token';
+import { createQueryParams } from '@/lib/create-query-params';
 import {
   MovementsReport,
   MovementsReportParams
@@ -11,36 +12,20 @@ import { ServerDTOArray } from '@/types/server-dto';
 const localhost = getApiUrl();
 
 export async function movementsReportFilterService(
-  params?: MovementsReportParams
-): Promise<ServerDTOArray<MovementsReport>> {
-  const init: RequestInit = {
-    cache: 'force-cache',
-    headers: {
-      Authorization: `Bearer ${await getCookie('accessToken')}`
-    },
-    next: { tags: ['movementsReport'], revalidate: 60 }
-  };
-  const url = new URL(`${localhost}/api/reports/movements`);
-
-  if (params) {
-    const { startDate, endDate, productId, page, size, sort, type } = params;
-
-    if (startDate) url.searchParams.set('startDate', startDate.toString());
-    if (endDate) url.searchParams.set('endDate', endDate.toString());
-    if (productId) url.searchParams.set('productId', productId.toString());
-    if (page) url.searchParams.set('page', page.toString());
-    if (size) url.searchParams.set('size', size.toString());
-    if (sort) url.searchParams.set('sort', sort.toString());
-    if (type) url.searchParams.set('type', type.toString());
-
-    const response = await fetch(url, init);
-    const responseData = await response.json();
-
-    return responseData;
-  } else {
-    const response = await fetch(url, init);
-    const responseData = await response.json();
-
-    return responseData;
-  }
+  {startDate, endDate, productId, page, size, search, sort, type }: MovementsReportParams
+){
+  const params = createQueryParams({
+    startDate,
+    endDate,
+    productId,
+    page,
+    size,
+    search,
+    sort,
+    type
+  })
+  return apiFetch<ServerDTOArray<MovementsReport>>(
+    `${localhost}/api/reports/movements?${params.toString()}`, {
+    method: 'GET',
+  })
 }

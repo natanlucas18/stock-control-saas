@@ -7,7 +7,7 @@ export function useExitMovements() {
     return useMutation({
         mutationFn: (formData: ExitMovementsFormType) => createExitMovements(formData),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['movements-report']})
+            queryClient.invalidateQueries({ queryKey: ['movements-report', 'products', 'products-report']})
         }
     })
 }

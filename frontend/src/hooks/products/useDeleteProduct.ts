@@ -6,7 +6,7 @@ export function useDeleteProduct() {
     return useMutation({
         mutationFn: (id:number) => softProductDelete(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['products'] })
+            queryClient.invalidateQueries({ queryKey: ['products','products-report'] })
         }
     })
 }

@@ -7,7 +7,7 @@ export function useCreateProduct() {
     return useMutation({
         mutationFn: (data: ProductFormType) => createProduct(data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['products']})
+            queryClient.invalidateQueries({ queryKey: ['products','products-report']})
         }
     })
 }
