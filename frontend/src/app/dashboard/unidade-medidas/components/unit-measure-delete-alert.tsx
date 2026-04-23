@@ -10,8 +10,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
+import { useDeleteUnitMeasure } from '@/hooks/unit-measures/useDeleteUnitMeasure';
 import { softUnitMeasureDelete } from '@/services/unit-measure-service';
-import { UnitMeasureData } from '@/types/unit-measure-schema';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
@@ -29,17 +29,20 @@ export default function UnitMeasureDeleteAlert({
   trigger
 }: UnitMeasureDeleteAlertProps) {
   const router = useRouter();
+
+  const { mutate, isPending } = useDeleteUnitMeasure()
+
   async function onDelete(id: number) {
-    const { success } = await softUnitMeasureDelete(id);
-
-    if (success) {
-      toast.success('Unidade de medida excluída com sucesso');
-      router.refresh();
-    }
-
-    if (!success) {
-      toast.error('Erro ao excluir unidade de medida');
-    }
+    mutate(id, {
+      onSuccess: () => {
+        toast.success('Unidade de medida excluída com sucesso');
+        router.refresh();
+        onOpenChange?.(false)
+      },
+      onError: () => {
+        toast.error('Erro ao excluir unidade de medida');
+      }
+    })
   }
 
   return (
@@ -62,8 +65,9 @@ export default function UnitMeasureDeleteAlert({
             onClick={() => {
               if (unitMeasureId) onDelete(unitMeasureId);
             }}
+            disabled={isPending}
           >
-            Continuar
+            {isPending ? 'Excluindo' : 'Continuar'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -51,26 +51,28 @@ import {
 import { useState } from 'react';
 import ProductDetailsSheet from '@/app/dashboard/(produtos)/components/product-details-sheet';
 import { ReportProductsFormFilters } from './report-products-form-filters';
+import { useProductsReport } from '@/hooks/reports/useProductsReport';
+import { parseNumber } from '@/lib/parse-number';
 
-type ReportProductsTableProps = {
-  products: Product[];
-  paginationOptions: PaginationOptions;
-  pageSize?: number;
-};
-
-export function ReportsProductsTable({
-  products,
-  paginationOptions
-}: ReportProductsTableProps) {
+export function ReportsProductsTable() {
   const { setUrlParam, params } = useUrlParams();
   const [openDetails, setOpenDetails] = useState(false);
   const [product, setProduct] = useState<Product>();
-  const {totalElements} = paginationOptions;
-
+  
   async function getOneProduct(id: number) {
     const { data } = await getProductById(id);
     setProduct(data);
   }
+  
+  const { data, isLoading} = useProductsReport({
+    pageNumber: parseNumber(params.get('page')) || undefined,
+    pageSize: parseNumber(params.get('size')) || undefined,
+    sort: params.get('sort') || undefined,
+    status: params.get('status') || undefined,
+  })
+  
+  const products = data?.data.content ?? [];
+  const paginationOptions = data?.data.pagination;
 
   function handleSort(sort: string) {
     const currentSort = params.get('sort');
@@ -110,7 +112,6 @@ export function ReportsProductsTable({
       <Separator className='my-5' />
       <div className='flex justify-between items-center'>
       <PageSizeFilter />
-      <p className='mb-2 text-sm lg:text-md'>{totalElements} registros encontrados.</p>
       </div>
       <Table>
         <TableHeader>

@@ -12,8 +12,8 @@ public class ReportPeriodFactory {
         LocalDate now = LocalDate.now();
 
         try {
-            LocalDate end = (endDate.isEmpty()) ? now : LocalDate.parse(endDate);
-            LocalDate start = (startDate.isEmpty()) ?
+            LocalDate end = (endDate.isEmpty() || endDate.equals("null")) ? now : LocalDate.parse(endDate);
+            LocalDate start = (startDate.isEmpty() || startDate.equals("null")) ?
                     LocalDate.of(end.getYear(), end.getMonth().minus(1), end.getDayOfMonth()) : LocalDate.parse(startDate);
 
             if (start.isAfter(end)) throw new IllegalArgumentException("Data inicial não pode ser posterior a data final.");

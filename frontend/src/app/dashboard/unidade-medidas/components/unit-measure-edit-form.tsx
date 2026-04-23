@@ -10,6 +10,7 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useUpdateUnitMeasure } from '@/hooks/unit-measures/useUpdateUnitMeasure';
 import { editUnitMeasure } from '@/services/unit-measure-service';
 import { UnitMeasureData, unitMeasureFormSchema, UnitMeasureFormType } from '@/types/unit-measure-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -29,19 +30,27 @@ export default function UnitMeasureEditForm({
     resolver: zodResolver(unitMeasureFormSchema),
     defaultValues
   });
-  const UnitMeasureId = defaultValues.id;
+
+  const { mutate, isPending } = useUpdateUnitMeasure()
 
   async function onSubmit(formData: UnitMeasureFormType) {
-    const { success } = await editUnitMeasure(formData, UnitMeasureId);
-
-    if (success) {
-      toast.success('Unidade de medida editada com sucesso!');
-      hookForm.reset();
-      router.refresh();
-      if (onOpenChange) onOpenChange(false);
-    }
-
-    if (!success) toast.error('Erro ao editar unidade de medida!');
+    mutate(
+      {
+        id: defaultValues.id,
+        data: formData
+      },
+      {
+        onSuccess: () => {
+          toast.success('Unidade de medida editada com sucesso!');
+          hookForm.reset();
+          router.refresh();
+          onOpenChange?.(false);
+        },
+        onError: () => {
+          toast.error('Erro ao editar unidade de medida!');
+        }
+      }
+    )
   }
 
   return (
@@ -89,8 +98,9 @@ export default function UnitMeasureEditForm({
         <Button
           type='submit'
           form='unit-measure-edit-form'
+          disabled={isPending}
         >
-          Salvar Alterações
+          {isPending ? 'Salvando' : 'Salvar Alterações'}
         </Button>
       </form>
     </Form>

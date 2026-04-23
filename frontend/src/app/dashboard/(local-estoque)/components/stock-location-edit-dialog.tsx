@@ -38,7 +38,10 @@ export default function LocationEditDialog({
         <DialogHeader>
           <DialogTitle>Editar Local de Estoque</DialogTitle>
         </DialogHeader>
-        <StockLocationEditForm defaultValues={location} />
+        <StockLocationEditForm
+          defaultValues={location}
+          onOpenChange={onOpenChange}
+        />
       </DialogContent>
     </Dialog>
   );

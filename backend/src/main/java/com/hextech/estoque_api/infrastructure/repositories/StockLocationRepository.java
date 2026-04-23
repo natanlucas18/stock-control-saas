@@ -14,9 +14,9 @@ public interface StockLocationRepository extends JpaRepository<StockLocation, Lo
 
     @Query("""
             SELECT sl FROM StockLocation sl
-            WHERE UPPER(sl.name) LIKE UPPER(CONCAT('%', :name, '%'))
+            WHERE UPPER(sl.name) LIKE UPPER(CONCAT('%', :query, '%'))
             """)
-    Page<StockLocation> findAllByNameAndCompanyId(String name, Long companyId, Pageable pageable);
+    Page<StockLocation> findAllByNameAndCompanyId(String query, Long companyId, Pageable pageable);
 
     Optional<StockLocation> findByIdAndCompanyId(Long id, Long companyId);
 }

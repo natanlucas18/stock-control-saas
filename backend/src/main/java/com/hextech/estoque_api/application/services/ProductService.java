@@ -5,6 +5,7 @@ import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.unitMeasure.UnitMeasure;
 import com.hextech.estoque_api.domain.exceptions.*;
 import com.hextech.estoque_api.infrastructure.repositories.*;
+import com.hextech.estoque_api.infrastructure.utils.PageableUtils;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResponseDTO;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductResumeDTO;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class ProductService {
@@ -34,7 +36,9 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Page<ProductResumeDTO> findAllByCompanyId(String query, Long currentCompanyId, Pageable pageable) {
-        Page<Product> products = repository.findAllByNameAndCompanyId(query, currentCompanyId, pageable);
+        Pageable validPageable = PageableUtils.validatePageable(pageable, List.of("id", "code", "name", "price"));
+
+        Page<Product> products = repository.findAllByNameAndCompanyId(query, currentCompanyId, validPageable);
         return products.map(ProductResumeDTO::new);
     }
 
@@ -116,10 +120,15 @@ public class ProductService {
         repository.updateTotalQuantity(productId, quantity);
     }
 
+    public static Long parseProductId(String productId) {
+        return (productId.isEmpty() || productId.equals("null")) ? null : Long.parseLong(productId);
+    }
+
     private void validProductCode(String code, Long companyId) {
         if (repository.existsByCodeAndCompanyId(code, companyId))
             throw new ProductCodeAlreadyExistsException("Código de produto já existente.");
     }
+
 }
 
 

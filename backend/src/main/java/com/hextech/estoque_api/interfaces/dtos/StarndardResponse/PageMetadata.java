@@ -16,7 +16,7 @@ public class PageMetadata {
     private boolean isFirst;
 
     public PageMetadata(Page<?> page) {
-        this.pageNumber = (page.getNumber() > 0) ? page.getNumber() + 1:1;
+        this.pageNumber = page.getNumber();
         this.pageSize = page.getSize();
         this.totalElements = page.getTotalElements();
         this.totalPages = page.getTotalPages();

@@ -23,6 +23,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { StockLocationPopover } from '../../(local-estoque)/components/stock-location-popover';
 import { ProductsPopover } from '../../(produtos)/components/products-popover';
+import { useReturnMovements } from '@/hooks/movements/useReturnMovements';
 
 export default function ReturnMovementsForm() {
   const router = useRouter();
@@ -37,16 +38,19 @@ export default function ReturnMovementsForm() {
     }
   });
 
+  const { mutate, isPending, data } = useReturnMovements();
+
   async function onSubmit(formData: ReturnMovementsFormType) {
-    const { success, data } = await createReturnMovements(formData);
-
-    if (success) {
-      toast.success('Produto devolvido com sucesso!');
-      hookForm.reset();
-      router.refresh();
-    }
-
-    if (!success) toast.error('Erro ao devolver produto!');
+    mutate(formData, {
+      onSuccess: () => {
+        toast.success('Produto devolvido com sucesso!');
+        hookForm.reset();
+        router.refresh();
+      },
+      onError: () => {
+        toast.error('Erro ao devolver produto!');
+      }
+    })
   }
 
   return (
@@ -115,7 +119,12 @@ export default function ReturnMovementsForm() {
             )}
           />
 
-          <Button type='submit'>Enviar</Button>
+          <Button 
+            type='submit'
+            disabled={isPending}
+          >
+            {isPending ? 'Enviando' : 'Enviar'}
+          </Button>
         </form>
       </Form>
     </div>

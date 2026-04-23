@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
 import com.hextech.estoque_api.application.services.UserService;
-import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
+import com.hextech.estoque_api.infrastructure.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.controllers.docs.UserControllerDocs;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.StandardResponse;
 import com.hextech.estoque_api.interfaces.dtos.users.UserRequestDTO;

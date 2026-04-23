@@ -55,24 +55,22 @@ import { getUnitMeasureById } from '@/services/unit-measure-service';
 import UnitMeasureDeleteAlert from './unit-measure-delete-alert';
 import UnitMeasureEditDialog from './unit-measure-edit-dialog';
 import UnitMeasureRegisterDialog from './unit-measure-register-dialog';
+import { useUnitMeasures } from '@/hooks/unit-measures/useUnitMeasures';
+import { parseNumber } from '@/lib/parse-number';
 
-type UnitMeasureTableProps = {
-  unitsMeasure: UnitMeasureData[];
-  paginationOptions?: PaginationOptions;
-  pageSize?: number;
-};
 
-export function UnitMeasureTable({
-  unitsMeasure,
-  paginationOptions
-}: UnitMeasureTableProps) {
+export function UnitMeasureTable() {
   const { setUrlParam, params } = useUrlParams();
-  const [unitMeasure, setUnitMeasure] = useState<UnitMeasureData>();
 
-  async function getOneUnitMeasure(id: number) {
-    const { data } = await getUnitMeasureById(id);
-    setUnitMeasure(data);
-  }
+  const {data, isLoading} = useUnitMeasures({
+    pageNumber: parseNumber(params.get('page')) || undefined,
+    pageSize: parseNumber(params.get('size')) || undefined,
+    search: params.get('query') || undefined,
+    sort: params.get('sort') || undefined,
+  })
+
+  const unitMeasures = data?.data.content ?? [];
+  const paginationOptions = data?.data.pagination
 
   function handleSort(sort: string) {
     const currentSort = params.get('sort');
@@ -133,7 +131,7 @@ export function UnitMeasureTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {unitsMeasure.length === 0 ? (
+          {unitMeasures.length === 0 ? (
             <>
               <TableRow>
                 <TableCell
@@ -145,7 +143,7 @@ export function UnitMeasureTable({
               </TableRow>
             </>
           ) : (
-            unitsMeasure.map((unitMeasure) => (
+            unitMeasures.map((unitMeasure) => (
               <TableRow
                 key={unitMeasure.id}
                 className='cursor-pointer'
@@ -316,8 +314,7 @@ function ProductDropdownMenu({
         >
           <DropdownMenuLabel>Ações</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={async () => {
-              if (unitMeasure) await getOneProduct(unitMeasure.id);
+            onClick={() => {
               setOpenEditDialog(true);
             }}
           >

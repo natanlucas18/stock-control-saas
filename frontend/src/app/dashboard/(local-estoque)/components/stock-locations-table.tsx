@@ -56,6 +56,10 @@ import LocationDeleteAlert from './stock-location-delete-alert';
 import StockLocationRegisterDialog from './stock-location-register-dialog';
 import {CiEdit} from 'react-icons/ci'
 import {RiDeleteBin5Line} from 'react-icons/ri'
+import { useStockLocations } from '@/hooks/stock-locations/useStockLocations';
+import { SkeletonTable } from '@/components/skeleton-table';
+import { toast } from 'react-toastify';
+import { parseNumber } from '@/lib/parse-number';
 
 export type StockLocationsTableProps = {
   locations: StockLocationsData[];
@@ -63,16 +67,17 @@ export type StockLocationsTableProps = {
   pageSize?: number;
 };
 
-const initialValues: StockLocationsData= {
-  id: 1,
-  name: ''
-};
-
-export function StockLocationsTable({
-  locations,
-  paginationOptions
-}: StockLocationsTableProps) {
+export function StockLocationsTable() {
   const { setUrlParam, params } = useUrlParams();
+    const { data, isLoading } = useStockLocations({
+      pageSize: parseNumber(params?.get('size')),
+      pageNumber: parseNumber(params?.get('page')),
+      search: params?.get('name') || undefined,
+      sort: params?.get('sort') || undefined
+    })
+  
+  const locations = data?.data.content ?? [];
+  const pagination = data?.data.pagination;
 
   function handleSort(sort: string) {
     const currentSort = params.get('sort');
@@ -122,7 +127,7 @@ export function StockLocationsTable({
             <TableHead
               className='cursor-pointer flex items-center gap-1'
               onClick={() => handleSort('name')}
-            >
+              >
               Nome
               {getSortIcon('name')}
             </TableHead>
@@ -130,7 +135,10 @@ export function StockLocationsTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {locations?.map((location) => (
+          {isLoading ? (
+              <SkeletonTable />
+          ) :
+          (locations?.map((location) => (
             <TableRow
               key={location.id}
               className='cursor-pointer'
@@ -144,11 +152,11 @@ export function StockLocationsTable({
                 <StockLocationDropdownMenu location={location} />
               </TableCell>
             </TableRow>
-          ))}
+          )))}
         </TableBody>
       </Table>
-      {paginationOptions && (
-        <PaginationTable paginationOptions={paginationOptions} />
+      {pagination && (
+        <PaginationTable paginationOptions={pagination} />
       )}
     </>
   );

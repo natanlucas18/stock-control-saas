@@ -10,9 +10,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
+import { useDeleteProduct } from '@/hooks/products/useDeleteProduct';
 import { softProductDelete } from '@/services/products-service';
 import { ProductMin } from '@/types/product-schema';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 type ProductDeleteAlertProps = {
@@ -29,23 +31,28 @@ export default function ProductDeleteAlert({
   trigger
 }: ProductDeleteAlertProps) {
   const router = useRouter();
+  const [openDialog, setOpenDialog] = useState(false)
+
+  const { mutate, isPending } = useDeleteProduct()
+
   async function onDelete(id: number) {
-    const { success } = await softProductDelete(id);
-
-    if (success) {
-      toast.success('Produto excluído com sucesso');
-      router.refresh();
-    }
-
-    if (!success) {
-      toast.error('Erro ao excluir produto');
-    }
+    mutate(id, {
+      onSuccess: () => {
+        toast.success('Produto excluído com sucesso');
+        router.refresh();
+        onOpenChange?.(false)
+        setOpenDialog(false)
+      },
+      onError: () => {
+        toast.error('Erro ao excluir produto');
+      }
+    })
   }
 
   return (
     <AlertDialog
-      open={open}
-      onOpenChange={onOpenChange}
+      open={openDialog}
+      onOpenChange={setOpenDialog}
     >
       <AlertDialogTrigger className='cursor-pointer'>
         {trigger}
@@ -58,13 +65,14 @@ export default function ProductDeleteAlert({
           </AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
               if (product) onDelete(product.id);
             }}
+            disabled={isPending}
           >
-            Continue
+            { isPending ? 'Excluindo...': 'Continuar'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

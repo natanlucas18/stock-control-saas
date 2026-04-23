@@ -10,15 +10,21 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useCreateUnitMeasure } from '@/hooks/unit-measures/useCreateUnitMeasure';
 import { createUnitMeasure } from '@/services/unit-measure-service';
 import { unitMeasureFormSchema, UnitMeasureFormType } from '@/types/unit-measure-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { UnitMeasurePopover } from './unit-measure-popover';
 
-export default function UnitMeasureRegisterForm() {
+type UnitMeasureRegisterFormProps = {
+  onClosedDialog?: () => void;
+}
+
+export default function UnitMeasureRegisterForm(
+  { onClosedDialog }: UnitMeasureRegisterFormProps
+) {
   const router = useRouter();
   const hookForm = useForm<UnitMeasureFormType>({
     resolver: zodResolver(unitMeasureFormSchema),
@@ -28,16 +34,20 @@ export default function UnitMeasureRegisterForm() {
     }
   });
 
+  const { mutate, isPending } = useCreateUnitMeasure();
+
   async function onSubmit(formData: UnitMeasureFormType) {
-    const { success } = await createUnitMeasure(formData);
-
-    if (success) {
-      toast.success('Unidade de medida cadastrada com sucesso!');
-      hookForm.reset();
-      router.refresh();
-    }
-
-    if (!success) toast.error('Erro ao cadastrar!');
+    mutate(formData, {
+      onSuccess: () => {
+        toast.success('Unidade de medida cadastrada com sucesso!');
+        hookForm.reset();
+        router.refresh();
+        onClosedDialog?.()
+      },
+      onError: () => {
+        toast.error('Erro ao cadastrar!');
+      }
+    })
   }
 
   return (
@@ -82,7 +92,11 @@ export default function UnitMeasureRegisterForm() {
             )}
           />
 
-          <Button type='submit'>Salvar</Button>
+          <Button 
+            type='submit'
+            disabled={isPending}
+          > {isPending ? 'Salvando' : 'Salvar'}
+          </Button>
         </form>
       </Form>
     </div>

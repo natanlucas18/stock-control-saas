@@ -10,7 +10,7 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { createStockLocations } from '@/services/stock-location-service';
+import { useCreateStockLocation } from '@/hooks/stock-locations/useCreateStockLocation';
 import {
   stockLocationsFormSchema,
   StockLocationsFormType
@@ -19,7 +19,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-export default function StockLocationRegisterForm() {
+type StockLocationRegisterProps = {
+  onCloseDialog?: () => void
+}
+
+export default function StockLocationRegisterForm({onCloseDialog}: StockLocationRegisterProps) {
   const hookForm = useForm<StockLocationsFormType>({
     resolver: zodResolver(stockLocationsFormSchema),
     defaultValues: {
@@ -27,14 +31,19 @@ export default function StockLocationRegisterForm() {
     }
   });
 
+  const { mutate, isPending } = useCreateStockLocation()
+
   const onSubmit = async (data: StockLocationsFormType) => {
-    const result = await createStockLocations(data);
-    console.log(result);
-
-    if (result.success)
-      toast.success('Local de estoque cadastrado com sucesso!');
-
-    if (!result.success) toast.error('Erro ao cadastrar local de estoque!');
+    mutate(data, {
+      onSuccess: () => {
+        toast.success('Local de estoque cadastrado com sucesso!');
+        hookForm.reset()
+        onCloseDialog?.()
+      },
+      onError: () => {
+        toast.error('Erro ao cadastrar local de estoque!');
+      }
+    })
   };
 
   return (
@@ -61,7 +70,11 @@ export default function StockLocationRegisterForm() {
             )}
           />
 
-          <Button type='submit'>Cadastrar</Button>
+          <Button 
+            type='submit'
+            disabled={isPending}
+          > {isPending ? 'Cadastrando' : 'Cadastrar'}
+          </Button>
         </form>
       </Form>
     </div>

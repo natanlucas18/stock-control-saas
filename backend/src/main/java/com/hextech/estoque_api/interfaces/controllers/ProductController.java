@@ -1,7 +1,7 @@
 package com.hextech.estoque_api.interfaces.controllers;
 
 import com.hextech.estoque_api.application.services.ProductService;
-import com.hextech.estoque_api.infrastructure.security.utils.AuthContext;
+import com.hextech.estoque_api.infrastructure.utils.AuthContext;
 import com.hextech.estoque_api.interfaces.controllers.docs.ProductControllerDocs;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PageMetadata;
 import com.hextech.estoque_api.interfaces.dtos.StarndardResponse.PaginatedResponse;
@@ -32,9 +32,7 @@ public class ProductController implements ProductControllerDocs {
 
     @GetMapping
     public ResponseEntity<StandardResponse<?>> findAllPaged(@RequestParam(value = "query", defaultValue = "") String query, Pageable pageable) {
-        int page = pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0;
-        Pageable adjustedPageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
-        Page<ProductResumeDTO> response = service.findAllByCompanyId(query, authContext.getCurrentCompanyId(), adjustedPageable);
+        Page<ProductResumeDTO> response = service.findAllByCompanyId(query, authContext.getCurrentCompanyId(), pageable);
 
         List<ProductResumeDTO> content = response.getContent();
         PageMetadata pageMetadata = new PageMetadata(response);

@@ -1,17 +1,18 @@
 import { Product } from './product-schema';
 import { StockLocationsData } from './stock-location-schema';
-import { User } from './auth-response';
+import { AuthResponse } from './auth-response';
 
 export type MovementsReportParams = {
-  search: string;
-  startDate?: string;
-  endDate?: string;
-  productId?: number;
-  page?: number;
-  size?: number;
-  sort?: 'moment' | 'desc';
-  type?: 'ENTRADA' | 'SAIDA' | 'DEVOLUCAO' | 'TRANSFERENCIA';
+  search: string | undefined;
+  startDate?: string | undefined;
+  endDate?: string | undefined;
+  productId?: number | undefined;
+  page?: number | undefined;
+  size?: number | undefined;
+  sort?: string | undefined;
+  type?: string | undefined;
 };
+
 
 export type MovementsReport = {
   id: number;
@@ -21,7 +22,7 @@ export type MovementsReport = {
   note: string;
   moment: string;
   product: Pick<Product, 'id' | 'code' | 'name' | 'unitMeasure'>;
-  user: Pick<User, 'id' | 'name'>;
+  user: Pick<AuthResponse, 'userId' | 'userName'>;
   fromStockLocation: StockLocationsData | null;
   toStockLocation: StockLocationsData | null;
 };

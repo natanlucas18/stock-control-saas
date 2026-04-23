@@ -6,7 +6,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.hextech.estoque_api.domain.entities.user.User;
 import com.hextech.estoque_api.infrastructure.security.exceptions.InvalidJwtAuthenticationException;
-import com.hextech.estoque_api.infrastructure.security.utils.CustomUserDetails;
+import com.hextech.estoque_api.infrastructure.utils.CustomUserDetails;
 import com.hextech.estoque_api.interfaces.dtos.security.TokenDTO;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;

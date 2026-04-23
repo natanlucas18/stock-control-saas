@@ -23,6 +23,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { StockLocationPopover } from '../../(local-estoque)/components/stock-location-popover';
 import { ProductsPopover } from '../../(produtos)/components/products-popover';
+import { useCreateMovements } from '@/hooks/movements/useCreateMovements';
 
 export default function EntryMovementsForm() {
   const router = useRouter();
@@ -37,16 +38,20 @@ export default function EntryMovementsForm() {
     }
   });
 
+  const { mutate, isPending, data } = useCreateMovements();
+
   async function onSubmit(formData: EntryMovementsFormType) {
-    const { success, data } = await createEntryMovements(formData);
+    mutate(formData, {
+      onSuccess: () => {
+        toast.success('Produto cadastrado com sucesso!');
+        hookForm.reset();
+        router.refresh();
 
-    if (success) {
-      toast.success('Produto cadastrado com sucesso!');
-      hookForm.reset();
-      router.refresh();
-    }
-
-    if (!success) toast.error('Erro ao cadastrar produto!');
+      },
+      onError: () => {
+        toast.error('Erro ao cadastrar produto!');
+      }
+    })
   }
 
   return (
@@ -115,7 +120,11 @@ export default function EntryMovementsForm() {
             )}
           />
 
-          <Button type='submit'>Enviar</Button>
+          <Button 
+            type='submit'
+            disabled={isPending}
+           > {isPending ? 'Enviando' : 'Enviar'}
+          </Button>
         </form>
       </Form>
     </div>

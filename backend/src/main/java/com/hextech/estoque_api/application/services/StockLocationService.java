@@ -7,12 +7,15 @@ import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
 import com.hextech.estoque_api.infrastructure.repositories.MovementRepository;
 import com.hextech.estoque_api.infrastructure.repositories.StockLocationRepository;
+import com.hextech.estoque_api.infrastructure.utils.PageableUtils;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class StockLocationService {
@@ -26,8 +29,10 @@ public class StockLocationService {
 
 
     @Transactional(readOnly = true)
-    public Page<StockLocationDTO> findAllByCompanyId(String name, Long companyId, Pageable pageable) {
-        Page<StockLocation> result = repository.findAllByNameAndCompanyId(name, companyId, pageable);
+    public Page<StockLocationDTO> findAllByCompanyId(String query, Long companyId, Pageable pageable) {
+        Pageable validPageable = PageableUtils.validatePageable(pageable, List.of("id", "name"));
+
+        Page<StockLocation> result = repository.findAllByNameAndCompanyId(query, companyId, validPageable);
         return result.map(StockLocationDTO::new);
     }
 

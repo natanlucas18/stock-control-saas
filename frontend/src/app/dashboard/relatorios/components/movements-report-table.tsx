@@ -52,26 +52,27 @@ import {
 import { useState } from 'react';
 import FilterForm from './filter-form';
 import { default as MovementsReportDetailsSheet } from './movements-report-details-sheet';
+import { useMovementsReport } from '@/hooks/reports/useMovementsReport';
+import { parseNumber } from '@/lib/parse-number';
 
-type MovementsReportTableProps = {
-  repots: MovementsReport[];
-  paginationOptions?: PaginationOptions;
-  pageSize?: number;
-};
-
-export function MovementsReportTable({
-  repots,
-  paginationOptions
-}: MovementsReportTableProps) {
+export function MovementsReportTable() {
   const { setUrlParam, params } = useUrlParams();
   const [openDetails, setOpenDetails] = useState(false);
   const [report, setReport] = useState<MovementsReport>();
-  // const [report, setProduct] = useState<Product>();
+ 
+  const {data, isLoading} = useMovementsReport({
+    startDate: params.get('startDate') || undefined,
+    endDate: params.get('endDate') || undefined,
+    search: params.get('search') || undefined,
+    sort: params.get('sort') || undefined,
+    type: params.get('status') || undefined,
+    page: parseNumber(params.get('page')),
+    size: parseNumber(params.get('size')),
+    productId: parseNumber(params.get('productId'))
+  })
 
-  // async function getOneProduct(id: number) {
-  //   const { data } = await getProductById(id);
-  //   setProduct(data);
-  // }
+  const reports = data?.data.content ?? [];
+  const paginationOptions = data?.data.pagination
 
   function handleSort(sort: string) {
     const currentSort = params.get('sort');
@@ -140,7 +141,7 @@ export function MovementsReportTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {repots.length === 0 ? (
+          {reports.length === 0 ? (
             <>
               <TableRow>
                 <TableCell
@@ -152,7 +153,7 @@ export function MovementsReportTable({
               </TableRow>
             </>
           ) : (
-            repots.map((report) => (
+            reports.map((report) => (
               <TableRow
                 key={report.id}
                 onDoubleClick={async () => {
@@ -166,7 +167,7 @@ export function MovementsReportTable({
                 <TableCell>{report.unitMeasure}</TableCell>
                 <TableCell>{report.moment}</TableCell>
                 <TableCell>{report.product.name}</TableCell>
-                <TableCell>{report.user.name}</TableCell>
+                <TableCell>{report.user.userName}</TableCell>
                 <TableCell
                   onDoubleClick={(e) => {
                     e.stopPropagation();
