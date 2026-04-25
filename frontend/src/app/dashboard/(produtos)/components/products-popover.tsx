@@ -21,7 +21,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
-import { useProducts } from '@/hooks/use-products';
+import { useProducts } from '@/hooks/products/useProducts';
 import { getVisiblePages } from '@/lib/utils';
 import { Product } from '@/types/product-schema';
 
@@ -48,7 +48,14 @@ export function ProductsPopover({ onChange }: ProductsPopoverProps) {
   const params = useMemo(() => {
     return { pageNumber, search: searchValue, pageSize: 10 };
   }, [pageNumber, searchValue]);
-  const { products, paginationOptions } = useProducts(params);
+  const { data } = useProducts({
+    pageNumber: params.pageNumber || undefined,
+    pageSize: params.pageSize || undefined,
+    search: params.search || undefined
+  });
+
+  const products = data?.data.content ?? [];
+  const paginationOptions = data?.data.pagination
 
   return (
     <div>
@@ -69,16 +76,16 @@ export function ProductsPopover({ onChange }: ProductsPopoverProps) {
         </PopoverTrigger>
         <PopoverContent
           className='p-0'
-          side='right'
+          side='bottom'
           align='start'
         >
           <Command>
             <CommandInput
               onValueChange={setSearch}
-              placeholder='Change status...'
+              placeholder='Pesquisar'
             />
             <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandEmpty>Sem resultados.</CommandEmpty>
               <CommandGroup>
                 {products.map((product) => (
                   <CommandItem
@@ -135,7 +142,6 @@ function PaginationPopover({
             }}
           >
             <ChevronLeftIcon />
-            Anterior
           </Button>
         </PaginationItem>
 
@@ -161,7 +167,6 @@ function PaginationPopover({
               onPageChange(pageNumber + 1);
             }}
           >
-            Próximo
             <ChevronRightIcon />
           </Button>
         </PaginationItem>
