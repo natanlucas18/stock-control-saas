@@ -6,15 +6,21 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
-import ProductRegisterForm from './product-register-form';
+import { PackagePlusIcon } from 'lucide-react';
 import { useState } from 'react';
+import ProductRegisterForm from './product-register-form';
 
 export default function ProductRegisterDialog() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}
+    >
       <DialogTrigger asChild>
-        <Button>Criar Produto</Button>
+        <Button>
+          <PackagePlusIcon /> Novo Produto
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -15,7 +15,7 @@ export default async function DashboardLayout({
           <SidebarTrigger />
           <ToggleTheme />
         </header>
-        <main className=''>{children}</main>
+        <main className='container mx-auto'>{children}</main>
       </div>
     </SidebarProvider>
   );
