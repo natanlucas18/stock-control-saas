@@ -21,10 +21,8 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
-import { useProducts } from '@/hooks/use-products';
-import { useStockLocation } from '@/hooks/use-stock-location';
+import { useStockLocations } from '@/hooks/stock-locations/useStockLocations';
 import { getVisiblePages } from '@/lib/utils';
-import { Product } from '@/types/product-schema';
 
 import { PaginationOptions } from '@/types/server-dto';
 import { StockLocationsData } from '@/types/stock-location-schema';
@@ -47,7 +45,14 @@ export function StockLocationPopover({ onChange }: StockLocationPopoverProps) {
   const params = useMemo(() => {
     return { pageNumber, search: searchValue, pageSize: 10 };
   }, [pageNumber, searchValue]);
-  const { stockLocations, paginationOptions } = useStockLocation(params);
+  const { data } = useStockLocations({
+    pageNumber: params.pageNumber || undefined,
+    pageSize: params.pageSize || undefined,
+    search: params.search || undefined,
+  });
+
+  const stockLocations = data?.data.content ?? [];
+  const paginationOptions = data?.data.pagination
 
   return (
     <div>
@@ -74,7 +79,7 @@ export function StockLocationPopover({ onChange }: StockLocationPopoverProps) {
           <Command>
             <CommandInput
               onValueChange={setSearch}
-              placeholder='Change status...'
+              placeholder='Pesquisar'
             />
             <CommandList>
               <CommandEmpty>Sem resultados.</CommandEmpty>

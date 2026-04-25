@@ -21,7 +21,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
-import { useUnitMeasure } from '@/hooks/use-unit-measure';
+import { useUnitMeasures } from '@/hooks/unit-measures/useUnitMeasures';
 import { getVisiblePages } from '@/lib/utils';
 
 import { PaginationOptions } from '@/types/server-dto';
@@ -45,7 +45,14 @@ export function UnitMeasurePopover({ onChange }: UnitMeasurePopoverProps) {
   const params = useMemo(() => {
     return { pageNumber, search: searchValue, pageSize: 10 };
   }, [pageNumber, searchValue]);
-  const { unitsMeasure, paginationOptions } = useUnitMeasure(params);
+  const { data } = useUnitMeasures({
+    pageNumber: params.pageNumber || undefined,
+    pageSize: params.pageSize || undefined,
+    search: params.search || undefined
+  })
+
+  const unitsMeasure = data?.data.content ?? [];
+  const paginationOptions = data?.data.pagination
 
   return (
     <div>
@@ -72,7 +79,7 @@ export function UnitMeasurePopover({ onChange }: UnitMeasurePopoverProps) {
           <Command>
             <CommandInput
               onValueChange={setSearch}
-              placeholder='Change status...'
+              placeholder='Pesquisar'
             />
             <CommandList>
               <CommandEmpty>Sem resultados.</CommandEmpty>
