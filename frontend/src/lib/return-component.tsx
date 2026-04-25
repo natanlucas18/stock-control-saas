@@ -17,7 +17,7 @@ export function returnBadgeComponent(status: string | undefined) {
       return (
         <Badge
           variant={'secondary'}
-          className='w-16 bg-blue-500 text-white dark:bg-blue-950'
+          className='w-16 text-amber-500 border border-amber-500'
         >
           Alto
         </Badge>
@@ -25,8 +25,8 @@ export function returnBadgeComponent(status: string | undefined) {
     case statusStatus.NORMAL:
       return (
         <Badge
-          variant={'default'}
-          className='w-16'
+          variant={'secondary'}
+          className='w-16 text-emerald-500 border border-emerald-500'
         >
           Normal
         </Badge>
@@ -34,8 +34,8 @@ export function returnBadgeComponent(status: string | undefined) {
     case statusStatus.LOW:
       return (
         <Badge
-          variant={'destructive'}
-          className='w-16'
+          variant={'secondary'}
+          className='w-16 text-destructive border border-destructive'
         >
           Baixo
         </Badge>

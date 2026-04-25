@@ -1,5 +1,6 @@
 'use client';
 
+import CustomTooltip from '@/components/custom-tooltip';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -28,54 +29,47 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
+import { useProducts } from '@/hooks/products/useProducts';
 import { useUrlParams } from '@/hooks/use-url-params';
+import { parseNumber } from '@/lib/parse-number';
 import { returnBadgeComponent } from '@/lib/return-component';
 import { getVisiblePages } from '@/lib/utils';
 import { getProductById } from '@/services/products-service';
 import { Product, ProductMin } from '@/types/product-schema';
 import { PaginationOptions } from '@/types/server-dto';
 import {
-  ChevronDownIcon,
+  ArrowUpAZIcon,
+  ArrowUpDownIcon,
+  ArrowUpZAIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  ChevronsUpDownIcon,
-  ChevronUpIcon,
+  ClipboardCopyIcon,
   MoreHorizontalIcon,
   SearchIcon
 } from 'lucide-react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
+import { FaExclamationCircle } from 'react-icons/fa';
 import { useDebouncedCallback } from 'use-debounce';
 import ProductDeleteAlert from './product-delete-alert';
 import ProductDetailsSheet from './product-details-sheet';
 import ProductEditDialog from './product-edit-dialog';
 import ProductRegisterDialog from './product-register-dialog';
-import { useProducts } from '@/hooks/products/useProducts';
-import { SkeletonTable } from '@/components/skeleton-table';
-import { parseNumber } from '@/lib/parse-number';
 
 export function ProductsTable() {
   const { setUrlParam, params } = useUrlParams();
   const [openDetails, setOpenDetails] = useState(false);
   const [product, setProduct] = useState<Product>();
 
-  const {data, isLoading} = useProducts({
+  const { data, isLoading } = useProducts({
     pageSize: parseNumber(params?.get('size')),
     pageNumber: parseNumber(params?.get('page')),
     search: params?.get('query') || undefined,
     sort: params?.get('sort') || undefined
-  })
+  });
 
   const products = data?.data.content ?? [];
-  const paginationOptions  = data?.data.pagination
-  
+  const paginationOptions = data?.data.pagination;
+
   async function getOneProduct(id: number) {
     const { data } = await getProductById(id);
     setProduct(data);
@@ -105,87 +99,122 @@ export function ProductsTable() {
 
     switch (currentSort) {
       case `${sort},asc`:
-        return <ChevronUpIcon />;
+        return <ArrowUpAZIcon />;
       case `${sort},desc`:
-        return <ChevronDownIcon />;
+        return <ArrowUpZAIcon />;
       default:
-        return <ChevronsUpDownIcon />;
+        return <ArrowUpDownIcon />;
     }
   }
 
   return (
     <>
-      <div className='flex justify-between'>
-        <div className='flex gap-2.5'>
-          <SearchInput />
-          <PageSizeFilter />
+      <div className='md:flex md:gap-4'>
+        <SearchInput />
+        <div className='flex gap-4'>
+          <div className='flex gap-1 place-items-center'>
+            <PageSizeFilter />
+            <CustomTooltip content='Quantidade de itens por página'>
+              <FaExclamationCircle className='not-md:hidden' />
+            </CustomTooltip>
+          </div>
+          <CustomTooltip content='Orden alfabética'>
+            <Button
+              onClick={() => handleSort('name')}
+              className='w-fit'
+            >
+              {getSortIcon('name')}
+            </Button>
+          </CustomTooltip>
+          <ProductRegisterDialog />
         </div>
-        <ProductRegisterDialog />
       </div>
       <Separator className='my-5' />
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className='w-[100px]'>Código</TableHead>
-            <TableHead
-              className='cursor-pointer flex items-center gap-1'
-              onClick={() => handleSort('name')}
-            >
-              Produto
-              {getSortIcon('name')}
-            </TableHead>
-            <TableHead>Quantidade</TableHead>
-            <TableHead className='text-left'>Unidade</TableHead>
-            <TableHead className='text-left'>Status</TableHead>
-            <TableHead className='text-left'>Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          { isLoading && (
-            <SkeletonTable />
-          )}
-          {products.length === 0 ? (
-            <>
-              <TableRow>
-                <TableCell
-                  colSpan={6}
-                  className='text-center py-4 text-muted-foreground'
-                >
-                  Nenhum produto encontrado
-                </TableCell>
-              </TableRow>
-            </>
-          ) : (
-            products.map((productMin) => (
-              <TableRow
-                key={productMin.id}
+      <div className='space-y-5 overflow-x-auto'>
+        {products.length === 0 ? (
+          <div>
+            <div className='text-center py-4 text-muted-foreground'>
+              Nenhum produto encontrado
+            </div>
+          </div>
+        ) : (
+          products.map((product) => (
+            <Fragment key={product.id}>
+              <div
                 onDoubleClick={async () => {
-                  await getOneProduct(productMin.id);
+                  await getOneProduct(product.id);
                   setOpenDetails(true);
                 }}
-                className='cursor-pointer'
+                className='grid grid-cols-[auto_1fr] dark:bg-neutral-900 rounded-lg p-5 gap-4 md:grid-cols-[auto_1fr_auto_auto_auto_auto] md:gap-10 bg-neutral-100'
               >
-                <TableCell>{productMin.code}</TableCell>
-                <TableCell>{productMin.name}</TableCell>
-                <TableCell>{productMin.totalQuantity}</TableCell>
-                <TableCell>{productMin.unitMeasure}</TableCell>
-                <TableCell>
-                  {returnBadgeComponent(productMin.stockStatus)}
-                </TableCell>
-                <TableCell
+                <div>
+                  <img
+                    src='https://picsum.photos/400?grayscale&blur'
+                    alt='random image'
+                    className='rounded'
+                    width={64}
+                    height={64}
+                  />
+                </div>
+                <div>
+                  <div className='text-[1.2rem]'>{product.name}</div>
+                  <div className='flex gap-1 items-center dark:text-neutral-400'>
+                    <div>{product.code}</div>
+                    <ClipboardCopyIcon
+                      onDoubleClick={(e) => e.stopPropagation()}
+                      onClick={() =>
+                        navigator.clipboard.writeText(product.code || '')
+                      }
+                      size={15}
+                    />
+                  </div>
+                </div>
+                <Separator
+                  orientation='vertical'
+                  className='not-md:hidden'
+                />
+                <Separator className='md:hidden col-span-2 md:col-span-1' />
+                <div className='col-span-2 grid grid-cols-2 place-items-center md:col-span-1 md:gap-4'>
+                  <div>
+                    <div className='dark:text-neutral-400 text-[0.8rem]'>
+                      QUANTIDADE
+                    </div>
+                    <div className='flex gap-2 justify-center'>
+                      <div className='text-[1.2rem]'>
+                        {product.totalQuantity}
+                      </div>
+                      <div className='text-[1.2rem]'>{product.unitMeasure}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className='dark:text-neutral-400 text-center text-[0.8rem]'>
+                      STATUS
+                    </div>
+                    <div>{returnBadgeComponent(product.stockStatus)}</div>
+                  </div>
+                </div>
+                <Separator
+                  orientation='vertical'
+                  className='not-md:hidden'
+                />
+                <div
+                  className='col-span-2 place-self-center border rounded-lg md:col-span-1'
                   onDoubleClick={(e) => {
                     e.stopPropagation();
                   }}
                 >
-                  <ProductDropdownMenu productMin={productMin} />
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+                  <ProductDropdownMenu productMin={product} />
+                </div>
+              </div>
+            </Fragment>
+          ))
+        )}
+      </div>
+
       {paginationOptions && (
-        <PaginationTable paginationOptions={paginationOptions} />
+        <div className='mt-4'>
+          <PaginationTable paginationOptions={paginationOptions} />
+        </div>
       )}
 
       <ProductDetailsSheet
@@ -209,7 +238,7 @@ function SearchInput() {
   }
 
   return (
-    <div className='relative'>
+    <div className='relative mb-4 md:mb-0'>
       <SearchIcon className='absolute inset-y-0 left-0 flex place-self-center pointer-events-none pl-2' />
       <Input
         className='pl-7'
@@ -230,8 +259,8 @@ function PageSizeFilter() {
 
   return (
     <Select onValueChange={handlePageSizeChange}>
-      <SelectTrigger className='w-[180px]'>
-        <SelectValue placeholder='Quantidade por Página' />
+      <SelectTrigger className='w-auto'>
+        <SelectValue />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
@@ -271,7 +300,6 @@ function PaginationTable({ paginationOptions }: PaginationTableProps) {
             }}
           >
             <ChevronLeftIcon />
-            Anterior
           </Button>
         </PaginationItem>
 
@@ -297,7 +325,6 @@ function PaginationTable({ paginationOptions }: PaginationTableProps) {
               handlePageChange(pageNumber + 1);
             }}
           >
-            Próximo
             <ChevronRightIcon />
           </Button>
         </PaginationItem>
@@ -341,10 +368,7 @@ function ProductDropdownMenu({
             <MoreHorizontalIcon className='h-4 w-4' />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align='end'
-          className=''
-        >
+        <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Ações</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() =>

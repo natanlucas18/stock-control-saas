@@ -48,7 +48,7 @@ export default function ProductDetailsSheet({
           {trigger}
         </SheetTrigger>
       )}
-      <SheetContent className='px-4 overflow-scroll'>
+      <SheetContent className='px-4 overflow-x-auto w-full'>
         <SheetHeader>
           <SheetTitle>Detalhes do Produto</SheetTitle>
         </SheetHeader>
