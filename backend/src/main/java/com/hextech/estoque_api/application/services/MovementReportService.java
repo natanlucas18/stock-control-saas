@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.hextech.estoque_api.application.services.ProductService.parseProductId;
@@ -31,5 +32,25 @@ public class MovementReportService {
         Page<Movement> movements = repository.searchAllMovements(period.getStartDate(), period.getEndDate(), checkedType,
                 productIdParsed, companyId, validPageable);
         return movements.map(MovementResponseDTO::new);
+    }
+
+    public List<MovementResponseDTO> getMovementsReportToPdf(String startDate, String endDate, String type, String productId, Long companyId, Pageable pageable) {
+        ReportPeriod period = ReportPeriodFactory.fromString(startDate, endDate);
+        Long productIdParsed = parseProductId(productId);
+        MovementType checkedType = (type.isEmpty() || type.equals("null")) ? null : MovementType.checkMovementType(type);
+        Pageable validPageable = PageableUtils.validatePageable(pageable, List.of("id", "type", "moment"));
+
+        List<Movement> allMovements = new ArrayList<>();
+        Page<Movement> page;
+        do {
+            page = repository.searchAllMovements(period.getStartDate(), period.getEndDate(), checkedType,
+                    productIdParsed, companyId, validPageable);
+
+            allMovements.addAll(page.getContent());
+
+            validPageable = validPageable.next();
+        } while (page.hasNext());
+
+        return allMovements.stream().map(MovementResponseDTO::new).toList();
     }
 }

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:td="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        @page {
+            size: A4 landscape;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .date {
+            font-size: 11px;
+            color: #777;
+        }
+
+        /* INFO */
+        .info {
+            display: inline;
+            margin-bottom: 20px;
+        }
+
+        .info span {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f5f5f5;
+        }
+
+        th {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 12px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 30px;
+            font-size: 10px;
+            text-align: center;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="title">Relatório de Movimentações</div>
+            <div class="date"
+                 th:text="${#temporals.format(now, 'dd/MM/yyyy HH:mm')}">
+            </div>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="info">
+            <span>
+                <strong>Total de registros:</strong>
+                <span th:text="${movements.size()}"></span>
+            </span>
+        </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Data</th>
+            <th>Tipo</th>
+            <th>Código</th>
+            <th>Produto</th>
+            <th>Quant.</th>
+            <th>Origem</th>
+            <th>Destino</th>
+            <th>Usuário</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="mov : ${movements}">
+                <td th:text="${mov.id}"></td>
+
+                <td th:text="${#temporals.format(mov.moment, 'dd/MM/yyyy HH:mm')}"></td>
+
+                <td th:text="${mov.type.toUpperCase()}"></td>
+
+                <td th:text="${mov.product.code}"></td>
+
+                <td style="text-align: left;" th:text="${mov.product.name}"></td>
+
+                <td th:text="${T(java.lang.String).format(new java.util.Locale('pt', 'BR'), '%.2f', mov.quantity)}"></td>
+
+                <td th:text="${mov.fromStockLocation != null ? mov.fromStockLocation.name : '-'}"></td>
+
+                <td th:text="${mov.toStockLocation != null ? mov.toStockLocation.name : '-'}"></td>
+
+                <td th:text="${mov.user.name.split(' ')[0]}"></td>
+
+            </tr>
+        </tbody>
+    </table>
+        <!-- FOOTER -->
+        <div class="footer">
+            Gerado automaticamente pelo sistema de estoque
+        </div>
+    </div>
+</body>
+</html>
