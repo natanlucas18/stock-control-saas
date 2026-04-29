@@ -39,13 +39,11 @@
 
         /* INFO */
         .info {
-            display: inline;
+            display: inline-block;
+            width: 100%;
+            margin-top: 15px;
             margin-bottom: 20px;
-        }
-
-        .info span {
-            display: block;
-            margin-bottom: 5px;
+            text-align: left;
         }
 
         /* TABLE */
@@ -98,14 +96,6 @@
             </div>
         </div>
 
-        <!-- FILTROS -->
-        <div class="info">
-            <span>
-                <strong>Total de registros:</strong>
-                <span th:text="${movements.size()}"></span>
-            </span>
-        </div>
-
     <table>
         <thead>
         <tr>
@@ -143,6 +133,15 @@
             </tr>
         </tbody>
     </table>
+
+        <!-- FILTROS -->
+        <div class="info">
+            <span>
+                <strong>Total de registros:</strong>
+                <span th:text="${movements.size()}"></span>
+            </span>
+        </div>
+
         <!-- FOOTER -->
         <div class="footer">
             Gerado automaticamente pelo sistema de estoque
