@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,5 +30,23 @@ public class ProductReportService {
         Page<Product> productsPage = repository.searchProductsReport(parsedStatus, companyId, validPageable);
 
         return productsPage.map(ProductReportDTO::new);
+    }
+
+    public List<ProductReportDTO> getProductsReportToPdf(String status, Long companyId, Pageable pageable) {
+
+        String parsedStatus = (status == null || status.isBlank()) ? null : StockStatus.checkStockStatus(status).name();
+
+        Pageable validPageable = PageableUtils.validatePageable(pageable, List.of("id", "code", "name", "price"));
+
+        List<Product> allProducts = new ArrayList<>();
+        Page<Product> page;
+        do {
+            page = repository.searchProductsReport(parsedStatus, companyId, validPageable);
+            allProducts.addAll(page.getContent());
+            validPageable = validPageable.next();
+        } while (page.hasNext());
+
+
+        return allProducts.stream().map(ProductReportDTO::new).toList();
     }
 }
