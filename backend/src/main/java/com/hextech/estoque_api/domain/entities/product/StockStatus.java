@@ -1,9 +1,18 @@
 package com.hextech.estoque_api.domain.entities.product;
 
+import lombok.Getter;
+
+@Getter
 public enum StockStatus {
-        LOW,
-        NORMAL,
-        HIGH;
+        LOW("BAIXO"),
+        NORMAL("NORMAL"),
+        HIGH("ALTO");
+
+        private final String description;
+
+        StockStatus(String description) {
+            this.description = description;
+        }
 
     public static StockStatus checkStockStatus(String status) {
         try {
