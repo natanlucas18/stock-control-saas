@@ -5,6 +5,11 @@
     <style>
         @page {
             size: A4 landscape;
+
+            @bottom-right {
+                content: "Página " counter(page) " de " counter(pages);
+                font-size: 10px;
+            }
         }
 
         body {
