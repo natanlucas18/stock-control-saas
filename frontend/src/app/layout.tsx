@@ -1,10 +1,10 @@
 import { ThemeProvider } from '@/components/theme-provider';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
 import { ReactQueryProvider } from '../../providers/react-query-provider';
 import { AuthProvider } from '../../providers/auth-provider';
+import { Toaster } from '@/components/ui/sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -38,7 +38,13 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
             >
-            <ToastContainer />
+              <Toaster
+                position='top-right'
+                richColors={false}
+                toastOptions={{
+                    duration: 2000
+                }}  
+              />
             {children}
           </ThemeProvider>
         </ReactQueryProvider>

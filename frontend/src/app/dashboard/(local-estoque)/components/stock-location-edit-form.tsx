@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useUpdateStockLocation } from '@/hooks/stock-locations/useUpdateStockLocation';
-import { updateStockLocation } from '@/services/stock-location-service';
+import { useAppToast } from '@/hooks/useAppToast';
 import {
   StockLocationsData,
   stockLocationsFormSchema,
@@ -20,7 +20,6 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 
 export default function StockLocationEditForm({
   defaultValues,
@@ -30,6 +29,7 @@ export default function StockLocationEditForm({
   onOpenChange?: (open: boolean) => void
 }) {
   const router = useRouter();
+  const toast = useAppToast();
 
   const { mutate, isPending } = useUpdateStockLocation()
 
