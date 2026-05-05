@@ -11,10 +11,12 @@ public class ProductFactory {
 
     public static Product createProduct(Long id) {
         Company company = CompanyFactory.createCompany(1L);
-        return Product.createNewProduct("PRODTEST" + id, "Test Product " + id,
+        Product product = Product.createNewProduct("PRODTEST" + id, "Test Product " + id,
                 new BigDecimal("100.00"), new BigDecimal(100), new BigDecimal(10),
                 UnitMeasure.createNewUnitMeasure("UNIDADE", "UN", company),
                 company);
+        product.setId(id);
+        return product;
     }
 
     public static ProductRequestDTO createProductRequestDTO() {
