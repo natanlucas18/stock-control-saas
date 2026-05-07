@@ -2,18 +2,21 @@ package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.tests.CompanyFactory;
 import com.hextech.estoque_api.application.tests.StockLocationFactory;
+import com.hextech.estoque_api.domain.entities.company.Company;
 import com.hextech.estoque_api.domain.entities.stockLocation.StockLocation;
 import com.hextech.estoque_api.domain.exceptions.DeletionConflictException;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
+import com.hextech.estoque_api.infrastructure.repositories.MovementRepository;
 import com.hextech.estoque_api.infrastructure.repositories.StockLocationRepository;
 import com.hextech.estoque_api.interfaces.dtos.stockLocations.StockLocationDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -23,194 +26,199 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class StockLocationServiceTest {
 
     @Mock
-    private StockLocationRepository repository;
+    private StockLocationRepository stockLocationRepository;
     @Mock
     private CompanyRepository companyRepository;
+    @Mock
+    private MovementRepository movementRepository;
     @InjectMocks
-    private StockLocationService service;
+    private StockLocationService stockLocationService;
+
+    private Long existingStockLocationId;
+    private Long nonExistingStockLocationId;
+    private Long existingCompanyId;
+    private Long nonExistingCompanyId;
+    private StockLocation stockLocation;
+    private Company company;
+    private StockLocationDTO stockLocationDTO;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        existingStockLocationId = 1L;
+        nonExistingStockLocationId = 99L;
+        existingCompanyId = 1L;
+        nonExistingCompanyId = 99L;
+
+        company = CompanyFactory.createCompany(existingCompanyId);
+
+        stockLocation = StockLocationFactory.createStockLocation(existingStockLocationId);
+
+        stockLocationDTO = StockLocationFactory.createStockLocationDTO(existingStockLocationId);
     }
 
     @Test
-    @DisplayName("Should return all stock locations paged for the current company")
-    void findAllByCompanyIdPagedCase1() {
-        Long companyId = 1L;
-        String stockLocationName = "Stock Location 1";
-        Long stockLocationId = 1L;
-        long totalElements = 1;
+    @DisplayName("Should find all stock locations by company ID successfully")
+    void findAllByCompanyId_ShouldReturnPageOfStockLocationDTO() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StockLocation> stockLocationPage = new PageImpl<>(List.of(stockLocation), pageable, 1);
 
-        Pageable pageable = PageRequest.of(0, 8);
-        Page<StockLocation> page = new PageImpl<>(List.of(StockLocationFactory.createStockLocation(stockLocationId)), pageable, totalElements);
+        when(stockLocationRepository.findAllByNameAndCompanyId(anyString(), anyLong(), any(Pageable.class)))
+                .thenReturn(stockLocationPage);
 
-        when(repository.findAllByNameAndCompanyId(anyString(), anyLong(), any())).thenReturn(page);
+        Page<StockLocationDTO> result = stockLocationService.findAllByCompanyId("Test", existingCompanyId, pageable);
 
-        Page<StockLocationDTO> result = service.findAllByCompanyId(stockLocationName, companyId, pageable);
-
-        verify(repository, times(1)).findAllByNameAndCompanyId(anyString(), anyLong(), any());
         assertNotNull(result);
+        assertFalse(result.isEmpty());
         assertEquals(1, result.getTotalElements());
-        assertEquals(1, result.getContent().size());
+        assertEquals(stockLocationDTO.name(), result.getContent().get(0).name());
+        verify(stockLocationRepository, times(1))
+                .findAllByNameAndCompanyId(anyString(), eq(existingCompanyId), any(Pageable.class));
     }
 
     @Test
-    @DisplayName("Should return stock location by id and company id")
-    void findByIdAndCompanyIdCase1() {
-        Long companyId = 1L;
-        Long stockLocationId = 1L;
+    @DisplayName("Should find stock location by ID and company ID successfully")
+    void findByIdAndCompanyId_ShouldReturnStockLocationDTO() {
+        when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(stockLocation));
 
-        when(repository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(StockLocationFactory.createStockLocation(stockLocationId)));
+        StockLocationDTO result = stockLocationService.findByIdAndCompanyId(existingStockLocationId, existingCompanyId);
 
-        StockLocationDTO result = service.findByIdAndCompanyId(stockLocationId, companyId);
-
-        verify(repository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
         assertNotNull(result);
-        assertEquals(stockLocationId, result.id());
+        assertEquals(stockLocationDTO.id(), result.id());
+        assertEquals(stockLocationDTO.name(), result.name());
+        verify(stockLocationRepository, times(1))
+                .findByIdAndCompanyId(eq(existingStockLocationId), eq(existingCompanyId));
     }
 
     @Test
-    @DisplayName("Should throw ResourceNotFoundException when stock location not found by id")
-    void findByIdAndCompanyIdCase2() {
-        Long companyId = 1L;
-        Long stockLocationId = 1L;
+    @DisplayName("Should throw ResourceNotFoundException when stock location not found by ID and company ID")
+    void findByIdAndCompanyId_ShouldThrowResourceNotFoundException_WhenStockLocationNotFound() {
+        when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong()))
+                .thenReturn(Optional.empty());
 
-        when(repository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+                stockLocationService.findByIdAndCompanyId(nonExistingStockLocationId, existingCompanyId));
 
-        Exception thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            service.findByIdAndCompanyId(stockLocationId, companyId);
-        });
-
-        verify(repository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        assertEquals("Local de estoque não encontrado.", thrown.getMessage());
+        assertEquals("Local de estoque não encontrado.", exception.getMessage());
+        verify(stockLocationRepository, times(1))
+                .findByIdAndCompanyId(eq(nonExistingStockLocationId), eq(existingCompanyId));
     }
 
     @Test
-    @DisplayName("Should create a new stock location successfully")
-    void insertCase1() {
-        Long companyId = 1L;
-        Long stockLocationId = 1L;
-        StockLocationDTO requestDTO = StockLocationFactory.createStockLocationDTO(stockLocationId);
+    @DisplayName("Should insert a new stock location successfully")
+    void insert_ShouldReturnStockLocationDTO() {
+        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
+        when(stockLocationRepository.save(any(StockLocation.class))).thenReturn(stockLocation);
 
-        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(CompanyFactory.createCompany(companyId)));
-        when(repository.save(any())).thenReturn(StockLocationFactory.createStockLocation(stockLocationId));
+        StockLocationDTO result = stockLocationService.insert(stockLocationDTO, existingCompanyId);
 
-        StockLocationDTO result = service.insert(requestDTO, companyId);
-
-        verify(repository, times(1)).save(any());
-        verify(companyRepository, times(1)).findById(anyLong());
         assertNotNull(result);
-        assertEquals(stockLocationId, result.id());
+        assertEquals(stockLocationDTO.id(), result.id());
+        assertEquals(stockLocationDTO.name(), result.name());
+        verify(companyRepository, times(1)).findById(eq(existingCompanyId));
+        verify(stockLocationRepository, times(1)).save(any(StockLocation.class));
     }
 
     @Test
-    @DisplayName("Should throw ResourceNotFoundException when non-existing company")
-    void insertCase2() {
-        Long companyId = 1L;
-        Long stockLocationId = 1L;
-        StockLocationDTO requestDTO = StockLocationFactory.createStockLocationDTO(stockLocationId);
-
+    @DisplayName("Should throw ResourceNotFoundException when company not found during insert")
+    void insert_ShouldThrowResourceNotFoundException_WhenCompanyNotFound() {
         when(companyRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Exception thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            service.insert(requestDTO, companyId);
-        });
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+                stockLocationService.insert(stockLocationDTO, nonExistingCompanyId));
 
-        verify(companyRepository, times(1)).findById(anyLong());
-        verify(repository, times(0)).save(any());
-        assertEquals("Empresa não encontrada.", thrown.getMessage());
+        assertEquals("Empresa não encontrada.", exception.getMessage());
+        verify(companyRepository, times(1)).findById(eq(nonExistingCompanyId));
+        verify(stockLocationRepository, never()).save(any(StockLocation.class));
     }
 
     @Test
     @DisplayName("Should update an existing stock location successfully")
-    void updateCase1() {
-        Long companyId = 1L;
-        Long stockLocationId = 1L;
-        StockLocationDTO requestDTO = StockLocationFactory.createStockLocationDTO(stockLocationId);
+    void update_ShouldReturnStockLocationDTO() {
+        when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(stockLocation));
+        when(stockLocationRepository.save(any(StockLocation.class))).thenReturn(stockLocation);
 
-        when(repository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(StockLocationFactory.createStockLocation(stockLocationId)));
-        when(repository.save(any())).thenReturn(StockLocationFactory.createStockLocation(stockLocationId));
-
-        StockLocationDTO result = service.update(stockLocationId, requestDTO, companyId);
-
-        verify(repository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(repository, times(1)).save(any());
+        StockLocationDTO result = stockLocationService.update(existingStockLocationId, stockLocationDTO, existingCompanyId);
 
         assertNotNull(result);
-        assertEquals(stockLocationId, result.id());
+        assertEquals(stockLocationDTO.id(), result.id());
+        assertEquals(stockLocationDTO.name(), result.name());
+        verify(stockLocationRepository, times(1))
+                .findByIdAndCompanyId(eq(existingStockLocationId), eq(existingCompanyId));
+        verify(stockLocationRepository, times(1)).save(any(StockLocation.class));
     }
 
     @Test
-    @DisplayName("Should throw ResourceNotFoundException when updating non-existing stock location")
-    void updateCase2() {
-        Long companyId = 1L;
-        Long stockLocationId = 1L;
-        StockLocationDTO requestDTO = StockLocationFactory.createStockLocationDTO(stockLocationId);
+    @DisplayName("Should throw ResourceNotFoundException when stock location not found during update")
+    void update_ShouldThrowResourceNotFoundException_WhenStockLocationNotFound() {
+        StockLocationDTO updatedStockLocationDTO = new StockLocationDTO(nonExistingStockLocationId, "Updated Location");
 
-        when(repository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(stockLocationRepository.findByIdAndCompanyId(eq(nonExistingStockLocationId), eq(existingCompanyId)))
+                .thenReturn(Optional.empty());
 
-        Exception thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            service.update(stockLocationId, requestDTO, companyId);
-        });
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+                stockLocationService.update(nonExistingStockLocationId, updatedStockLocationDTO, existingCompanyId));
 
-        verify(repository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(repository, times(0)).save(any());
-        assertEquals("Local de estoque não encontrado.", thrown.getMessage());
+        assertEquals("Local de estoque não encontrado.", exception.getMessage());
+        verify(stockLocationRepository, times(1))
+                .findByIdAndCompanyId(eq(nonExistingStockLocationId), eq(existingCompanyId));
+        verify(stockLocationRepository, never()).save(any(StockLocation.class));
     }
 
     @Test
-    @DisplayName("Should delete an existing stock location successfully")
-    void deleteByIdAndCompanyIdCase1() {
-        Long companyId = 1L;
-        Long stockLocationId = 1L;
+    @DisplayName("Should delete stock location successfully")
+    void deleteByIdAndCompanyId_ShouldDeleteStockLocation() {
+        when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong()))
+                .thenReturn(Optional.of(stockLocation));
+        when(movementRepository.existsMovementByStockLocationId(anyLong())).thenReturn(false);
+        doNothing().when(stockLocationRepository).delete(any(StockLocation.class));
 
-        when(repository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(StockLocationFactory.createStockLocation(stockLocationId)));
-        doNothing().when(repository).delete(any());
+        assertDoesNotThrow(() -> stockLocationService.deleteByIdAndCompanyId(existingStockLocationId, existingCompanyId));
 
-        assertDoesNotThrow(() -> service.deleteByIdAndCompanyId(stockLocationId, companyId));
-
-        verify(repository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(repository, times(1)).delete(any());
+        verify(stockLocationRepository, times(1))
+                .findByIdAndCompanyId(eq(existingStockLocationId), eq(existingCompanyId));
+        verify(movementRepository, times(1))
+                .existsMovementByStockLocationId(eq(existingStockLocationId));
+        verify(stockLocationRepository, times(1)).delete(any(StockLocation.class));
     }
 
     @Test
-    @DisplayName("Should throw ResourceNotFoundException when deleting non-existing stock location")
-    void deleteByIdAndCompanyIdCase2() {
-        Long companyId = 1L;
-        Long stockLocationId = 1L;
+    @DisplayName("Should throw ResourceNotFoundException when stock location not found during delete")
+    void deleteByIdAndCompanyId_ShouldThrowResourceNotFoundException_WhenStockLocationNotFound() {
+        when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong()))
+                .thenReturn(Optional.empty());
 
-        when(repository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+                stockLocationService.deleteByIdAndCompanyId(nonExistingStockLocationId, existingCompanyId));
 
-        Exception thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            service.deleteByIdAndCompanyId(stockLocationId, companyId);
-        });
-
-        verify(repository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        assertEquals("Local de estoque não encontrado.", thrown.getMessage());
+        assertEquals("Local de estoque não encontrado.", exception.getMessage());
+        verify(stockLocationRepository, times(1))
+                .findByIdAndCompanyId(eq(nonExistingStockLocationId), eq(existingCompanyId));
+        verify(movementRepository, never()).existsMovementByStockLocationId(anyLong());
+        verify(stockLocationRepository, never()).delete(any(StockLocation.class));
     }
 
     @Test
-    @DisplayName("Should throw DeletionConflictException when deletion violates integrity constraints")
-    void deleteByIdAndCompanyIdCase3() {
-        Long companyId = 1L;
-        Long stockLocationId = 1L;
+    @DisplayName("Should throw DeletionConflictException when stock location has associated movements")
+    void deleteByIdAndCompanyId_ShouldThrowDeletionConflictException_WhenStockLocationHasMovements() {
+        when(stockLocationRepository.findByIdAndCompanyId(anyLong(), anyLong()))
+                .thenReturn(Optional.of(stockLocation));
+        when(movementRepository.existsMovementByStockLocationId(anyLong())).thenReturn(true);
 
-        when(repository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(StockLocationFactory.createStockLocation(stockLocationId)));
-        doThrow(new org.springframework.dao.DataIntegrityViolationException("Integrity violation")).when(repository).delete(any());
+        DeletionConflictException exception = assertThrows(DeletionConflictException.class, () ->
+                stockLocationService.deleteByIdAndCompanyId(existingStockLocationId, existingCompanyId));
 
-        Exception thrown = assertThrows(DeletionConflictException.class, () -> {
-            service.deleteByIdAndCompanyId(stockLocationId, companyId);
-        });
-
-        verify(repository, times(1)).findByIdAndCompanyId(anyLong(), anyLong());
-        verify(repository, times(1)).delete(any());
-        assertEquals("Falha na Integridade referencial.", thrown.getMessage());
+        assertEquals("O local de estoque possui movimentações e não pode ser deletado.", exception.getMessage());
+        verify(stockLocationRepository, times(1))
+                .findByIdAndCompanyId(eq(existingStockLocationId), eq(existingCompanyId));
+        verify(movementRepository, times(1)).existsMovementByStockLocationId(eq(existingStockLocationId));
+        verify(stockLocationRepository, never()).delete(any(StockLocation.class));
     }
 }
