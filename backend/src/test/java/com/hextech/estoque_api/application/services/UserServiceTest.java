@@ -2,6 +2,8 @@ package com.hextech.estoque_api.application.services;
 
 import com.hextech.estoque_api.application.tests.CompanyFactory;
 import com.hextech.estoque_api.application.tests.UserFactory;
+import com.hextech.estoque_api.domain.entities.company.Company;
+import com.hextech.estoque_api.domain.entities.role.Role;
 import com.hextech.estoque_api.domain.entities.user.User;
 import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.domain.exceptions.UserAlreadyExistsException;
@@ -9,173 +11,198 @@ import com.hextech.estoque_api.infrastructure.repositories.CompanyRepository;
 import com.hextech.estoque_api.infrastructure.repositories.RoleRepository;
 import com.hextech.estoque_api.infrastructure.repositories.UserRepository;
 import com.hextech.estoque_api.interfaces.dtos.users.UserRequestDTO;
+import com.hextech.estoque_api.interfaces.dtos.users.UserResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @Mock
-    private UserRepository repository;
+    private UserRepository userRepository;
     @Mock
     private CompanyRepository companyRepository;
     @Mock
     private RoleRepository roleRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
+
     @InjectMocks
-    private UserService service;
+    private UserService userService;
+
+    private Long existingUserId;
+    private Long nonExistingUserId;
+    private Long existingCompanyId;
+    private Long nonExistingCompanyId;
+    private User user;
+    private Company company;
+    private UserRequestDTO userRequestDTO;
+    private String existingEmail;
+    private String nonExistingEmail;
+    private String password;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        existingUserId = 1L;
+        nonExistingUserId = 99L;
+        existingCompanyId = 1L;
+        nonExistingCompanyId = 99L;
+        existingEmail = "test@test.com";
+        nonExistingEmail = "nonexistent@test.com";
+        password = "password";
+
+        company = CompanyFactory.createCompany(existingCompanyId);
+        user = UserFactory.createUser(existingUserId);
+        userRequestDTO = UserFactory.createUserRequestDTO(existingUserId);
     }
 
     @Test
-    @DisplayName("Should load user by username")
-    void loadUserByUsernameCase1() {
-        Long userId = 1L;
-        String username = "test@test.com";
+    @DisplayName("Should load user by username successfully")
+    void loadUserByUsername_ShouldReturnUserDetails() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
 
-        when(repository.findByEmail(anyString())).thenReturn(Optional.of(UserFactory.createUser(userId)));
-
-        var userDetails = service.loadUserByUsername(username);
-
-        verify(repository, times(1)).findByEmail(anyString());
+        UserDetails userDetails = userService.loadUserByUsername(existingEmail);
 
         assertNotNull(userDetails);
-        assertEquals(username, userDetails.getUsername());
+        assertEquals(existingEmail, userDetails.getUsername());
+        verify(userRepository, times(1)).findByEmail(existingEmail);
     }
 
     @Test
     @DisplayName("Should throw UsernameNotFoundException when user not found")
-    void loadUserByUsernameCase2() {
-        String username = "usernameNotFound@test.com";
+    void loadUserByUsername_ShouldThrowUsernameNotFoundException_WhenUserNotFound() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        when(repository.findByEmail(anyString())).thenReturn(Optional.empty());
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () ->
+                userService.loadUserByUsername(nonExistingEmail));
 
-        Exception thrown = assertThrows(UsernameNotFoundException.class, () -> {
-            service.loadUserByUsername(username);
-        });
-
-        verify(repository, times(1)).findByEmail(anyString());
-        assertEquals("Usuário " + username + " não encontrado ou desabilitado.", thrown.getMessage());
+        assertEquals("Usuário " + nonExistingEmail + " não encontrado ou desabilitado.", exception.getMessage());
+        verify(userRepository, times(1)).findByEmail(anyString());
     }
 
     @Test
-    @DisplayName("Should throw UsernameNotFoundException when user disabled")
-    void loadUserByUsernameCase3() {
-        String username = "test@test.com";
-        User user = UserFactory.createUser(1L);
+    @DisplayName("Should throw UsernameNotFoundException when user is disabled")
+    void loadUserByUsername_ShouldThrowUsernameNotFoundException_WhenUserIsDisabled() {
         user.setEnabled(false);
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
 
-        when(repository.findByEmail(anyString())).thenReturn(Optional.of(user));
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () ->
+                userService.loadUserByUsername(existingEmail));
 
-        Exception thrown = assertThrows(UsernameNotFoundException.class, () -> {
-            service.loadUserByUsername(username);
-        });
-
-        verify(repository, times(1)).findByEmail(anyString());
-        assertEquals("Usuário " + username + " não encontrado ou desabilitado.", thrown.getMessage());
+        assertEquals("Usuário " + existingEmail + " não encontrado ou desabilitado.", exception.getMessage());
+        verify(userRepository, times(1)).findByEmail(existingEmail);
     }
-
 
     @Test
     @DisplayName("Should create a new user successfully")
-    void createNewUserCase1() {
-        Long userId = 1L;
-        Long companyId = 1L;
-        String username = "test@test.com";
-        UserRequestDTO requestDTO = UserFactory.createUserRequestDTO(userId);
+    void createNewUser_ShouldReturnUserResponseDTO() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
+        when(roleRepository.findAllById(anyIterable())).thenReturn(user.getRoles());
+        when(passwordEncoder.encode(anyString())).thenReturn(password);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
-        when(repository.findByEmail(anyString())).thenReturn(Optional.empty());
-        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(CompanyFactory.createCompany(companyId)));
-        when(roleRepository.findAllById(any())).thenReturn(UserFactory.createUser(userId).getRoles());
-        when(passwordEncoder.encode(anyString())).thenReturn("encryptedPassword");
-        when(repository.save(any())).thenReturn(UserFactory.createUser(userId));
+        UserResponseDTO result = userService.createNewUser(userRequestDTO, existingCompanyId);
 
-        var userDetails = service.createNewUser(requestDTO, companyId);
-
-        verify(repository, times(1)).findByEmail(anyString());
-        verify(companyRepository, times(1)).findById(anyLong());
-        verify(roleRepository, times(1)).findAllById(any());
-        verify(repository, times(1)).save(any());
-        verify(passwordEncoder, times(1)).encode(anyString());
-        assertNotNull(userDetails);
-        assertEquals(username, userDetails.getEmail());
+        assertNotNull(result);
+        assertEquals(user.getId(), result.getId());
+        assertEquals(userRequestDTO.getEmail(), result.getEmail());
+        verify(userRepository, times(1)).findByEmail(userRequestDTO.getEmail());
+        verify(companyRepository, times(1)).findById(eq(existingCompanyId));
+        verify(roleRepository, times(1)).findAllById(anyIterable());
+        verify(passwordEncoder, times(1)).encode(password);
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    @DisplayName("Should throw UserAlreadyExistsException when email already exists")
-    void createNewUserCase2() {
-        Long userId = 1L;
-        Long companyId = 1L;
-        UserRequestDTO requestDTO = UserFactory.createUserRequestDTO(userId);
+    @DisplayName("Should throw UserAlreadyExistsException when email already exists during creation")
+    void createNewUser_ShouldThrowUserAlreadyExistsException_WhenEmailExists() {
+        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
 
-        when(repository.findByEmail(anyString())).thenReturn(Optional.of(UserFactory.createUser(userId)));
+        UserAlreadyExistsException exception = assertThrows(UserAlreadyExistsException.class, () ->
+                userService.createNewUser(userRequestDTO, existingCompanyId));
 
-        Exception thrown = assertThrows(UserAlreadyExistsException.class, () -> {
-            service.createNewUser(requestDTO, companyId);
-        });
-
-        verify(repository, times(1)).findByEmail(anyString());
-        verify(companyRepository, times(0)).findById(anyLong());
-        verify(roleRepository, times(0)).findAllById(any());
-        verify(repository, times(0)).save(any());
-        assertEquals("Já existe um usuário com este email.", thrown.getMessage());
+        assertEquals("Já existe um usuário com este email.", exception.getMessage());
+        verify(companyRepository, times(1)).findById(existingCompanyId);
+        verify(userRepository, times(1)).findByEmail(userRequestDTO.getEmail());
+        verify(roleRepository, never()).findAllById(anyIterable());
+        verify(passwordEncoder, never()).encode(anyString());
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
-    @DisplayName("Should throw ResourceNotFoundException when company not found")
-    void createNewUserCase3() {
-        Long userId = 1L;
-        Long companyId = 1L;
-        UserRequestDTO requestDTO = UserFactory.createUserRequestDTO(userId);
-
-        when(repository.findByEmail(anyString())).thenReturn(Optional.empty());
+    @DisplayName("Should throw ResourceNotFoundException when company not found during creation")
+    void createNewUser_ShouldThrowResourceNotFoundException_WhenCompanyNotFound() {
         when(companyRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Exception thrown = assertThrows(com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException.class, () -> {
-            service.createNewUser(requestDTO, companyId);
-        });
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+                userService.createNewUser(userRequestDTO, nonExistingCompanyId));
 
-        verify(repository, times(1)).findByEmail(anyString());
-        verify(companyRepository, times(1)).findById(anyLong());
-        verify(roleRepository, times(0)).findAllById(any());
-        verify(repository, times(0)).save(any());
-        assertEquals("Empresa não encontrada.", thrown.getMessage());
+        assertEquals("Empresa não encontrada.", exception.getMessage());
+        verify(companyRepository, times(1)).findById(eq(nonExistingCompanyId));
+        verify(userRepository, never()).findByEmail(userRequestDTO.getEmail());
+        verify(roleRepository, never()).findAllById(anyIterable());
+        verify(passwordEncoder, never()).encode(anyString());
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
-    @DisplayName("Should throw ResourceNotFoundException when one or more roles not found")
-    void createNewUserCase4() {
-        Long userId = 1L;
-        Long companyId = 1L;
-        UserRequestDTO requestDTO = UserFactory.createUserRequestDTO(userId);
+    @DisplayName("Should throw ResourceNotFoundException when roles not found during creation")
+    void createNewUser_ShouldThrowResourceNotFoundException_WhenRolesNotFound() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
+        when(roleRepository.findAllById(anyIterable())).thenReturn(List.of()); // No roles found
 
-        when(repository.findByEmail(anyString())).thenReturn(Optional.empty());
-        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(CompanyFactory.createCompany(companyId)));
-        when(roleRepository.findAllById(any())).thenReturn(UserFactory.createUser(userId).getRoles().subList(0, 1));
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+                userService.createNewUser(userRequestDTO, existingCompanyId));
 
-        Exception thrown = assertThrows(ResourceNotFoundException.class, () -> {
-            service.createNewUser(requestDTO, companyId);
-        });
+        assertEquals("Uma ou mais funções não foram encontradas.", exception.getMessage());
+        verify(userRepository, times(1)).findByEmail(userRequestDTO.getEmail());
+        verify(companyRepository, times(1)).findById(eq(existingCompanyId));
+        verify(roleRepository, times(1)).findAllById(userRequestDTO.getRolesId());
+        verify(passwordEncoder, never()).encode(anyString());
+        verify(userRepository, never()).save(any(User.class));
+    }
 
-        verify(repository, times(1)).findByEmail(anyString());
-        verify(companyRepository, times(1)).findById(anyLong());
-        verify(roleRepository, times(1)).findAllById(any());
-        verify(repository, times(0)).save(any());
-        assertEquals("Uma ou mais funções não foram encontradas.", thrown.getMessage());
+    @Test
+    @DisplayName("Should get current user successfully")
+    void getMe_ShouldReturnUserResponseDTO() {
+        when(userRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.of(user));
+
+        UserResponseDTO result = userService.getMe(existingUserId, existingCompanyId);
+
+        assertNotNull(result);
+        assertEquals(existingUserId, result.getId());
+        verify(userRepository, times(1)).findByIdAndCompanyId(eq(existingUserId), eq(existingCompanyId));
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when current user not found")
+    void getMe_ShouldThrowResourceNotFoundException_WhenCurrentUserNotFound() {
+        when(userRepository.findByIdAndCompanyId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+                userService.getMe(nonExistingUserId, existingCompanyId));
+
+        assertEquals("Usuário não encontrado.", exception.getMessage());
+        verify(userRepository, times(1)).findByIdAndCompanyId(eq(nonExistingUserId), eq(existingCompanyId));
     }
 }
