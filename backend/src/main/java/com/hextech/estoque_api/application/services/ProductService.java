@@ -3,7 +3,9 @@ package com.hextech.estoque_api.application.services;
 import com.hextech.estoque_api.domain.entities.company.Company;
 import com.hextech.estoque_api.domain.entities.product.Product;
 import com.hextech.estoque_api.domain.entities.unitMeasure.UnitMeasure;
-import com.hextech.estoque_api.domain.exceptions.*;
+import com.hextech.estoque_api.domain.exceptions.BusinessException;
+import com.hextech.estoque_api.domain.exceptions.ProductCodeAlreadyExistsException;
+import com.hextech.estoque_api.domain.exceptions.ResourceNotFoundException;
 import com.hextech.estoque_api.infrastructure.repositories.*;
 import com.hextech.estoque_api.infrastructure.utils.PageableUtils;
 import com.hextech.estoque_api.interfaces.dtos.products.ProductRequestDTO;
@@ -27,8 +29,6 @@ public class ProductService {
     private CompanyRepository companyRepository;
     @Autowired
     private MovementRepository movementRepository;
-    @Autowired
-    private StockLocationRepository stockLocationRepository;
     @Autowired
     private UnitMeasureRepository unitMeasureRepository;
     @Autowired
@@ -54,10 +54,10 @@ public class ProductService {
         Company company = companyRepository.findById(currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
 
-        UnitMeasure unitMeasure = unitMeasureRepository.findById(requestDTO.getUnitMeasureId())
+        UnitMeasure unitMeasure = unitMeasureRepository.findByIdAndCompanyId(requestDTO.getUnitMeasureId(), currentCompanyId)
                 .orElseThrow(()-> new ResourceNotFoundException("Unidade de medida não encontrada."));
 
-        validProductCode(requestDTO.getCode(), company.getId());
+        checkProductCode(requestDTO.getCode(), company.getId());
 
         Product entity = Product.createNewProduct(requestDTO.getCode(), requestDTO.getName(), requestDTO.getPrice(), requestDTO.getStockMax(),
                 requestDTO.getStockMin(), unitMeasure, company);
@@ -72,15 +72,15 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
         Product entity = repository.findByIdAndCompanyId(id, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));
-        UnitMeasure unitMeasure = unitMeasureRepository.findById(requestDTO.getUnitMeasureId())
-                .orElseThrow(()-> new ResourceNotFoundException("Unidade de medida não encontrada."));
 
         if (!entity.getIsEnable())
             throw new BusinessException("O produto está desabilitado e não pode ser modificado.");
 
         if (!entity.isCodeEqual(requestDTO.getCode()))
-            validProductCode(requestDTO.getCode(), currentCompanyId);
+            checkProductCode(requestDTO.getCode(), currentCompanyId);
 
+        UnitMeasure unitMeasure = unitMeasureRepository.findByIdAndCompanyId(requestDTO.getUnitMeasureId(), currentCompanyId)
+                .orElseThrow(()-> new ResourceNotFoundException("Unidade de medida não encontrada."));
 
         if (!unitMeasure.equals(entity.getUnitMeasure())) {
             if (movementRepository.existsMovementByProductId(entity.getId()))
@@ -111,7 +111,8 @@ public class ProductService {
     }
 
     public void checkProductCode(String code, Long companyId) {
-        validProductCode(code, companyId);
+        if (repository.existsByCodeAndCompanyId(code, companyId))
+            throw new ProductCodeAlreadyExistsException("Código de produto já existente.");
     }
 
     @Transactional
@@ -121,14 +122,9 @@ public class ProductService {
     }
 
     public static Long parseProductId(String productId) {
+        if (productId == null) return null;
         return (productId.isEmpty() || productId.equals("null")) ? null : Long.parseLong(productId);
     }
-
-    private void validProductCode(String code, Long companyId) {
-        if (repository.existsByCodeAndCompanyId(code, companyId))
-            throw new ProductCodeAlreadyExistsException("Código de produto já existente.");
-    }
-
 }
 
 

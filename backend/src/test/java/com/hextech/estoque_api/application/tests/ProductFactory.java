@@ -16,12 +16,14 @@ public class ProductFactory {
                 UnitMeasure.createNewUnitMeasure("UNIDADE", "UN", company),
                 company);
         product.setId(id);
+        product.setStockStatus("NORMAL");
         return product;
     }
 
     public static ProductRequestDTO createProductRequestDTO() {
         Product product = createProduct(1L);
         ProductRequestDTO dto = new ProductRequestDTO();
+        dto.setCode(product.getCode());
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
         dto.setStockMax(product.getStockMax());
