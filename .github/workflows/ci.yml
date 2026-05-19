@@ -12,6 +12,11 @@ jobs:
   build-and-test:
     name: Application test
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
