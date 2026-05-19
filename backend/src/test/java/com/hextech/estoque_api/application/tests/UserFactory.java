@@ -13,7 +13,7 @@ public class UserFactory {
         user.setId(id);
         user.setName("Test User");
         user.setEmail("test@test.com");
-        user.setPassword("encryptedPassword");
+        user.setPassword("password");
         user.setEnabled(true);
         user.setRoles(List.of(new Role(1L, "ROLE_ADMIN"), new Role(2L, "ROLE_OPERATOR")));
         user.setCompany(CompanyFactory.createCompany(1L));
@@ -25,7 +25,7 @@ public class UserFactory {
         UserRequestDTO dto = new UserRequestDTO();
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
-        dto.setPassword("encryptedPassword");
+        dto.setPassword("password");
         dto.setRolesId(user.getRoles().stream().map(Role::getId).toList());
         return dto;
     }

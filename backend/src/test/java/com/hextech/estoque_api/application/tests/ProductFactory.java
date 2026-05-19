@@ -11,15 +11,19 @@ public class ProductFactory {
 
     public static Product createProduct(Long id) {
         Company company = CompanyFactory.createCompany(1L);
-        return Product.createNewProduct("PRODTEST" + id, "Test Product " + id,
+        Product product = Product.createNewProduct("PRODTEST" + id, "Test Product " + id,
                 new BigDecimal("100.00"), new BigDecimal(100), new BigDecimal(10),
                 UnitMeasure.createNewUnitMeasure("UNIDADE", "UN", company),
                 company);
+        product.setId(id);
+        product.setStockStatus("NORMAL");
+        return product;
     }
 
     public static ProductRequestDTO createProductRequestDTO() {
         Product product = createProduct(1L);
         ProductRequestDTO dto = new ProductRequestDTO();
+        dto.setCode(product.getCode());
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
         dto.setStockMax(product.getStockMax());

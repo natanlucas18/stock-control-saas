@@ -29,14 +29,31 @@ public class MovementFactory {
         return Movement.createNewMovement(MovementType.SAIDA, new BigDecimal(5), LocalDateTime.now(), "Saída de teste", product, user, company, fromStockLocation, null);
     }
 
-    public static MovementRequestDTO createMovementRequestDTO() {
+    public static Movement createTransferMovement() {
+        Product product = ProductFactory.createProduct(1L);
+        User user = UserFactory.createUser(1L);
+        Company company = CompanyFactory.createCompany(1L);
+        StockLocation fromStockLocation = StockLocationFactory.createStockLocation(1L);
+        StockLocation toStockLocation = StockLocationFactory.createStockLocation(2L);
+        return Movement.createNewMovement(MovementType.TRANSFERENCIA, new BigDecimal(5), LocalDateTime.now(), "Transferência de teste", product, user, company, fromStockLocation, toStockLocation);
+    }
+
+    public static Movement createReturnMovement() {
+        Product product = ProductFactory.createProduct(1L);
+        User user = UserFactory.createUser(1L);
+        Company company = CompanyFactory.createCompany(1L);
+        StockLocation toStockLocation = StockLocationFactory.createStockLocation(1L);
+        return Movement.createNewMovement(MovementType.DEVOLUCAO, new BigDecimal(10), LocalDateTime.now(), "Devolução de teste", product, user, company, null, toStockLocation);
+    }
+
+    public static MovementRequestDTO createMovementRequestDTO(String type, BigDecimal quantity, String note, Long productId, Long fromStockLocationId, Long toStockLocationId) {
         MovementRequestDTO dto = new MovementRequestDTO();
-        dto.setType("ENTRADA");
-        dto.setQuantity(new BigDecimal(10));
-        dto.setNote("Entrada de teste");
-        dto.setProductId(1L);
-        dto.setFromStockLocationId(1L);
-        dto.setToStockLocationId(2L);
+        dto.setType(type);
+        dto.setQuantity(quantity);
+        dto.setNote(note);
+        dto.setProductId(productId);
+        dto.setFromStockLocationId(fromStockLocationId);
+        dto.setToStockLocationId(toStockLocationId);
         return dto;
     }
 }

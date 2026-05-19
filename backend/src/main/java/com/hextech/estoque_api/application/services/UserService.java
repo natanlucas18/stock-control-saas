@@ -42,13 +42,14 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public UserResponseDTO createNewUser(UserRequestDTO requestDTO, Long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
+
         repository.findByEmail(requestDTO.getEmail())
                 .ifPresent(user -> {
                     throw new UserAlreadyExistsException("Já existe um usuário com este email.");
                 });
 
-        Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada."));
 
         List<Role> roles = roleRepository.findAllById(requestDTO.getRolesId());
         if (roles.size() != requestDTO.getRolesId().size()) {
@@ -62,7 +63,7 @@ public class UserService implements UserDetailsService {
         return new UserResponseDTO(user);
     }
 
-    public Object getMe(Long currentUserId, Long currentCompanyId) {
+    public UserResponseDTO getMe(Long currentUserId, Long currentCompanyId) {
         User user = repository.findByIdAndCompanyId(currentUserId, currentCompanyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
         return new UserResponseDTO(user);
