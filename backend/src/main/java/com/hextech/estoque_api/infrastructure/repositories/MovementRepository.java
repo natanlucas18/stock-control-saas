@@ -2,6 +2,7 @@ package com.hextech.estoque_api.infrastructure.repositories;
 
 import com.hextech.estoque_api.domain.entities.movement.Movement;
 import com.hextech.estoque_api.domain.entities.movement.MovementType;
+import com.hextech.estoque_api.interfaces.dtos.dashboard.TopMovingProducts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface MovementRepository extends JpaRepository<Movement, Long> {
@@ -40,4 +42,19 @@ public interface MovementRepository extends JpaRepository<Movement, Long> {
             OR m.toStockLocation.id = :stockLocationId
             """)
     boolean existsMovementByStockLocationId(Long stockLocationId);
+
+    Long countByCompanyId(Long companyId);
+
+    List<Movement> findTop5ByCompanyIdOrderByMomentDesc(Long companyId);
+
+    @Query("""
+            SELECT new com.hextech.estoque_api.interfaces.dtos.dashboard.TopMovingProducts(
+                        m.product, COUNT(m)
+                        )
+            FROM Movement m
+            WHERE m.company.id = :companyId
+            GROUP BY m.product
+            ORDER BY COUNT(m) DESC
+            """)
+    List<TopMovingProducts> findMostMovedProducts(Long companyId, Pageable pageable);
 }

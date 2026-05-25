@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -47,4 +48,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> searchProductsReport(@Param("status") String status,
                                        @Param("companyId") Long companyId,
                                        Pageable pageable);
+
+    Long countByCompanyId(Long companyId);
+
+    Long countByCompanyIdAndStockStatus(Long companyId, String status);
+
+    @Query(value = """
+            SELECT p FROM Product p
+            WHERE p.company.id = :companyId
+            AND p.stockStatus = :status
+            ORDER BY p.totalQuantity DESC
+            """)
+    List<Product> findTop5ByStockStatus(Long companyId, String status, Pageable pageable);
 }
