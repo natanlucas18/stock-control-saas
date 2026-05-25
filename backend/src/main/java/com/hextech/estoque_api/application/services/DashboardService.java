@@ -28,7 +28,8 @@ public class DashboardService {
 
         Long totalProducts = productRepository.countByCompanyId(companyId);
         Long lowStockCount = productRepository.countByCompanyIdAndStockStatus(companyId, "LOW");
-        List<Product> lowProducts = productRepository.findTop5ByStockStatus(companyId, "LOW", PageRequest.of(0, 5));
+        List<Product> lowProducts = productRepository
+                .findTop5ByStockStatus(companyId, "LOW", PageRequest.of(0, 5));
         Long totalMovements = movementRepository.countByCompanyId(companyId);
         List<Movement> recentMovements = movementRepository.findTop5ByCompanyIdOrderByMomentDesc(companyId);
         List<TopMovingProducts> topMovingProducts = movementRepository
